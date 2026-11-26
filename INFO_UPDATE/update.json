@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2115",
+      "title": "Menu ganda di desktop dihapus",
+      "desc": "Di desktop lebar, lima link menu muncul dua kali: di dalam pill taskbar dan di dropdown hamburger. Dropdown-nya kini dihapus di desktop lebar — navigasi hanya lewat taskbar. Hamburger tetap ada di layar sempit (taskbar sembunyi di bawah 900px) dan di mobile, jadi navigasi tetap jalan di semua ukuran. Dicek: desktop 1280 hanya 5 link terlihat (semua di dalam pill), desktop 800 hamburger tetap membuka menu, mobile tidak berubah.",
+      "tag": "Perbaikan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.15"
+    },
+    {
       "id": "20261126-2110",
       "title": "Link menu kini di dalam taskbar",
       "desc": "Di desktop, lima link menu (Beranda, Tutorial, Status, Tentang, Info Update) sebelumnya melayang tanpa wadah — bar atas warnanya sama dengan latar halaman. Kini kelimanya dibungkus pill taskbar (latar panel, border, sudut bulat penuh) di tengah bar atas; halaman aktif tetap ditandai hijau. Hamburger di kiri dan tombol tema tetap di tempatnya. Dicek di beranda dan tutorial (lebar 1280) dan di mobile (390) — mobile tidak berubah.",
@@ -209,6 +218,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T21:10:00+07:00",
+  "updated": "2026-11-26T21:15:00+07:00",
   "version": 1
 }

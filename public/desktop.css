@@ -706,16 +706,7 @@ html[data-theme="light"] .overlay { background: rgba(255, 255, 255, .75); }
 /* ---------- Toolbar navigasi (desktop: link inline + .active) ---------- */
 .topbar-actions { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .topnav a.active { color: var(--green2); background: rgba(71, 193, 119, .1); }
-.mobile-nav { display: none !important; }
-.menu-toggle { display: inline-grid !important; place-items: center; width: 34px; height: 34px; flex: none; border: 1px solid var(--line); border-radius: 11px; background: var(--panel); color: var(--text); cursor: pointer; line-height: 0; }
-.menu-toggle svg { display: block; }
-.mobile-nav:not([hidden]) { display: block !important; position: sticky; top: 67px; z-index: 24; background: var(--panel); border-bottom: 1px solid var(--line); padding: 8px 12px 12px; }
-.mobile-nav .side-nav-label { display: block; padding: 7px 12px 1px; color: var(--muted); letter-spacing: 1.35px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.mobile-nav .side-nav-divider { display: block; height: 1px; margin: 7px 12px 3px; background: var(--line); }
-.mobile-nav .nav-item { display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 12px; border: 0; background: transparent; color: var(--soft); border-radius: 10px; font-size: 12px; font-weight: 600; text-decoration: none; }
-.mobile-nav .nav-item:hover, .mobile-nav .nav-item.active { background: rgba(71, 193, 119, .095); color: var(--text); }
-.mobile-nav .nav-item.active { box-shadow: inset 2px 0 var(--green2); }
-.mobile-nav .nav-icon { width: 18px; flex: none; display: inline-flex; }
+.menu-toggle, .mobile-nav { display: none !important; }
 
 main.container { width: 100%; max-width: 920px; margin: 0 auto; padding: 0 28px; }
 
