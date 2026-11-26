@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2306",
+      "title": "Terminal dipercantik dan tombol Nomor Baru pindah ke header",
+      "desc": "Tombol Nomor Baru sebelumnya mengambang sendiri di bawah terminal (baris aksi yang tombol lainnya tersembunyi). Kini pindah ke header terminal, kanan atas — tempat yang pas karena tombol itu mereset sesi yang dicatat terminal. Terminal juga dipercantik: latar hijau gelap (sebelumnya biru kehitaman di mobile), teks log 12px, scrollbar hijau tipis, kursor berkedip di akhir baris, dan bayangan halus. Baris aksi kosong kini tertutup rapat. Dicek di mobile (390) dan desktop (1280): tombol di header kanan, kursor berkedip, klik Nomor Baru mereset alur (nomor terhapus, kembali ke langkah 1).",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "23.06"
+    },
+    {
       "id": "20261126-2300",
       "title": "Permintaan kode/QR kini berhasil di percobaan pertama",
       "desc": "Tes live menemukan bug: permintaan pairing code kadang gagal di percobaan pertama dengan pesan 'Socket WhatsApp belum terbuka (belum OPEN)' — socket dingin lewat proxy butuh 10–20 detik untuk OPEN, sementara batas tunggu hanya 15 detik (3 percobaan). Permintaan QR pun sempat gagal dengan batas yang sama. Diperbaiki: batas tunggu pairing jadi 6 percobaan (30 detik) dan QR jadi 30 detik. Tes ulang di socket dingin: kode custom WILY → WILY-0000 (6 detik), kode acak 7JC3-A8VP, dan QR PNG terbit — ketiganya berhasil di percobaan pertama. Kode custom/acakan/QR sudah dicek akurat sesuai Baileys (ReadSwEsm_V1).",
@@ -281,6 +290,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T23:00:32+07:00",
+  "updated": "2026-11-26T23:06:21+07:00",
   "version": 1
 }

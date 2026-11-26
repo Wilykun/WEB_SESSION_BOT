@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=20">
+  <link rel="stylesheet" href="/mobile.css?v=21">
   <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -254,7 +254,8 @@
         <div class="terminal">
           <div class="terminal-head">
             <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-            <span>TERMINAL &middot; SESSIONBOT</span>
+            <span class="terminal-title">TERMINAL &middot; SESSIONBOT</span>
+            <button id="resetBtn" class="btn-ghost btn-small term-reset" type="button">Nomor Baru</button>
           </div>
           <pre id="terminalLog" class="terminal-log" aria-live="polite">$ sessionbot siap — masukkan nomor WhatsApp kamu.</pre>
         </div>
@@ -296,7 +297,6 @@
         <div class="result-actions">
           <button id="sendOwnerBtn" class="btn-ghost btn-small" type="button" hidden>Kirim ke Owner</button>
           <button id="logoutBtn" class="btn-danger btn-small" type="button" hidden>Putuskan Sesi</button>
-          <button id="resetBtn" class="btn-ghost btn-small" type="button">Nomor Baru</button>
         </div>
       </div>
 
