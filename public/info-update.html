@@ -129,6 +129,7 @@
     <p class="iu-empty" id="iuLoading">Memuat Info Update&hellip;</p>
     <ul class="info-update-list" id="iuList"></ul>
     <p class="iu-empty" id="iuEmpty" hidden>Tidak ada pembaruan yang cocok. Ubah kata pencarian atau kategori.</p>
+    <nav id="iuPagination" class="info-update-pagination" aria-label="Halaman Info Update"></nav>
   </main>
 
   <!-- FOOTER ala .page-footer WEB_JADIBOT -->
@@ -169,15 +170,23 @@
       var entries = [];
       var currentFilter = 'semua';
       var currentQuery = '';
-      function render(filter, query) {
+      var IU_PAGE_SIZE = 3;
+      var IU_PAGE_WINDOW = 5;
+      var iuPage = 1;
+      function render(filter, query, resetPage) {
         if (filter !== undefined) currentFilter = filter;
         if (query !== undefined) currentQuery = String(query).toLowerCase();
+        if (resetPage) iuPage = 1;
         var q = currentQuery.trim();
         var show = entries.filter(function (e) {
           if (currentFilter !== 'semua' && slug(e.tag) !== currentFilter) return false;
           if (!q) return true;
           return ((e.title || '') + ' ' + (e.desc || '') + ' ' + (e.tag || '')).toLowerCase().indexOf(q) !== -1;
         });
+        var totalShown = show.length;
+        var pages = Math.max(1, Math.ceil(show.length / IU_PAGE_SIZE));
+        iuPage = Math.min(Math.max(1, iuPage), pages);
+        show = show.slice((iuPage - 1) * IU_PAGE_SIZE, iuPage * IU_PAGE_SIZE);
         list.innerHTML = show.map(function (e) {
           var s = slug(e.tag), t = TAGS[s] || { label: e.tag, icon: '' };
           return '<li class="info-update-item" data-tag="' + s + '">'
@@ -187,16 +196,53 @@
             + '<span class="info-update-tag tag-' + s + '">' + esc(t.label) + '</span>'
             + '<div class="info-update-desc"><p>' + esc(e.desc) + '</p></div></div></li>';
         }).join('');
-        if (empty) empty.hidden = show.length > 0;
+        if (empty) empty.hidden = totalShown > 0;
+        renderPager(pages);
       }
       document.getElementById('iuFilters').addEventListener('click', function (ev) {
         var b = ev.target.closest('.iu-chip'); if (!b) return;
         document.querySelectorAll('.iu-chip').forEach(function (c) { c.classList.remove('active'); });
         b.classList.add('active');
-        render(b.getAttribute('data-filter'));
+        render(b.getAttribute('data-filter'), undefined, true);
       });
       var searchInput = document.getElementById('iuSearch');
-      if (searchInput) searchInput.addEventListener('input', function () { render(undefined, searchInput.value); });
+      if (searchInput) searchInput.addEventListener('input', function () { render(undefined, searchInput.value, true); });
+      function renderPager(pages) {
+        var pager = document.getElementById('iuPagination');
+        if (!pager) return;
+        pager.innerHTML = '';
+        function btn(label, aria, disabled, onClick, active) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'info-page-button' + (active ? ' is-active' : '');
+          b.textContent = label;
+          b.setAttribute('aria-label', aria);
+          if (active) b.setAttribute('aria-current', 'page');
+          b.disabled = !!disabled;
+          b.addEventListener('click', onClick);
+          pager.appendChild(b);
+        }
+        function ellipsis() {
+          var e = document.createElement('span');
+          e.className = 'info-page-ellipsis';
+          e.textContent = '…';
+          e.setAttribute('aria-hidden', 'true');
+          pager.appendChild(e);
+        }
+        btn('«', 'Halaman pertama', iuPage <= 1, function () { iuPage = 1; render(); });
+        btn('‹', 'Halaman sebelumnya', iuPage <= 1, function () { iuPage -= 1; render(); });
+        var firstPage = Math.max(1, Math.min(iuPage - 2, pages - IU_PAGE_WINDOW + 1));
+        var lastPage = Math.min(pages, firstPage + IU_PAGE_WINDOW - 1);
+        if (firstPage > 1) ellipsis();
+        for (var p = firstPage; p <= lastPage; p++) {
+          (function (page) {
+            btn(String(page), 'Halaman ' + page, page === iuPage, function () { iuPage = page; render(); }, page === iuPage);
+          })(p);
+        }
+        if (lastPage < pages) ellipsis();
+        btn('›', 'Halaman berikutnya', iuPage >= pages, function () { iuPage += 1; render(); });
+        btn('»', 'Halaman terakhir', iuPage >= pages, function () { iuPage = pages; render(); });
+      }
       fetch('/INFO_UPDATE/update.json').then(function (r) { return r.json(); }).then(function (d) {
         entries = (d && d.entries) || [];
         var counts = { semua: entries.length };

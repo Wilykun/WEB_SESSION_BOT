@@ -1371,3 +1371,11 @@ html[data-theme="light"] .footer-presence-pill {
 .hero h1 { font-size: 28px; }
 .btn-primary { font-size: 14px; }
 button.btn-primary::after { content: '→'; font-weight: 800; }
+
+/* ---------- Paginasi Info Update (ala panel, 3 entri/halaman) ---------- */
+.info-update-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px; margin-top: 14px; }
+.info-page-button { min-width: 30px; height: 30px; padding: 0 8px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--panel); color: var(--soft); font-size: 11px; font-weight: 700; cursor: pointer; }
+.info-page-button:hover:not(:disabled) { border-color: rgba(99,225,148,.45); color: var(--text); }
+.info-page-button.is-active { background: var(--grad-green); border-color: transparent; color: #062115; }
+.info-page-button:disabled { opacity: .45; cursor: default; }
+.info-page-ellipsis { padding: 0 2px; color: var(--muted); font-size: 12px; }

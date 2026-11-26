@@ -3,6 +3,15 @@
     {
       "date": "26 Nov 2026",
       "day": "Kamis",
+      "desc": "Daftar Info Update kini dipaginasi 3 entri per halaman seperti panel: tombol « ‹ 1 2 3 4 › », jendela 5 halaman, halaman aktif hijau. Filter dan pencarian tetap menghitung semua entri yang cocok.",
+      "id": "20261126-1947",
+      "tag": "Fitur baru",
+      "time": "19.47",
+      "title": "Halaman Info Update dipaginasi"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
       "desc": "Kategori Info Update di toolbar, seperti panel readsw.my.id. Semua perubahan SessionBot kini tercatat di folder INFO_UPDATE/update.json dan bisa difilter per kategori: Semua, Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
       "id": "20261126-1931",
       "tag": "Fitur baru",
@@ -83,6 +92,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T19:31:00+07:00",
+  "updated": "2026-11-26T19:47:00+07:00",
   "version": 1
 }

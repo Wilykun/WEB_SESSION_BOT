@@ -971,3 +971,11 @@ main.container { width: 100%; max-width: 920px; margin: 0 auto; padding: 0 28px;
 /* ---------- Tombol utama ala readsw ---------- */
 .btn-primary { font-size: 14px; }
 button.btn-primary::after { content: '→'; font-weight: 800; }
+
+/* ---------- Paginasi Info Update (ala panel, 3 entri/halaman) ---------- */
+.info-update-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.info-page-button { min-width: 34px; height: 34px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel); color: var(--soft); font-size: 12px; font-weight: 700; cursor: pointer; }
+.info-page-button:hover:not(:disabled) { border-color: rgba(99,225,148,.45); color: var(--text); }
+.info-page-button.is-active { background: linear-gradient(135deg, var(--green-bright), var(--green-deep)); border-color: transparent; color: #062115; }
+.info-page-button:disabled { opacity: .45; cursor: default; }
+.info-page-ellipsis { padding: 0 2px; color: var(--muted); font-size: 12px; }
