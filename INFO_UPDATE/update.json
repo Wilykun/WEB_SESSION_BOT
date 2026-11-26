@@ -1,6 +1,33 @@
 {
   "entries": [
     {
+      "id": "20261127-0549",
+      "title": "Kirim Session manual + notifikasi toast realtime",
+      "desc": "Sesi TIDAK lagi auto-kirim ke owner. Setelah bot terhubung, web menampilkan detail sesi (file hisoka.json, ukuran, pre-key, session, identity-key) lengkap dengan tombol Kirim Session ke Owner. Tekan tombolnya, terminal menampilkan proses pengiriman, dan setelah terkirim sesi hilang dari web. Setiap nomor punya sesi sendiri, jadi tidak bentrok antar pengguna. Ditambah notifikasi toast realtime: kode terbit, bot terhubung, sesi terkirim — dengan tombol tutup, tampil horizontal dan pas di layar.",
+      "tag": "Fitur baru",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "05.49"
+    },
+    {
+      "id": "20261127-0548",
+      "title": "Info statis di bagian kode, tutorial per metode, warna terminal",
+      "desc": "Bagian kode pairing kini menampilkan info statis: Nomor, Negara, Operator, Metode, dan Browser — akurat dan realtime. Spoiler Tutorial Singkat kini mengikuti metode yang dipilih (Pairing Code atau QR Code). Kartu kode dipercantik dan pas dengan lebar layar. Teks terminal kini berwarna sesuai konteks: hijau untuk berhasil, kuning untuk menunggu, merah untuk gagal.",
+      "tag": "Tampilan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "05.48"
+    },
+    {
+      "id": "20261127-0547",
+      "title": "Validasi nomor tampilkan alasan sebenarnya",
+      "desc": "Mengetik nomor pendek (misalnya 6895664) sebelumnya menampilkan 'Tidak bisa mengecek nomor. Periksa koneksimu' padahal server sudah menjawab. Sekarang web menampilkan alasan persis dari server, contohnya 'Nomor terlalu pendek — panjang harus 10-15 digit (termasuk kode negara).' Nomor valid tetap langsung menampilkan negara dan operator.",
+      "tag": "Bug",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "05.47"
+    },
+    {
       "id": "20261127-0511",
       "title": "Pairing kini selesai setelah kode diterima (restart socket)",
       "desc": "Ditemukan akar masalah pairing yang stuck di 'Masuk...': setelah kode dimasukkan, socket yang meminta kode tidak bisa menyelesaikan tautan — harus dimulai ulang dengan socket baru. Panel WEB_JADIBOT memang begitu ('Kode diterima; koneksi WhatsApp dimulai ulang untuk menyelesaikan tautan'), SessionBot belum. Buktinya 27 Nov 05:01: kode AAAA-AAAA diterima WhatsApp (creds tersimpan, registered), tapi 'open' tidak pernah tercapai dan kode kadaluarsa. Diperbaiki: saat kode diterima (isNewLogin), simpan kredensial, matikan socket lama, buat socket baru yang langsung connect dan kirim sesi ke owner (batas 30 detik, gagal jelas bukan muter terus). Bonus: sesi setengah jadi (registered tapi 0 pre-key/session) kini otomatis dibersihkan supaya tidak memblokir kode baru; semua penutupan socket kini tercatat di log. Dicek: penerbitan kode custom masih jalan (TEST-0000).",
@@ -299,6 +326,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T05:11:36+07:00",
+  "updated": "2026-11-27T05:49:34+07:00",
   "version": 1
 }

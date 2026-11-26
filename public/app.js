@@ -266,17 +266,47 @@
   }
 
   /* ---------------- Terminal ---------------- */
+  // Warna teks terminal mengikuti konteks barisnya: sukses = hijau,
+  // gagal = merah, proses = kuning, info = hijau pudar. Kode pairing
+  // XXXX-XXXX ditonjolkan lebih terang di dalam barisnya.
+  function logKind(msg) {
+    if (/gagal|tidak bisa|tidak valid|ditolak|terputus|invalid|^Kode kedaluwarsa|^Kode \/ QR kedaluwarsa/i.test(msg)) return 'log-err';
+    if (/terhubung|terkirim|diterima|tersimpan|valid|berhasil|dipulihkan|selesai/i.test(msg)) return 'log-ok';
+    if (/menunggu|tunggu|menghubungkan|meminta|mengirim|dibatalkan|mengecek/i.test(msg)) return 'log-warn';
+    return 'log-info';
+  }
   function logLine(msg) {
     var pre = $('terminalLog');
     if (!pre) return;
-    var line = '[' + wibNow() + '] ' + msg;
-    if (pre.textContent.indexOf('sessionbot siap') === 0 && pre.textContent.split('\n').length === 1) {
-      pre.textContent = line;
+    if (!pre.dataset.colored) { pre.textContent = ''; pre.dataset.colored = '1'; }
+    var line = document.createElement('span');
+    line.className = 'tlog ' + logKind(msg);
+    var t = document.createElement('span');
+    t.className = 'tlog-time';
+    t.textContent = '[' + wibNow() + '] ';
+    line.appendChild(t);
+    var m = String(msg).match(/[A-Z0-9]{4}-[A-Z0-9]{4}/);
+    if (m) {
+      var parts = String(msg).split(m[0]);
+      line.appendChild(document.createTextNode(parts[0]));
+      var b = document.createElement('b');
+      b.className = 'tlog-code';
+      b.textContent = m[0];
+      line.appendChild(b);
+      line.appendChild(document.createTextNode(parts.slice(1).join(m[0])));
     } else {
-      pre.textContent += '\n' + line;
+      line.appendChild(document.createTextNode(msg));
     }
-    var lines = pre.textContent.split('\n');
-    if (lines.length > 80) pre.textContent = lines.slice(-80).join('\n');
+    pre.appendChild(line);
+    pre.appendChild(document.createTextNode('\n'));
+    var lines = pre.querySelectorAll('.tlog');
+    while (lines.length > 80) {
+      var first = lines[0];
+      var nl = first.nextSibling;
+      pre.removeChild(first);
+      if (nl && nl.nodeType === 3) pre.removeChild(nl);
+      lines = pre.querySelectorAll('.tlog');
+    }
     pre.scrollTop = pre.scrollHeight;
   }
 
@@ -434,7 +464,18 @@
     }
     var region = detectRegionLocal(digits);
     if (!region.country) {
-      // Kode negara di luar tabel lokal: jangan vonis dulu, tunggu server.
+      // Kode negara di luar tabel lokal. Tapi nomor WhatsApp paling pendek
+      // 10 digit (aturan server) — kalau kurang dari itu, sudah pasti
+      // belum lengkap, tidak perlu tunggu server.
+      if (digits.length < 10) {
+        state.phoneValid = false; state.region = null;
+        input.classList.remove('is-valid'); input.classList.add('is-invalid');
+        setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+        renderChips(); showNormalized(); setMethodBlockVisible(false);
+        updateRequestBtn();
+        return;
+      }
+      // 10+ digit tapi prefix asing: jangan vonis dulu, tunggu server.
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid', 'is-invalid');
       setPhoneError('');
@@ -496,9 +537,13 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d || !d.ok) {
+          // Server MERESPON tapi menolak nomornya (mis. terlalu pendek) —
+          // itu BUKAN masalah koneksi. Tampilkan alasan aslinya supaya
+          // pintar: valid atau tidak, dan kenapa. Pesan "cek koneksi" hanya
+          // untuk fetch yang benar-benar gagal (lihat .catch di bawah).
           state.phoneValid = false; state.region = null;
           input.classList.remove('is-valid'); input.classList.add('is-invalid');
-          setPhoneError('Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
+          setPhoneError((d && d.error) ? d.error : 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
           renderChips(); showNormalized(); setMethodBlockVisible(false);
           updateRequestBtn();
           return;
@@ -558,8 +603,18 @@
     });
     var po = $('pairingOptions'); if (po) po.hidden = method !== 'pairing';
     var qo = $('qrOptions'); if (qo) qo.hidden = method !== 'qr';
+    renderTutorial();
     updateRequestBtn();
     saveState();
+  }
+
+  // Tutorial spoiler mengikuti metode yang dipilih: Pairing Code menampilkan
+  // langkah pairing, QR Code menampilkan langkah QR.
+  function renderTutorial() {
+    var isQr = state.method === 'qr';
+    var tp = $('tutPairing'); if (tp) tp.hidden = isQr;
+    var tq = $('tutQr'); if (tq) tq.hidden = !isQr;
+    var tt = $('tutTitle'); if (tt) tt.textContent = isQr ? 'Tutorial QR Code' : 'Tutorial Pairing Code';
   }
 
   function updateRequestBtn() {
@@ -660,6 +715,7 @@
   function hideCodeAreas() {
     var ca = $('codeArea'); if (ca) ca.hidden = true;
     var qa = $('qrArea'); if (qa) qa.hidden = true;
+    var info = $('codeInfo'); if (info) info.hidden = true;
   }
 
   function renderCodeBoxes() {
@@ -683,12 +739,26 @@
     if (plain) plain.textContent = raw ? formatCode8(raw) : '—';
   }
 
+  // Info statis yang selalu tampil bersama kode/QR: nomor, negara, operator,
+  // metode, browser — diambil dari hasil validasi (state.region) supaya akurat.
+  function renderCodeInfo() {
+    var info = $('codeInfo'); if (!info) return;
+    var r = state.region || {};
+    var set = function (id, text) { var el = $(id); if (el) el.textContent = text; };
+    set('ciPhone', state.phone ? '+' + state.phone : '—');
+    set('ciRegion', r.countryName ? ((r.flag || '') + ' ' + r.countryName + (r.callingCode ? ' +' + r.callingCode : '')) : '—');
+    set('ciCarrier', (r.carrier && r.carrier !== 'unknown') ? r.carrier : 'Operator tidak dikenal');
+    set('ciMethod', state.method === 'qr' ? 'QR Code' : 'Pairing Code');
+    info.hidden = false;
+  }
+
   function showCodeArea() {
     var rb = $('resultBlock'); if (rb) rb.hidden = false;
     var rt = $('resultTitle'); if (rt) rt.textContent = 'Kode Pairing Kamu';
     hideCodeAreas();
     var ca = $('codeArea'); if (ca) ca.hidden = false;
     renderCodeBoxes();
+    renderCodeInfo();
     startCountdown();
     var rb2 = $('resultBlock');
     if (rb2) rb2.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -701,6 +771,7 @@
     var qa = $('qrArea'); if (qa) qa.hidden = false;
     var img = $('qrImg');
     if (img && state.qrDataUrl) img.src = state.qrDataUrl;
+    renderCodeInfo();
     startCountdown();
     var rb2 = $('resultBlock');
     if (rb2) rb2.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -744,11 +815,33 @@
     else setPipe(5, '', PIPE_LABELS[5].idle);
   }
 
+  /* ---------------- Toast notifikasi realtime ---------------- */
+  function showToast(msg, kind) {
+    var wrap = $('toasts'); if (!wrap) return;
+    var t = document.createElement('div');
+    t.className = 'toast toast-' + (kind || 'info');
+    var ic = document.createElement('span'); ic.className = 'toast-icon';
+    ic.textContent = kind === 'ok' ? '✓' : kind === 'err' ? '!' : 'i';
+    var m = document.createElement('span'); m.className = 'toast-msg'; m.textContent = msg;
+    var x = document.createElement('button'); x.className = 'toast-close'; x.type = 'button';
+    x.setAttribute('aria-label', 'Tutup notifikasi'); x.textContent = '×';
+    x.addEventListener('click', function () { removeToast(t); });
+    t.appendChild(ic); t.appendChild(m); t.appendChild(x);
+    wrap.appendChild(t);
+    while (wrap.children.length > 3) wrap.removeChild(wrap.firstChild);
+    setTimeout(function () { removeToast(t); }, 5000);
+  }
+  function removeToast(t) {
+    if (!t || !t.parentNode) return;
+    t.classList.add('toast-out');
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 250);
+  }
+
   function renderSessionTable() {
     var table = $('sessionTable');
     if (!table) return;
     var s = state.session;
-    var show = !!(s && (s.exists || state.status !== 'idle'));
+    var show = !!(s && (s.exists || state.status !== 'idle') && state.status !== 'delivered_disconnected');
     table.hidden = !show;
     if (!show) return;
     var set = function (id, val) { var el = $(id); if (el) el.textContent = val; };
@@ -848,7 +941,7 @@
         connecting: 'Menghubungkan ke WhatsApp…',
         awaiting_code: 'Kode pairing diterima — masukkan di WhatsApp sebelum kedaluwarsa.',
         awaiting_qr: 'QR diterima — pindai dengan WhatsApp.',
-        connected: 'Bot terhubung! Menunggu hisoka.json maksimal…',
+        connected: 'Bot terhubung — sesi tertaut! Kirim manual lewat tombol Kirim Session.',
         delivering: 'hisoka.json maksimal — mengirim ke owner…',
         delivered_disconnected: 'Sesi terkirim ke owner. Sesi web terputus otomatis.',
         delivery_failed: 'Pengiriman ke owner gagal.',
@@ -856,6 +949,18 @@
         expired: 'Kode / QR kedaluwarsa.'
       };
       if (labels[state.status]) logLine(labels[state.status]);
+      var toastMsgs = {
+        awaiting_code: 'Kode pairing terbit — masukkan di WhatsApp.',
+        awaiting_qr: 'QR terbit — pindai dengan WhatsApp.',
+        connected: 'Bot terhubung — sesi tertaut!',
+        delivering: 'Mengirim sesi ke owner…',
+        delivered_disconnected: 'Sesi terkirim ke owner.',
+        delivery_failed: 'Pengiriman ke owner gagal.',
+        invalid: 'Sesi tidak valid.',
+        expired: 'Kode / QR kedaluwarsa.'
+      };
+      var toastKinds = { awaiting_code: 'info', awaiting_qr: 'info', connected: 'ok', delivering: 'info', delivered_disconnected: 'ok', delivery_failed: 'err', invalid: 'err', expired: 'err' };
+      if (toastMsgs[state.status]) showToast(toastMsgs[state.status], toastKinds[state.status]);
       lastStatusLogged = state.status;
     }
 
@@ -898,6 +1003,7 @@
     renderPipeline();
     renderSessionTable();
     renderDelivery();
+    renderTutorial();
     updateRequestBtn();
     updateCountdown();
     saveState();
@@ -1005,7 +1111,7 @@
       var po = $('pairingOptions'); if (po) po.hidden = true;
       var qo = $('qrOptions'); if (qo) qo.hidden = true;
     }
-    renderPipeline(); updateRequestBtn(); saveState();
+    renderPipeline(); renderTutorial(); updateRequestBtn(); saveState();
   }
 
   /* ---------------- WebSocket ---------------- */

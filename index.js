@@ -389,7 +389,9 @@ function buildDeliveryCaption(phone, sizeBytes) {
 }
 
 // Kirim hisoka.json nomor itu ke owner. Dipanggil OTOMATIS setelah
-// connection 'open' dan manual via POST /api/session/send-to-owner.
+// Dipanggil OTOMATIS dari connection 'open' (hanya bila config
+// sendSessionToOwner=true) dan MANUAL via POST /api/session/send-to-owner
+// (tombol Kirim Session, force=true — selalu diizinkan).
 // Mengembalikan hasil; TIDAK PERNAH melempar (semua gagal ditangkap
 // jadi {ok:false}). Setelah terkirim sukses: socket ditutup + sesi web
 // nomor itu terputus (delivered_disconnected), TAPI hisoka.json/.good/.bak
@@ -400,13 +402,16 @@ async function deliverSessionToOwner(sock, phone, opts = {}) {
   if (!entry || !liveSock) {
     return { ok: false, error: 'Bot belum terhubung — pairing dulu sebelum kirim sesi ke owner.' }
   }
-  if (!SEND_SESSION_TO_OWNER) {
-    return { ok: false, error: 'Pengiriman sesi ke owner dimatikan di config (sendSessionToOwner=false).' }
+  const force = opts.force === true
+  // Kirim OTOMATIS (dari 'open') hanya bila config sendSessionToOwner=true.
+  // Kirim MANUAL (tombol Kirim Session, force=true) SELALU diizinkan —
+  // web tidak auto-kirim lagi; user yang menekan tombolnya.
+  if (!SEND_SESSION_TO_OWNER && !force) {
+    return { ok: false, error: 'Pengiriman otomatis dimatikan — kirim manual lewat tombol Kirim Session.' }
   }
   if (entry.delivering) {
     return { ok: false, error: 'Pengiriman sesi sedang berjalan — tunggu sebentar.' }
   }
-  const force = opts.force === true
 
   // Jangan kirim ulang otomatis bila marker sudah cocok dengan file saat ini.
   const marker = await readDeliveryMarker(phone)
@@ -723,9 +728,9 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
       try { entry.sessionChecklist = sessionChecklist(await getSessionInfo(phone)) } catch {}
       console.log(`[SessionBot] ${phone} terhubung sebagai ${entry.botNumber} — ${SESSION_FILE_NAME} tersimpan lengkap`)
       broadcastStatus(phone)
-      // Kirim hisoka.json ke owner OTOMATIS — async, jangan blokir status
-      // 'connected': status berubah delivering -> delivered ->
-      // delivered_disconnected. Guard anti-kirim-2x ada di dalam fungsi.
+      // TIDAK auto-kirim lagi: sesi ditampilkan di web (detail + tombol
+      // Kirim Session), user yang menekan tombolnya. Auto-kirim di sini
+      // hanya jalan bila config sendSessionToOwner=true.
       if (SEND_SESSION_TO_OWNER) {
         deliverSessionToOwner(sock, phone).catch((e) => {
           console.error('[SessionBot] deliverSessionToOwner gagal:', e?.message || e)
@@ -905,7 +910,7 @@ app.use('/INFO_UPDATE', express.static(path.join(ROOT, 'INFO_UPDATE')))
 // Halaman baru per kategori (toolbar ala panel): /status + /tentang.
 // Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
 async function serveViewPage(file, req, res) {
-  const css = pickView(req) === 'mobile' ? '/mobile.css?v=21' : '/desktop.css?v=21'
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=24' : '/desktop.css?v=24'
   try {
     const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
     res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))
