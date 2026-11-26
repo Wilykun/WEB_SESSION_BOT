@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2122",
+      "title": "URL address bar kini selalu polos",
+      "desc": "Sebelumnya, address bar menampilkan path halaman (/info-update, /tutorial, dan lain-lain). Kini di semua halaman, address bar selalu menampilkan sessionbot.my.id saja — seperti panel. Halaman tetap berpindah normal dan tombol 'Lihat versi desktop/mobile' tetap kembali ke halaman yang sama. Dicek: beranda, info-update, tutorial, status, dan tentang di desktop dan mobile, semuanya sessionbot.my.id. Catatan: kalau halaman di-refresh, kembali ke beranda karena URL-nya memang polos.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.22"
+    },
+    {
       "id": "20261126-2118",
       "title": "Judul tab web disederhanakan jadi SessionBot",
       "desc": "Judul tab browser sebelumnya kepanjangan ('SessionBot — Pairing Code & QR WhatsApp Bot' di beranda, dan tiap halaman punya judul berbeda) sampai terpotong di tab. Kini keenam halaman memakai judul yang sama: SessionBot saja. Dicek langsung di domain — beranda, tutorial, status, tentang, dan info-update, di desktop maupun mobile, semuanya SessionBot.",
@@ -227,6 +236,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T21:18:00+07:00",
+  "updated": "2026-11-26T21:22:00+07:00",
   "version": 1
 }

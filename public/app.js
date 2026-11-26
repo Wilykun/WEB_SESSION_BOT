@@ -8,9 +8,15 @@
   /* URL bersih: buang ?view= dari address bar (pilihannya sudah tersimpan
      di cookie sessionbot-view oleh server). Path halaman dipertahankan:
      /tentang tetap /tentang, /info-update tetap /info-update. */
+  /* URL selalu polos: sessionbot.my.id saja, apa pun halamannya.
+     Path asli disimpan dulu supaya tombol "Lihat versi desktop/mobile"
+     tetap bisa kembali ke halaman yang sama. */
   try {
-    if (window.location.search.indexOf('view=') !== -1) {
-      history.replaceState(null, '', window.location.pathname + window.location.hash);
+    sessionStorage.setItem('sb-page', window.location.pathname + window.location.hash);
+  } catch (e) { /* lanjut tanpa simpanan */ }
+  try {
+    if (window.location.pathname !== '/' || window.location.search || window.location.hash) {
+      history.replaceState(null, '', '/');
     }
   } catch (e) { /* biarkan URL apa adanya */ }
 
@@ -144,7 +150,9 @@
         try {
           document.cookie = 'sessionbot-view=' + m[1] + '; path=/; max-age=31536000; SameSite=Lax';
         } catch (e) { /* lanjut tanpa cookie */ }
-        window.location.href = window.location.pathname + window.location.hash;
+        var back = '/';
+        try { back = sessionStorage.getItem('sb-page') || window.location.pathname; } catch (e) { back = window.location.pathname; }
+        window.location.href = back;
       });
     });
   }
