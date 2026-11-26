@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2110",
+      "title": "Link menu kini di dalam taskbar",
+      "desc": "Di desktop, lima link menu (Beranda, Tutorial, Status, Tentang, Info Update) sebelumnya melayang tanpa wadah — bar atas warnanya sama dengan latar halaman. Kini kelimanya dibungkus pill taskbar (latar panel, border, sudut bulat penuh) di tengah bar atas; halaman aktif tetap ditandai hijau. Hamburger di kiri dan tombol tema tetap di tempatnya. Dicek di beranda dan tutorial (lebar 1280) dan di mobile (390) — mobile tidak berubah.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.10"
+    },
+    {
       "id": "20261126-2105",
       "title": "Tombol hamburger kini ada di desktop",
       "desc": "Mode desktop sebelumnya tidak punya tombol hamburger (titik 3 garis) seperti mobile — di beranda tombolnya ada di kanan dan disembunyikan CSS, di halaman lain sudah di kiri tapi ikut tersembunyi. Kini tombol hamburger tampil di kiri brand di semua halaman desktop, taskbar tetap ada; dropdown-nya sama seperti mobile (grup Utama dan Info, 5 link, menutup sendiri setelah diklik). Dicek juga halaman Info Update di desktop: pindah halaman 2 dan 7, filter Perbaikan, dan pencarian semuanya jalan, URL tetap sessionbot.my.id/info-update.",
@@ -200,6 +209,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T21:05:00+07:00",
+  "updated": "2026-11-26T21:10:00+07:00",
   "version": 1
 }

@@ -114,7 +114,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
   background: var(--green);
   box-shadow: 0 0 10px rgba(49, 213, 139, .45);
 }
-.topnav { display: flex; align-items: center; gap: 4px; }
+.topnav { display: flex; align-items: center; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
 .topnav a {
   color: var(--muted);
   font-weight: 600;
