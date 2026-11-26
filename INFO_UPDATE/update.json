@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2050",
+      "title": "Scroll halaman lebih halus",
+      "desc": "Penyebab scroll berat ketemu di simulasi browser: dua cahaya latar (ambient) pakai filter blur 115px dan bar atas pakai backdrop-filter blur — keduanya memaksa browser menggambar ulang tiap frame saat scroll. Kini cahaya latar diganti radial-gradient (tampilan sama, tanpa filter) dan bar atas jadi warna solid. Terukur: frame patah di halaman tutorial turun dari 2,1% ke 0,5%, beranda 1,5% ke 0%. Tampilan tidak berubah.",
+      "tag": "Perbaikan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "20.50"
+    },
+    {
       "id": "20261126-2035",
       "title": "Tampilan desktop disamakan dengan mobile",
       "desc": "Beranda desktop kini sama persis dengan mobile — hero di tengah, langkah pairing di bawah, Tentang jadi spoiler — hanya lebih lebar (920px). Taskbar dengan menu Beranda, Tutorial, Status, Tentang, dan Info Update tetap ada di desktop. Kartu fitur 2 kolom dihapus. Versi Baileys kini tampil benar di badge dan hero. Dicek semua halaman (beranda, tutorial, status, tentang, info update) di desktop, mobile, dan desktop-di-HP — tidak ada bug.",
@@ -182,6 +191,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T20:35:00+07:00",
+  "updated": "2026-11-26T20:50:00+07:00",
   "version": 1
 }

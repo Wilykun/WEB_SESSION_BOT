@@ -47,16 +47,16 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
 
 .ambient {
   position: fixed;
-  width: 340px;
-  height: 340px;
-  filter: blur(115px);
+  width: 560px;
+  height: 560px;
   border-radius: 50%;
   pointer-events: none;
   z-index: -1;
   opacity: .12;
+  transform: translateZ(0);
 }
-.ambient-one { background: #00a86b; top: -200px; left: 30%; }
-.ambient-two { background: #5b45b3; bottom: -200px; right: 3%; }
+.ambient-one { background: radial-gradient(circle, rgba(0, 168, 107, 1) 0%, rgba(0, 168, 107, 0) 65%); top: -220px; left: 30%; }
+.ambient-two { background: radial-gradient(circle, rgba(91, 69, 179, 1) 0%, rgba(91, 69, 179, 0) 65%); bottom: -220px; right: 3%; }
 
 /* ---------- Topbar ---------- */
 .topbar {
@@ -70,9 +70,8 @@ button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visibl
   justify-content: space-between;
   gap: 16px;
   padding: 0 34px;
-  background: rgba(8, 17, 14, .92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--bg);
+
 }
 .topbar-left, .topbar-right { display: flex; align-items: center; gap: 20px; min-width: 0; }
 .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 16px; font-weight: 800; letter-spacing: -.6px; }
