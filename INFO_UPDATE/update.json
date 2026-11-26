@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2035",
+      "title": "Tampilan desktop disamakan dengan mobile",
+      "desc": "Beranda desktop kini sama persis dengan mobile — hero di tengah, langkah pairing di bawah, Tentang jadi spoiler — hanya lebih lebar (920px). Taskbar dengan menu Beranda, Tutorial, Status, Tentang, dan Info Update tetap ada di desktop. Kartu fitur 2 kolom dihapus. Versi Baileys kini tampil benar di badge dan hero. Dicek semua halaman (beranda, tutorial, status, tentang, info update) di desktop, mobile, dan desktop-di-HP — tidak ada bug.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "20.35"
+    },
+    {
       "date": "26 Nov 2026",
       "day": "Kamis",
       "desc": "Pindah halaman kini jauh lebih cepat seperti panel (readsw.my.id): Worker tidak lagi memaksa no-store untuk semua file — CSS/JS berversi (?v=) disimpan browser 1 tahun (immutable, versinya berubah tiap ada edit), maskot/ikon/operator 1 hari, sedangkan HTML + API + Info Update tetap no-store supaya selalu segar. Terukur di simulasi: navigasi 808ms → 204ms, CSS/JS 0 KB diunduh ulang. Ditambah animasi masuk kini hanya di muatan pertama per tab (sessionStorage) — pindah halaman berikutnya langsung tampil penuh tanpa fade ulang; animasi saat pertama masuk web tetap ada.",
@@ -173,6 +182,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T20:30:00+07:00",
+  "updated": "2026-11-26T20:35:00+07:00",
   "version": 1
 }
