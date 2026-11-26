@@ -250,12 +250,14 @@ html[data-theme="light"] .badge { color: var(--muted); }
 .chip.muted { color: var(--muted); }
 
 /* ---------- Kartu metode ---------- */
-.method-grid { display: grid; gap: 10px; }
+.method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .method-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  text-align: left;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
   width: 100%;
   padding: 14px;
   border-radius: 14px;
@@ -742,7 +744,7 @@ main.container { width: 100%; max-width: 920px; margin: 0 auto; padding: 0 28px;
 }
 .page-head p { margin: 0 auto; max-width: 34rem; color: var(--muted); font-size: 14px; }
 
-.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.status-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .status-card { margin: 0; }
 .status-value {
   display: flex;
@@ -891,6 +893,7 @@ html.sb-no-anim .topbar, html.sb-no-anim .hero > *, html.sb-no-anim .page-head >
   .topbar { height: 60px; padding: 0 12px; gap: 10px; }
   .topbar-left, .topbar-right { gap: 10px; }
   .topnav { display: none; }
+  .method-grid { grid-template-columns: 1fr; }
   .demo-badge { display: none; }
   .menu-toggle { display: inline-grid !important; position: relative; place-items: center; width: 34px; height: 34px; flex: none; border: 1px solid var(--line); border-radius: 11px; background: var(--panel); color: var(--text); cursor: pointer; line-height: 0; }
   .menu-toggle svg { display: block; }

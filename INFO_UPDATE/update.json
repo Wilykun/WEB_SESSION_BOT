@@ -1,6 +1,42 @@
 {
   "entries": [
     {
+      "id": "20261126-2147",
+      "title": "Tampilan desktop kini sama dengan mobile",
+      "desc": "Sebelumnya tampilan desktop terpisah dari mobile: kartu tutorial dan status tampil dua kolom di desktop, satu kolom di mobile, dan kartu metode berbeda arah. Kini desktop memakai layout yang sama dengan mobile — satu kolom, kartu metode vertikal di tengah — hanya lebih lebar, seperti panel readsw.my.id. Dicek di semua halaman, desktop (1280) dan mobile (390); mobile tidak berubah.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.47"
+    },
+    {
+      "id": "20261126-2146",
+      "title": "Menu Developer kini ada di navigasi",
+      "desc": "Info Developer & Owner sebelumnya hanya ada di dalam halaman Tentang dan tidak ada di menu. Kini ada link Developer di taskbar desktop dan di menu hamburger mobile — diklik langsung menuju bagian Developer & Owner di halaman Tentang. Dicek di desktop (lebar 1280), desktop sempit (800), dan mobile (390).",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.46"
+    },
+    {
+      "id": "20261126-2145",
+      "title": "Animasi loading saat masuk web",
+      "desc": "Kini ada animasi loading di tengah layar saat pertama masuk web — logo SessionBot, spinner hijau, dan tulisan 'Memuat…' — lalu halaman muncul dengan halus. Animasi hanya muncul sekali per tab supaya navigasi antar halaman tetap cepat. Dicek di desktop dan mobile.",
+      "tag": "Fitur baru",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.45"
+    },
+    {
+      "id": "20261126-2144",
+      "title": "Kartu metode kini berdampingan dan teks tidak lagi menempel",
+      "desc": "Judul dan deskripsi kartu Pairing Code / QR Code sebelumnya menempel ('Pairing Code8 karakter') karena span teks tidak memakai class method-text. Kini diperbaiki: judul di atas, deskripsi di bawah, dan kedua kartu berdampingan dua kolom seperti di mobile. Dicek di desktop (lebar 1280) dan mobile (390) — keduanya sama.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.44"
+    },
+    {
       "id": "20261126-2122",
       "title": "URL address bar kini selalu polos",
       "desc": "Sebelumnya, address bar menampilkan path halaman (/info-update, /tutorial, dan lain-lain). Kini di semua halaman, address bar selalu menampilkan sessionbot.my.id saja — seperti panel. Halaman tetap berpindah normal dan tombol 'Lihat versi desktop/mobile' tetap kembali ke halaman yang sama. Dicek: beranda, info-update, tutorial, status, dan tentang di desktop dan mobile, semuanya sessionbot.my.id. Catatan: kalau halaman di-refresh, kembali ke beranda karena URL-nya memang polos.",
@@ -22,7 +58,7 @@
       "id": "20261126-2115",
       "title": "Menu ganda di desktop dihapus",
       "desc": "Di desktop lebar, lima link menu muncul dua kali: di dalam pill taskbar dan di dropdown hamburger. Dropdown-nya kini dihapus di desktop lebar — navigasi hanya lewat taskbar. Hamburger tetap ada di layar sempit (taskbar sembunyi di bawah 900px) dan di mobile, jadi navigasi tetap jalan di semua ukuran. Dicek: desktop 1280 hanya 5 link terlihat (semua di dalam pill), desktop 800 hamburger tetap membuka menu, mobile tidak berubah.",
-      "tag": "Perbaikan",
+      "tag": "Bug",
       "day": "Kamis",
       "date": "26 Nov 2026",
       "time": "21.15"
@@ -49,7 +85,7 @@
       "id": "20261126-2050",
       "title": "Scroll halaman lebih halus",
       "desc": "Penyebab scroll berat ketemu di simulasi browser: dua cahaya latar (ambient) pakai filter blur 115px dan bar atas pakai backdrop-filter blur — keduanya memaksa browser menggambar ulang tiap frame saat scroll. Kini cahaya latar diganti radial-gradient (tampilan sama, tanpa filter) dan bar atas jadi warna solid. Terukur: frame patah di halaman tutorial turun dari 2,1% ke 0,5%, beranda 1,5% ke 0%. Tampilan tidak berubah.",
-      "tag": "Perbaikan",
+      "tag": "Bug",
       "day": "Kamis",
       "date": "26 Nov 2026",
       "time": "20.50"
@@ -68,7 +104,7 @@
       "day": "Kamis",
       "desc": "Pindah halaman kini jauh lebih cepat seperti panel (readsw.my.id): Worker tidak lagi memaksa no-store untuk semua file — CSS/JS berversi (?v=) disimpan browser 1 tahun (immutable, versinya berubah tiap ada edit), maskot/ikon/operator 1 hari, sedangkan HTML + API + Info Update tetap no-store supaya selalu segar. Terukur di simulasi: navigasi 808ms → 204ms, CSS/JS 0 KB diunduh ulang. Ditambah animasi masuk kini hanya di muatan pertama per tab (sessionStorage) — pindah halaman berikutnya langsung tampil penuh tanpa fade ulang; animasi saat pertama masuk web tetap ada.",
       "id": "20261126-2030",
-      "tag": "Perbaikan",
+      "tag": "Bug",
       "time": "20.30",
       "title": "Navigasi antar halaman jauh lebih cepat"
     },
@@ -77,7 +113,7 @@
       "day": "Kamis",
       "desc": "Pilihan tampilan desktop/mobile kini menetap lewat cookie sessionbot-view (1 tahun): tombol 'Lihat versi desktop/mobile' di footer menyimpan pilihan lalu memuat ulang path yang sama tanpa query — URL tetap bersih (sessionbot.my.id/tentang) dan pilihan tidak hilang saat pindah halaman atau refresh. ?view= tetap didukung dan ikut menyimpan cookie.",
       "id": "20261126-2022a",
-      "tag": "Perbaikan",
+      "tag": "Bug",
       "time": "20.22",
       "title": "Tampilan desktop/mobil kini menetap"
     },
@@ -131,7 +167,7 @@
       "day": "Kamis",
       "desc": "Mode desktop (?view=desktop) di HP kini menyesuaikan layar: hamburger menggantikan baris navigasi, hero 2 kolom jadi 1 kolom, form langsung di bawah — tidak ada lagi yang terpotong atau bergeser ke samping.",
       "id": "20261126-1958",
-      "tag": "Perbaikan",
+      "tag": "Bug",
       "time": "19.58",
       "title": "Tampilan desktop di HP diperbaiki"
     },
@@ -212,7 +248,7 @@
       "day": "Kamis",
       "desc": "Worker sessionbot-tunnel kini meneruskan User-Agent asli (sebelumnya ditimpa jadi sessionbot-proxy/1.0) sehingga server tahu pengunjung memakai HP dan halaman mobile tampil benar, bukan versi desktop.",
       "id": "20261126-1855",
-      "tag": "Perbaikan",
+      "tag": "Bug",
       "time": "18.55",
       "title": "Deteksi mobile diperbaiki"
     },
@@ -236,6 +272,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T21:22:00+07:00",
+  "updated": "2026-11-26T21:47:00+07:00",
   "version": 1
 }
