@@ -982,3 +982,9 @@ html.sb-no-anim .topbar, html.sb-no-anim .hero > *, html.sb-no-anim .page-head >
 /* ---------- Tombol Kirim Session ---------- */
 .btn-send-session { flex: 1 1 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; font-size: 14px; }
 button.btn-send-session::after { content: none; }
+
+/* ---------- Baris info terhubung + spoiler kode ---------- */
+.ci-row[hidden] { display: none; }
+.code-spoiler-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px 12px; margin: 4px 0 10px; background: rgba(49,213,139,.06); border: 1px solid var(--line); border-radius: 12px; color: var(--soft); font-size: 13px; font-weight: 700; cursor: pointer; }
+.code-spoiler-btn:hover { border-color: rgba(49,213,139,.4); color: var(--text); }
+.code-mask { text-align: center; font-size: 28px; font-weight: 800; letter-spacing: 6px; color: var(--muted); padding: 12px 0; }

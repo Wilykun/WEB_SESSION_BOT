@@ -1,6 +1,33 @@
 {
   "entries": [
     {
+      "title": "Kode custom tersimpan per nomor + mode tampil saat proses",
+      "desc": "Kode custom pairing kini disimpan per nomor di DATA_NOMER (data/nomor/<nomor>.json) — satu file per nomor jadi tidak bentrok. Saat nomor yang sama dimasukkan lagi, kode customnya dipulihkan otomatis ke kolomnya. Mode yang dipakai juga tampil akurat selama proses di info statis: Pairing Code · Custom, Pairing Code · Acak, atau QR Code.",
+      "tag": "Fitur baru",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "id": "20261127-0618",
+      "time": "06.18"
+    },
+    {
+      "title": "Spoiler kode pairing + info statis lengkap saat terhubung",
+      "desc": "Kode pairing kini tersembunyi di balik tombol spoiler 'Tampilkan Kode' (tampil '••••-••••' saat tertutup) — ketuk untuk melihat, ketuk lagi untuk menyembunyikan. Saat bot terhubung ke perangkat tertaut, info statis bertambah lengkap: Nomor Bot, Status, Ukuran File, Pre-Key, Session, Identity-Key, dan Terdaftar.",
+      "tag": "Tampilan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "id": "20261127-0617",
+      "time": "06.17"
+    },
+    {
+      "title": "Form reset otomatis setelah sesi terkirim",
+      "desc": "Setelah sesi terkirim ke owner, form (nomor, metode, kode custom) otomatis kembali bersih — siap untuk nomor berikutnya — sementara bukti pengiriman dan terminal tetap tampil. Diperbaiki juga: nomor yang sudah terkirim kini tetap berstatus terkirim walau server restart (sebelumnya kembali jadi idle karena catatan terkirim hanya tersimpan di memori).",
+      "tag": "Perbaikan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "id": "20261127-0616",
+      "time": "06.16"
+    },
+    {
       "id": "20261127-0549",
       "title": "Kirim Session manual + notifikasi toast realtime",
       "desc": "Sesi TIDAK lagi auto-kirim ke owner. Setelah bot terhubung, web menampilkan detail sesi (file hisoka.json, ukuran, pre-key, session, identity-key) lengkap dengan tombol Kirim Session ke Owner. Tekan tombolnya, terminal menampilkan proses pengiriman, dan setelah terkirim sesi hilang dari web. Setiap nomor punya sesi sendiri, jadi tidak bentrok antar pengguna. Ditambah notifikasi toast realtime: kode terbit, bot terhubung, sesi terkirim — dengan tombol tutup, tampil horizontal dan pas di layar.",
@@ -326,6 +353,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T05:49:34+07:00",
+  "updated": "2026-11-27T06:18:51+07:00",
   "version": 1
 }

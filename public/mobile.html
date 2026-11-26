@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=24">
+  <link rel="stylesheet" href="/mobile.css?v=25">
   <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -216,8 +216,12 @@
             </div>
           </div>
           <div>
-            <div id="codeBoxes" class="code-boxes" aria-live="polite"></div>
-            <p class="code-meta" style="margin-top:12px">Kode: <code id="codePlain">—</code> &middot; Berlaku 3 menit &middot; Masukkan di WhatsApp: <strong>Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon</strong></p>
+            <button id="codeSpoilerBtn" class="code-spoiler-btn" type="button" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span class="code-spoiler-label">Tampilkan Kode</span></button>
+            <div id="codeSpoilerMask" class="code-mask" aria-hidden="true">••••-••••</div>
+            <div id="codeSpoilerBody" hidden>
+              <div id="codeBoxes" class="code-boxes" aria-live="polite"></div>
+              <p class="code-meta" style="margin-top:12px">Kode: <code id="codePlain">—</code> &middot; Berlaku 3 menit &middot; Masukkan di WhatsApp: <strong>Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon</strong></p>
+            </div>
             <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
               <button id="copyCodeBtn" class="btn-ghost btn-small" type="button">Salin Tanpa Strip</button>
               <button id="cancelCodeBtn" class="btn-danger btn-small" type="button">Batalkan</button>
@@ -249,6 +253,13 @@
           <div class="ci-row"><dt>Operator</dt><dd id="ciCarrier">—</dd></div>
           <div class="ci-row"><dt>Metode</dt><dd id="ciMethod">—</dd></div>
           <div class="ci-row"><dt>Browser</dt><dd>Browser V1 &middot; Ubuntu + Chrome</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Nomor Bot</dt><dd id="ciBotNumber">—</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Status</dt><dd id="ciStatus">—</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Ukuran File</dt><dd id="ciSize">—</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Pre-Key</dt><dd id="ciPreKeys">—</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Session</dt><dd id="ciSessions">—</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Identity-Key</dt><dd id="ciIdentityKeys">—</dd></div>
+          <div class="ci-row ci-connected" hidden><dt>Terdaftar</dt><dd id="ciRegistered">—</dd></div>
         </dl>
 
         <!-- Pipeline 5 langkah -->
@@ -443,7 +454,7 @@
       });
     })();
   </script>
-  <script src="/app.js?v=9" defer></script>
+  <script src="/app.js?v=10" defer></script>
   <script>
   /* Sembunyikan animasi loading setelah halaman siap (tampil min. 900 mdtk). */
   (function () {

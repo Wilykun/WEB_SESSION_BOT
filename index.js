@@ -204,6 +204,7 @@ function broadcastStatus(phone) {
       phone,
       status: s.status,
       method: s.method || 'pairing',
+      codeMode: s.codeMode || null,
       code: s.status === 'awaiting_code' ? s.code : null,
       qrDataUrl: s.status === 'awaiting_qr' ? s.qrDataUrl : null,
       expiresIn: s.expiresAt ? Math.max(0, Math.ceil((s.expiresAt - Date.now()) / 1000)) : 0,
@@ -224,6 +225,7 @@ function broadcastStatus(phone) {
       phone,
       status: 'delivered_disconnected',
       method: d.method || 'pairing',
+      codeMode: d.codeMode || null,
       code: null,
       qrDataUrl: null,
       expiresIn: 0,
@@ -529,13 +531,14 @@ async function disconnectAfterDelivery(phone) {
   sessions.delete(phone)
   deliveredByPhone.set(phone, {
     phone, status: 'delivered_disconnected', delivery, botNumber, method, region,
-    sessionChecklist: entry.sessionChecklist || null
+    codeMode: entry.codeMode || null, sessionChecklist: entry.sessionChecklist || null
   })
   broadcast({
     type: 'status',
     phone,
     status: 'delivered_disconnected',
     method,
+    codeMode: entry.codeMode || null,
     code: null,
     qrDataUrl: null,
     expiresIn: 0,
@@ -786,7 +789,7 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
       }
       if (entry.status === 'awaiting_qr' && entry.qrDataUrl) {
         return {
-          ok: true, status: 'awaiting_qr', method: 'qr',
+          ok: true, status: 'awaiting_qr', method: 'qr', codeMode: null,
           qrDataUrl: entry.qrDataUrl, expiresIn: QR_TTL_SECONDS, region: entry.region
         }
       }
@@ -837,7 +840,7 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
       })
       console.log(`[SessionBot] Pairing code terbit untuk ${phone} (berlaku ${CODE_TTL_SECONDS} detik)`)
       broadcastStatus(phone)
-      return { ok: true, status: 'awaiting_code', method: 'pairing', code: formatted, expiresIn: CODE_TTL_SECONDS, region: entry.region }
+      return { ok: true, status: 'awaiting_code', method: 'pairing', codeMode: entry.codeMode || null, code: formatted, expiresIn: CODE_TTL_SECONDS, region: entry.region }
     } catch (err) {
       lastError = err
       const msg = String(err?.message || err)
@@ -910,7 +913,7 @@ app.use('/INFO_UPDATE', express.static(path.join(ROOT, 'INFO_UPDATE')))
 // Halaman baru per kategori (toolbar ala panel): /status + /tentang.
 // Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
 async function serveViewPage(file, req, res) {
-  const css = pickView(req) === 'mobile' ? '/mobile.css?v=24' : '/desktop.css?v=24'
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=25' : '/desktop.css?v=25'
   try {
     const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
     res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))
@@ -981,6 +984,31 @@ app.get('/api/public/live-stats', (_req, res) => res.json({ ok: true, ...liveSta
 // data/uptime.json, jadi "web berjalan" terus bertambah walau server restart.
 const UPTIME_DIR = path.join(__dirname, 'data')
 const UPTIME_FILE = path.join(UPTIME_DIR, 'uptime.json')
+
+// ---------- Preferensi per nomor (DATA_NOMER) ----------
+// Kode custom pairing disimpan PER NOMOR di data/nomor/<nomor>.json, supaya
+// saat nomor yang sama dimasukkan lagi, kode customnya dipulihkan otomatis.
+// Satu file per nomor = tidak bentrok antar nomor/pengguna. Folder ini
+// TIDAK di-push ke GitHub (lihat .gitignore) — data pengguna tetap di server.
+const NUMBER_PREFS_DIR = path.join(UPTIME_DIR, 'nomor')
+function numberPrefsFile(phone) { return path.join(NUMBER_PREFS_DIR, String(phone).replace(/[^0-9]/g, '') + '.json') }
+function readNumberPrefs(phone) {
+  try {
+    const f = numberPrefsFile(phone)
+    if (!existsSync(f)) return null
+    const d = JSON.parse(readFileSync(f, 'utf8'))
+    if (!d || typeof d !== 'object') return null
+    return { phone: String(d.phone || phone), customCode: String(d.customCode || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8) || null, method: d.method || 'pairing', codeMode: d.codeMode || 'custom', updatedAt: d.updatedAt || null }
+  } catch { return null }
+}
+function writeNumberPrefs(phone, prefs) {
+  try {
+    mkdirSync(NUMBER_PREFS_DIR, { recursive: true })
+    const d = { phone: String(phone), customCode: String(prefs.customCode || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8), method: prefs.method || 'pairing', codeMode: prefs.codeMode || 'custom', updatedAt: new Date().toISOString() }
+    writeFileSync(numberPrefsFile(phone), JSON.stringify(d, null, 2) + '\n')
+    return d
+  } catch (err) { console.warn('[SessionBot] Gagal simpan preferensi nomor:', err.message); return null }
+}
 let uptimeBaseSeconds = 0
 try {
   if (existsSync(UPTIME_FILE)) {
@@ -1026,6 +1054,21 @@ app.get('/api/health', (_req, res) => {
   })
 })
 
+// Preferensi nomor: kode custom pairing per nomor (DATA_NOMER).
+app.get('/api/number/prefs', (req, res) => {
+  const v = validatePhone(req.query.phone || '')
+  if (!v.ok) return res.json({ ok: false, error: v.error })
+  return res.json({ ok: true, phone: v.phone, prefs: readNumberPrefs(v.phone) })
+})
+app.post('/api/number/prefs', (req, res) => {
+  const v = validatePhone(req.body?.phone || '')
+  if (!v.ok) return res.status(400).json({ ok: false, error: v.error })
+  const code = String(req.body?.customCode || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)
+  if (!code) return res.status(400).json({ ok: false, error: 'Kode custom kosong — isi 1-8 karakter A-Z 0-9.' })
+  const saved = writeNumberPrefs(v.phone, { customCode: code, method: req.body?.method === 'qr' ? 'qr' : 'pairing', codeMode: 'custom' })
+  return res.json({ ok: true, phone: v.phone, prefs: saved })
+})
+
 app.get('/api/session/status', async (req, res) => {
   const v = validatePhone(req.query.phone || '')
   if (!v.ok) return res.json({ ok: false, error: v.error })
@@ -1042,8 +1085,9 @@ app.get('/api/session/status', async (req, res) => {
     ok: true,
     phone: v.phone,
     region: v.region || detectRegionFull(v.phone),
-    status: entry?.status || delivered?.status || 'idle',
+    status: entry?.status || delivered?.status || (delivery ? 'delivered_disconnected' : 'idle'),
     method: entry?.method || delivered?.method || 'pairing',
+    codeMode: entry?.codeMode || delivered?.codeMode || null,
     code: entry?.status === 'awaiting_code' ? entry.code : null,
     qrDataUrl: entry?.status === 'awaiting_qr' ? entry.qrDataUrl : null,
     expiresIn: entry?.expiresAt ? Math.max(0, Math.ceil((entry.expiresAt - Date.now()) / 1000)) : 0,
@@ -1108,6 +1152,8 @@ app.post('/api/pairing/request', async (req, res) => {
   let pairingCode
   if (method === 'pairing' && codeMode) {
     const resolved = resolvePairingCode(codeMode, req.body?.customCode)
+    // Simpan kode custom ke DATA_NOMER supaya nomor yang sama memulihkannya.
+    if (codeMode === 'custom' && resolved.code) writeNumberPrefs(phone, { customCode: resolved.code, method: 'pairing', codeMode: 'custom' })
     if (resolved.error) return res.status(400).json({ ok: false, error: resolved.error })
     pairingCode = resolved.code
   }
@@ -1115,7 +1161,7 @@ app.post('/api/pairing/request', async (req, res) => {
   const existing = sessions.get(phone)
   if (existing?.status === 'awaiting_code' && method === 'pairing' && existing.code && existing.expiresAt > Date.now()) {
     return res.json({
-      ok: true, status: 'awaiting_code', method: 'pairing', code: existing.code,
+      ok: true, status: 'awaiting_code', method: 'pairing', codeMode: existing.codeMode || null, code: existing.code,
       expiresIn: Math.ceil((existing.expiresAt - Date.now()) / 1000),
       region: v.region,
       note: 'Kode masih berlaku, pakai kode yang sama.'
@@ -1123,14 +1169,14 @@ app.post('/api/pairing/request', async (req, res) => {
   }
   if (existing?.status === 'awaiting_qr' && method === 'qr' && existing.qrDataUrl && existing.expiresAt > Date.now()) {
     return res.json({
-      ok: true, status: 'awaiting_qr', method: 'qr', qrDataUrl: existing.qrDataUrl,
+      ok: true, status: 'awaiting_qr', method: 'qr', codeMode: null, qrDataUrl: existing.qrDataUrl,
       expiresIn: Math.ceil((existing.expiresAt - Date.now()) / 1000),
       region: v.region,
       note: 'QR masih berlaku, pakai QR yang sama.'
     })
   }
   if (existing?.status === 'connected') {
-    return res.json({ ok: true, status: 'connected', method, botNumber: existing.botNumber, region: v.region, note: 'Nomor ini sudah tertaut.' })
+    return res.json({ ok: true, status: 'connected', method, codeMode: existing.codeMode || null, botNumber: existing.botNumber, region: v.region, note: 'Nomor ini sudah tertaut.' })
   }
   // Pengiriman sesi ke owner sedang berjalan — jangan matikan socket-nya.
   if (existing?.status === 'delivering') {

@@ -55,6 +55,8 @@
   var ws = null;
   var wsRetryMs = 3000;
   var lastStatusLogged = '';
+  var lastPrefsPhone = '';
+  var savePrefsTimer = null;
   var operatorsCache = null;
 
   function saveState() {
@@ -559,6 +561,7 @@
           setMethodBlockVisible(true);
           // Jika server sudah punya status aktif untuk nomor ini, pulihkan tampilannya.
           if (d.status && d.status !== 'idle') applyStatus(d);
+          restoreNumberPrefs(digits);
         } else {
           state.phoneValid = false; state.region = region;
           input.classList.remove('is-valid'); input.classList.add('is-invalid');
@@ -591,6 +594,44 @@
       if (validateTimer) clearTimeout(validateTimer);
       validateTimer = setTimeout(validatePhone, 300);
     });
+  }
+
+  /* ---------------- Preferensi nomor (DATA_NOMER) ---------------- */
+  // Kode custom disimpan per nomor di server; saat nomor yang sama
+  // dimasukkan lagi, kode customnya dipulihkan otomatis.
+  function restoreNumberPrefs(phone) {
+    if (!phone || phone === lastPrefsPhone) return;
+    lastPrefsPhone = phone;
+    // Bersihkan kode nomor sebelumnya supaya tidak nyangkut ke nomor baru.
+    var ci = $('customCodeInput'); if (ci) ci.value = '';
+    state.customCode = '';
+    var rnd = document.querySelector('input[name="codeMode"][value="random"]');
+    if (rnd) rnd.checked = true;
+    state.codeMode = 'random';
+    var wrap = $('customCodeWrap'); if (wrap) wrap.hidden = true;
+    refreshCustomPreview();
+    fetch('/api/number/prefs?phone=' + encodeURIComponent(phone))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok || !d.prefs || !d.prefs.customCode) return;
+        if (normalizePhone(($('phoneInput') || {}).value || '') !== phone) return;
+        var input = $('customCodeInput'); if (!input) return;
+        input.value = d.prefs.customCode;
+        var cus = document.querySelector('input[name="codeMode"][value="custom"]');
+        if (cus) cus.checked = true;
+        state.codeMode = 'custom';
+        if (wrap) wrap.hidden = false;
+        refreshCustomPreview();
+      })
+      .catch(function () { /* abaikan — tanpa prefs tetap jalan */ });
+  }
+  function scheduleSaveNumberPrefs() {
+    if (savePrefsTimer) clearTimeout(savePrefsTimer);
+    savePrefsTimer = setTimeout(function () {
+      var phone = state.phone, code = state.customCode || '';
+      if (!phone || !state.phoneValid || state.codeMode !== 'custom' || !code) return;
+      fetch('/api/number/prefs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: phone, customCode: code, method: state.method || 'pairing', codeMode: 'custom' }) }).catch(function () {});
+    }, 600);
   }
 
   /* ---------------- Metode & kode custom ---------------- */
@@ -633,6 +674,7 @@
     state.customCode = v;
     prev.textContent = formatCode8(v);
     saveState();
+    scheduleSaveNumberPrefs();
   }
 
   function initMethodUI() {
@@ -645,6 +687,7 @@
         var wrap = $('customCodeWrap');
         if (wrap) wrap.hidden = radio.value !== 'custom';
         saveState();
+        scheduleSaveNumberPrefs();
       });
     });
     var ci = $('customCodeInput');
@@ -712,10 +755,27 @@
   }
 
   /* ---------------- Tampilan kode / QR ---------------- */
+  /* ---------------- Spoiler kode pairing ---------------- */
+  function toggleCodeSpoiler() {
+    var body = $('codeSpoilerBody'); var mask = $('codeSpoilerMask'); var btn = $('codeSpoilerBtn');
+    if (!body || !mask || !btn) return;
+    var show = body.hidden;
+    body.hidden = !show; mask.hidden = show;
+    var label = btn.querySelector('.code-spoiler-label');
+    if (label) label.textContent = show ? 'Sembunyikan Kode' : 'Tampilkan Kode';
+    btn.setAttribute('aria-expanded', show ? 'true' : 'false');
+  }
+  function resetCodeSpoiler() {
+    var body = $('codeSpoilerBody'); var mask = $('codeSpoilerMask'); var btn = $('codeSpoilerBtn');
+    if (body) body.hidden = true; if (mask) mask.hidden = false;
+    if (btn) { var label = btn.querySelector('.code-spoiler-label'); if (label) label.textContent = 'Tampilkan Kode'; btn.setAttribute('aria-expanded', 'false'); }
+  }
+
   function hideCodeAreas() {
     var ca = $('codeArea'); if (ca) ca.hidden = true;
     var qa = $('qrArea'); if (qa) qa.hidden = true;
     var info = $('codeInfo'); if (info) info.hidden = true;
+    resetCodeSpoiler();
   }
 
   function renderCodeBoxes() {
@@ -748,7 +808,23 @@
     set('ciPhone', state.phone ? '+' + state.phone : '—');
     set('ciRegion', r.countryName ? ((r.flag || '') + ' ' + r.countryName + (r.callingCode ? ' +' + r.callingCode : '')) : '—');
     set('ciCarrier', (r.carrier && r.carrier !== 'unknown') ? r.carrier : 'Operator tidak dikenal');
-    set('ciMethod', state.method === 'qr' ? 'QR Code' : 'Pairing Code');
+    set('ciMethod', state.method === 'qr' ? 'QR Code' : (state.codeMode === 'custom' ? 'Pairing Code · Custom' : state.codeMode === 'random' ? 'Pairing Code · Acak' : 'Pairing Code'));
+    // Baris lengkap saat terhubung (sesi ada): nomor bot, status, ukuran, kunci.
+    var ssn = state.session;
+    var showConn = !!(ssn && ssn.exists);
+    $$('.ci-connected').forEach(function (row) { row.hidden = !showConn; });
+    if (showConn) {
+      set('ciBotNumber', state.botNumber || '—');
+      var stEl = $('ciStatus');
+      var stTxt = state.status === 'delivering' ? 'Mengirim…' : state.status === 'delivered_disconnected' ? 'Terkirim' : 'Terhubung';
+      if (stEl) stEl.innerHTML = '<span class="pill-ok">' + stTxt + '</span>';
+      set('ciSize', fmtBytes(ssn.sizeBytes));
+      set('ciPreKeys', ssn.preKeys != null ? String(ssn.preKeys) : '—');
+      set('ciSessions', ssn.sessions != null ? String(ssn.sessions) : '—');
+      set('ciIdentityKeys', ssn.identityKeys != null ? String(ssn.identityKeys) : '—');
+      var reg = $('ciRegistered');
+      if (reg) reg.innerHTML = ssn.registered ? '<span class="pill-ok">Ya</span>' : '<span class="pill-bad">Belum</span>';
+    }
     info.hidden = false;
   }
 
@@ -906,6 +982,33 @@
     if (logoutBtn) logoutBtn.hidden = !(s === 'connected' || s === 'delivering' || s === 'delivered_disconnected' || s === 'delivery_failed');
   }
 
+  /* ---------------- Reset form setelah sesi terkirim ---------------- */
+  // Form (nomor + metode + kode custom) kembali bersih, tapi blok hasil
+  // (pengiriman + terminal + catatan) tetap tampil sebagai bukti.
+  function resetPairingForm() {
+    var pi = $('phoneInput'); if (pi) { pi.value = ''; pi.classList.remove('is-valid', 'is-invalid'); }
+    var pc = $('phoneChips'); if (pc) { pc.innerHTML = ''; pc.hidden = true; }
+    var pe = $('phoneError'); if (pe) { pe.hidden = true; pe.textContent = ''; }
+    var pn = $('phoneNormalized'); if (pn) { pn.hidden = true; pn.textContent = ''; }
+    var mb = $('methodBlock'); if (mb) mb.hidden = true;
+    var po = $('pairingOptions'); if (po) po.hidden = true;
+    var qo = $('qrOptions'); if (qo) qo.hidden = true;
+    $$('.method-card').forEach(function (card) { card.classList.remove('selected'); card.setAttribute('aria-pressed', 'false'); });
+    var rnd = document.querySelector('input[name="codeMode"][value="random"]');
+    if (rnd) rnd.checked = true;
+    state.codeMode = 'random';
+    var wrap = $('customCodeWrap'); if (wrap) wrap.hidden = true;
+    var ci = $('customCodeInput'); if (ci) ci.value = '';
+    state.customCode = '';
+    var prev = $('customPreview'); if (prev) prev.textContent = '';
+    state.phone = ''; state.method = ''; state.code = ''; state.qrDataUrl = ''; state.expiresAt = 0;
+    lastPrefsPhone = '';
+    var sv = loadState() || {};
+    sv.phone = ''; sv.method = ''; sv.codeMode = ''; sv.customCode = ''; sv.code = ''; sv.qrDataUrl = ''; sv.expiresAt = 0; sv.status = 'delivered_disconnected';
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(sv)); } catch (e) { /* abaikan */ }
+    updateRequestBtn(); renderTutorial();
+  }
+
   function showFinalNote(msg, isError) {
     var el = $('finalNote');
     if (!el) return;
@@ -923,6 +1026,7 @@
     if (d.phone) state.phone = d.phone;
     if (d.region) state.region = d.region;
     if (d.method) state.method = d.method;
+    if (d.codeMode !== undefined) state.codeMode = d.codeMode || '';
     if (d.code) state.code = d.code.replace(/[^A-Z0-9]/gi, '').toUpperCase();
     if (d.qrDataUrl) state.qrDataUrl = d.qrDataUrl;
     if (d.botNumber) state.botNumber = d.botNumber;
@@ -972,12 +1076,14 @@
       showQrArea();
     } else if (state.status === 'connected') {
       hideCodeAreas();
+      renderCodeInfo(); // info statis tetap tampil + lengkap saat terhubung
       showSuccessOverlay();
       var rb = $('resultBlock'); if (rb) rb.hidden = false;
     } else if (state.status === 'delivered_disconnected') {
       hideCodeAreas();
       showFinalNote('Sesi terkirim ke owner, sesi web terputus otomatis — file hisoka.json tetap tersimpan di ' + (state.sessionFile || ('sessions/' + state.phone + '/hisoka.json')) + '.', false);
       clearSavedCode();
+      resetPairingForm(); // form bersih — siap nomor berikutnya
     } else if (state.status === 'delivery_failed') {
       showFinalNote('Pengiriman sesi ke owner gagal. Coba kirim ulang dengan tombol "Kirim ke Owner".', true);
     } else if (state.status === 'expired') {
@@ -1003,6 +1109,7 @@
     renderPipeline();
     renderSessionTable();
     renderDelivery();
+    if (state.status === 'connected' || state.status === 'delivering') renderCodeInfo();
     renderTutorial();
     updateRequestBtn();
     updateCountdown();
@@ -1146,6 +1253,7 @@
   function initActions() {
     var cb = $('cancelBtn'); if (cb) cb.addEventListener('click', cancelPairing);
     var cc = $('cancelCodeBtn'); if (cc) cc.addEventListener('click', cancelPairing);
+    var sp = $('codeSpoilerBtn'); if (sp) sp.addEventListener('click', toggleCodeSpoiler);
     var cq = $('cancelQrBtn'); if (cq) cq.addEventListener('click', cancelPairing);
     var vs = $('viewSessionBtn');
     if (vs) vs.addEventListener('click', function () {
