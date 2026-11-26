@@ -85,6 +85,7 @@ const CONFIG_PATH = path.join(ROOT, 'config.json')
 const PORT = Number(process.env.PORT || 3000)
 const CODE_TTL_SECONDS = 180 // kode pairing berlaku 3 menit (V1)
 const QR_TTL_SECONDS = 60 // QR berlaku 60 detik, lalu Baileys terbitkan yang baru
+const LINK_READY_TIMEOUT_MS = 30000 // socket baru setelah kode diterima harus 'open' max 30 detik (panel: SOCKET_READY_TIMEOUT_MS)
 const FALLBACK_VERSION = [2, 3000, 1043857760]
 // Pengiriman sesi: polling 1,5 detik, max 40 detik (pola credsjson.js V1).
 const DELIVERY_POLL_MS = 1500
@@ -567,6 +568,18 @@ async function getBaileysVersion() {
 async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) {
   const sessionDir = sessionDirFor(phone)
   await mkdir(sessionDir, { recursive: true })
+  // Sesi setengah jadi (registered tapi 0 pre-key + 0 session — pairing gagal
+  // di tengah jabat tangan, seperti 27 Nov 05:01) harus dibersihkan DULU:
+  // kalau tidak, gerbang "Sudah tertaut" memblokir kode baru dan user stuck.
+  // (Panel WEB_JADIBOT: invalid repair — file sesi + cadangan ikut dihapus.)
+  // Dilewati saat restart setelah kode diterima (kredensialnya baru sah).
+  if (!codeOptions.skipIncompleteCheck) {
+    const preInfo = await getSessionInfo(phone)
+    if (preInfo.registered && (preInfo.keyCounts?.['pre-key'] || 0) === 0 && (preInfo.keyCounts?.['session'] || 0) === 0) {
+      console.warn(`[SessionBot] ${phone} sesi registered tapi kosong (0 pre-key/session) — hapus, pairing ulang dari awal`)
+      await deleteSessionFiles(phone)
+    }
+  }
   // File sesi per nomor: sessions/<nomor>/hisoka.json — tiap nomor punya
   // folder sendiri, jadi tidak ada konflik antar nomor (tanpa penolakan 409).
   const sessionFile = sessionFileFor(phone)
@@ -632,7 +645,45 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
   })
 
   sock.ev.on('connection.update', async (update) => {
-    const { connection, lastDisconnect, qr } = update
+    if (sock !== entry.sock) return // socket lama setelah restart — abaikan event-nya
+    const { connection, lastDisconnect, qr, isNewLogin } = update
+
+    // ── Kode diterima (isNewLogin): socket yang minta kode TIDAK BISA
+    //    menyelesaikan tautan — koneksi HARUS dimulai ulang dengan socket
+    //    baru (cara panel WEB_JADIBOT: "Kode diterima; koneksi WhatsApp
+    //    dimulai ulang untuk menyelesaikan tautan"). Tanpa ini, socket yang
+    //    sama menggantung setelah kode dimasukkan (WhatsApp stuck "Masuk...")
+    //    dan kode kadaluarsa tanpa pernah 'open'. (Kasus nyata 27 Nov 05:01,
+    //    6289681008411: kode AAAA-AAAA diterima, creds tersimpan, tapi 'open'
+    //    tidak pernah tercapai.)
+    if (isNewLogin && (entry.status === 'awaiting_code' || entry.status === 'awaiting_qr')) {
+      entry.status = 'linking'
+      entry.code = null
+      entry.qrDataUrl = null
+      entry.expiresAt = null
+      clearExpireTimer(entry)
+      broadcastStatus(phone)
+      console.log(`[SessionBot] ${phone} kode diterima — mulai ulang socket untuk menyelesaikan tautan`)
+      try { await flushImmediate() } catch {}
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      if (sessions.get(phone) !== entry || entry.status !== 'linking') return
+      try { sock.ev.removeAllListeners() } catch {}
+      try { sock.end(new Error('Restarting after successful pairing.')) } catch { try { sock.ws?.close() } catch {} }
+      entry.linkTimeout = setTimeout(() => {
+        const e = sessions.get(phone)
+        if (e && (e.status === 'connecting' || e.status === 'linking')) {
+          e.status = 'delivery_failed'
+          e.deliveryError = 'WhatsApp belum menyelesaikan tautan. Periksa koneksi lalu coba lagi.'
+          broadcastStatus(phone)
+        }
+      }, LINK_READY_TIMEOUT_MS)
+      // Socket baru dengan kredensial yang sudah registered — gerbang
+      // "Sudah tertaut" membuatnya langsung connect tanpa minta kode baru.
+      createSocketAndPair(phone, method, { skipIncompleteCheck: true }).catch((e) => {
+        console.error('[SessionBot] Restart socket setelah pairing gagal:', e?.message || e)
+      })
+      return
+    }
 
     // ── QR ASLI dari Baileys (hanya mode qr, hanya bila belum registered) ──
     if (qr && method === 'qr' && !state.creds?.registered && entry.status !== 'connected') {
@@ -661,6 +712,7 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
       entry.qrDataUrl = null
       entry.expiresAt = null
       clearExpireTimer(entry)
+      if (entry.linkTimeout) { clearTimeout(entry.linkTimeout); entry.linkTimeout = null }
       entry.botNumber = sock.user?.id?.split(':')[0]?.split('@')[0] || phone
       // V1: pastikan registered = true tersimpan PERMANEN setelah terhubung —
       // hisoka.json jadi lengkap: creds + keys + contacts + groups + settings,
@@ -691,6 +743,8 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
         await deleteSessionFiles(phone)
         console.warn(`[SessionBot] ${phone} logout (401) — sesi dihapus, minta pairing ulang`)
         broadcastStatus(phone)
+      } else {
+        console.warn(`[SessionBot] ${phone} socket tertutup (${statusCode || '?'}: ${reason || lastDisconnect?.error?.message || 'tanpa alasan'})`)
       }
     }
   })
@@ -822,6 +876,7 @@ async function closeSession(phone) {
   const entry = sessions.get(phone)
   if (!entry) return
   clearExpireTimer(entry)
+  if (entry.linkTimeout) { clearTimeout(entry.linkTimeout); entry.linkTimeout = null }
   try { entry.sock?.ev?.removeAllListeners() } catch {}
   try { entry.sock?.ws?.close() } catch {}
   sessions.delete(phone)

@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-0511",
+      "title": "Pairing kini selesai setelah kode diterima (restart socket)",
+      "desc": "Ditemukan akar masalah pairing yang stuck di 'Masuk...': setelah kode dimasukkan, socket yang meminta kode tidak bisa menyelesaikan tautan — harus dimulai ulang dengan socket baru. Panel WEB_JADIBOT memang begitu ('Kode diterima; koneksi WhatsApp dimulai ulang untuk menyelesaikan tautan'), SessionBot belum. Buktinya 27 Nov 05:01: kode AAAA-AAAA diterima WhatsApp (creds tersimpan, registered), tapi 'open' tidak pernah tercapai dan kode kadaluarsa. Diperbaiki: saat kode diterima (isNewLogin), simpan kredensial, matikan socket lama, buat socket baru yang langsung connect dan kirim sesi ke owner (batas 30 detik, gagal jelas bukan muter terus). Bonus: sesi setengah jadi (registered tapi 0 pre-key/session) kini otomatis dibersihkan supaya tidak memblokir kode baru; semua penutupan socket kini tercatat di log. Dicek: penerbitan kode custom masih jalan (TEST-0000).",
+      "tag": "Bug",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "05.11"
+    },
+    {
       "id": "20261126-2306",
       "title": "Terminal dipercantik dan tombol Nomor Baru pindah ke header",
       "desc": "Tombol Nomor Baru sebelumnya mengambang sendiri di bawah terminal (baris aksi yang tombol lainnya tersembunyi). Kini pindah ke header terminal, kanan atas — tempat yang pas karena tombol itu mereset sesi yang dicatat terminal. Terminal juga dipercantik: latar hijau gelap (sebelumnya biru kehitaman di mobile), teks log 12px, scrollbar hijau tipis, kursor berkedip di akhir baris, dan bayangan halus. Baris aksi kosong kini tertutup rapat. Dicek di mobile (390) dan desktop (1280): tombol di header kanan, kursor berkedip, klik Nomor Baru mereset alur (nomor terhapus, kembali ke langkah 1).",
@@ -290,6 +299,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T23:06:21+07:00",
+  "updated": "2026-11-27T05:11:36+07:00",
   "version": 1
 }
