@@ -1,0 +1,88 @@
+{
+  "entries": [
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Kategori Info Update di toolbar, seperti panel readsw.my.id. Semua perubahan SessionBot kini tercatat di folder INFO_UPDATE/update.json dan bisa difilter per kategori: Semua, Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
+      "id": "20261126-1931",
+      "tag": "Fitur baru",
+      "time": "19.31",
+      "title": "Halaman Info Update"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Pratinjau kode custom kini tampil besar di kotak khusus (font mono 24px, huruf hijau, tanpa bisa diseleksi) supaya enak dibaca saat mengetik — tidak lagi teks kecil 11px yang tertutup menu seleksi HP.",
+      "id": "20261126-1928",
+      "tag": "Tampilan",
+      "time": "19.28",
+      "title": "Pratinjau kode custom diperbesar"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Toolbar atas dengan menu kategori ala panel (Beranda, Tutorial, Status, Tentang). Di HP, menu dibuka lewat tombol hamburger dengan kelompok Utama dan Info. Halaman baru: Status Server (uptime, versi, pengunjung realtime) dan Tentang.",
+      "id": "20261126-1907",
+      "tag": "Fitur baru",
+      "time": "19.07",
+      "title": "Toolbar + halaman Status & Tentang"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Isi teks mobile kini 12px dan teks dasar 13px, sama seperti readsw.my.id. Pilihan Pairing Code dan QR Code kini berdampingan horizontal dan pas di layar HP.",
+      "id": "20261126-1901",
+      "tag": "Tampilan",
+      "time": "19.01",
+      "title": "Font mobile normal + metode horizontal"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Semua baris footer (brand, copyright, jam realtime, pill pengunjung, kebijakan, bantuan) kini rata tengah di mobile dan desktop.",
+      "id": "20261126-1900",
+      "tag": "Tampilan",
+      "time": "19.00",
+      "title": "Footer di tengah seperti readsw.my.id"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Negara dan operator kini muncul seketika saat mengetik (0 ms, tanpa menunggu server) lewat tabel prefix lokal; server tetap jadi penentu akhir.",
+      "id": "20261126-1856",
+      "tag": "Perbaikan",
+      "time": "18.56",
+      "title": "Deteksi nomor realtime"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Worker sessionbot-tunnel kini meneruskan User-Agent asli (sebelumnya ditimpa jadi sessionbot-proxy/1.0) sehingga server tahu pengunjung memakai HP dan halaman mobile tampil benar, bukan versi desktop.",
+      "id": "20261126-1855",
+      "tag": "Perbaikan",
+      "time": "18.55",
+      "title": "Deteksi mobile diperbaiki"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Tampilan disamakan dengan panel WEB_JADIBOT (latar #08110e, hijau #31d58b, font Inter). Mobile dan desktop kini halaman terpisah dengan deteksi otomatis per perangkat.",
+      "id": "20261126-1848",
+      "tag": "Tampilan",
+      "time": "18.48",
+      "title": "UI persis WEB_JADIBOT, 2 desain terpisah"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Build baru dari nol: Baileys latest, pola resmi V1 dari ReadSwEsm_V1 (browser Ubuntu + Chrome), pairing code custom 8 karakter berlaku 3 menit, QR asli, sesi satu file hisoka.json per nomor yang dikirim ke owner lalu putus otomatis.",
+      "id": "20261126-1830",
+      "tag": "Fitur baru",
+      "time": "18.30",
+      "title": "SessionBot dibangun ulang dari 0"
+    }
+  ],
+  "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
+  "updated": "2026-11-26T19:31:00+07:00",
+  "version": 1
+}

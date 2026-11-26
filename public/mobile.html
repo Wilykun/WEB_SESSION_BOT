@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=6">
+  <link rel="stylesheet" href="/mobile.css?v=8">
   <link rel="icon" href="/mascot.webp">
   <script>
     /* Terapkan tema sedini mungkin agar tidak berkedip. */
@@ -30,18 +30,54 @@
   <div class="ambient ambient-two" aria-hidden="true"></div>
 
   <header class="topbar">
+    <button id="menuToggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobileNav" aria-label="Buka menu">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
     <a class="brand" href="/">
       <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
       <span class="brand-name">Session<b>Bot</b></span>
     </a>
     <nav class="topnav" aria-label="Navigasi utama">
+      <a href="/" class="active" aria-current="page">Beranda</a>
       <a href="/tutorial">Tutorial</a>
-      <a href="#tentang">Tentang</a>
+      <a href="/status">Status</a>
+      <a href="/tentang">Tentang</a>
+      <a href="/info-update">Info Update</a>
+    </nav>
+    <div class="topbar-actions">
       <button id="themeToggle" class="theme-toggle" type="button" aria-label="Ganti tema tampilan">
         <span id="themeToggleIcon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span id="themeToggleText">Malam</span>
       </button>
-    </nav>
+    </div>
   </header>
+
+  <!-- NAVIGASI MOBILE (dropdown di bawah topbar, dibuka tombol hamburger) -->
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navigasi utama" hidden>
+    <span class="side-nav-label" aria-hidden="true">Utama</span>
+    <a class="nav-item active" href="/" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg></span>Beranda</a>
+    <a class="nav-item" href="/tutorial"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Tutorial</a>
+    <span class="side-nav-divider" aria-hidden="true"></span>
+    <span class="side-nav-label" aria-hidden="true">Info</span>
+    <a class="nav-item" href="/status"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span>Status</a>
+    <a class="nav-item" href="/tentang"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>Tentang</a>
+    <a class="nav-item" href="/info-update"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>Info Update</a>
+  </nav>
+  <script>
+    /* Toggle menu navigasi mobile (tanpa app.js). */
+    (function () {
+      var btn = document.getElementById('menuToggle');
+      var nav = document.getElementById('mobileNav');
+      if (!btn || !nav) return;
+      function setOpen(open) {
+        nav.hidden = !open;
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+      }
+      btn.addEventListener('click', function () { setOpen(nav.hidden); });
+      nav.addEventListener('click', function (ev) { if (ev.target.closest('a')) setOpen(false); });
+      document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !nav.hidden) setOpen(false); });
+    })();
+  </script>
 
   <main class="container">
     <!-- HERO -->
@@ -110,7 +146,11 @@
             <label class="field-label" for="customCodeInput">Kode custom (1&ndash;8 karakter, A&ndash;Z 0&ndash;9)</label>
             <input id="customCodeInput" class="field-input" type="text" inputmode="text" autocomplete="off"
                    placeholder="WILYCODE" maxlength="8" spellcheck="false">
-            <p class="field-hint">Pratinjau: <code id="customPreview">0000-0000</code> &middot; Kekurangan karakter diisi <strong>&lsquo;0&rsquo;</strong> di belakang.</p>
+<div class="code-preview" aria-live="polite">
+              <span class="code-preview-label">Pratinjau Kode</span>
+              <span class="code-preview-code"><code id="customPreview">0000-0000</code></span>
+              <span class="code-preview-note">Kekurangan karakter diisi <strong>&lsquo;0&rsquo;</strong> di belakang.</span>
+            </div>
           </div>
         </div>
 

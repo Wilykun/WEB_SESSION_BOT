@@ -825,11 +825,15 @@ const app = express()
 app.use(express.json({ limit: '64kb' }))
 // /tutorial didaftarkan SEBELUM express.static: folder public/tutorial/
 // tidak ada di build baru, tapi route ini tetap menang bila ada file.
-app.get('/tutorial', (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'tutorial.html')))
+app.get('/tutorial', (req, res) => serveViewPage('tutorial.html', req, res))
+// Data Info Update: kata-kata tersimpan di folder INFO_UPDATE/update.json
+// (bukan di public) — disajikan apa adanya supaya halaman /info-update
+// selalu membaca file yang sama.
+app.use('/INFO_UPDATE', express.static(path.join(ROOT, 'INFO_UPDATE')))
 // Halaman baru per kategori (toolbar ala panel): /status + /tentang.
 // Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
 async function serveViewPage(file, req, res) {
-  const css = pickView(req) === 'mobile' ? '/mobile.css?v=5' : '/desktop.css?v=5'
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=8' : '/desktop.css?v=8'
   try {
     const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
     res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))
@@ -839,6 +843,7 @@ async function serveViewPage(file, req, res) {
 }
 app.get('/status', (req, res) => serveViewPage('status.html', req, res))
 app.get('/tentang', (req, res) => serveViewPage('tentang.html', req, res))
+app.get('/info-update', (req, res) => serveViewPage('info-update.html', req, res))
 // ---------- pilih tampilan: mobile & desktop KEPISAH ----------
 //   ?view=mobile / ?view=desktop memaksa tampilan; tanpa itu, deteksi
 //   dari User-Agent. Mobile -> public/mobile.html + mobile.css,
