@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2118",
+      "title": "Judul tab web disederhanakan jadi SessionBot",
+      "desc": "Judul tab browser sebelumnya kepanjangan ('SessionBot — Pairing Code & QR WhatsApp Bot' di beranda, dan tiap halaman punya judul berbeda) sampai terpotong di tab. Kini keenam halaman memakai judul yang sama: SessionBot saja. Dicek langsung di domain — beranda, tutorial, status, tentang, dan info-update, di desktop maupun mobile, semuanya SessionBot.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.18"
+    },
+    {
       "id": "20261126-2115",
       "title": "Menu ganda di desktop dihapus",
       "desc": "Di desktop lebar, lima link menu muncul dua kali: di dalam pill taskbar dan di dropdown hamburger. Dropdown-nya kini dihapus di desktop lebar — navigasi hanya lewat taskbar. Hamburger tetap ada di layar sempit (taskbar sembunyi di bawah 900px) dan di mobile, jadi navigasi tetap jalan di semua ukuran. Dicek: desktop 1280 hanya 5 link terlihat (semua di dalam pill), desktop 800 hamburger tetap membuka menu, mobile tidak berubah.",
@@ -218,6 +227,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T21:15:00+07:00",
+  "updated": "2026-11-26T21:18:00+07:00",
   "version": 1
 }
