@@ -75,7 +75,20 @@ export default {
     // fallback polling, tapi QR/status tidak realtime).
     if (resp.status === 101) return resp;
     const out = new Headers(resp.headers);
-    out.set("cache-control", "no-store");
+    // Cache (biar navigasi cepat seperti panel — panel SPA, pindah halaman
+    // tanpa jaringan sama sekali; SessionBot MPA, jadi aset harus boleh
+    // disimpan browser): aset berversi (?v=) 1 tahun immutable — versinya
+    // berubah tiap ada edit, jadi tidak mungkin kedaluwarsa; aset statis
+    // lain (maskot, ikon, operator) 1 hari; HTML + API + Info Update
+    // tetap no-store supaya selalu segar.
+    const isStatic = /\.(css|js|webp|png|ico|svg|json)$/i.test(url.pathname);
+    if (isStatic && url.searchParams.has("v")) {
+      out.set("cache-control", "public, max-age=31536000, immutable");
+    } else if (isStatic && !url.pathname.startsWith("/INFO_UPDATE/")) {
+      out.set("cache-control", "public, max-age=86400");
+    } else {
+      out.set("cache-control", "no-store");
+    }
     return new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers: out });
   },
 };

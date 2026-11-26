@@ -823,6 +823,15 @@ async function closeSession(phone) {
 // ---------- HTTP + WS ----------
 const app = express()
 app.use(express.json({ limit: '64kb' }))
+// ?view= di URL menyimpan pilihan ke cookie (1 tahun) supaya tampilan
+// menetap di semua halaman + refresh, tanpa query menempel di URL.
+app.use((req, res, next) => {
+  const v = String(req.query.view || '').toLowerCase()
+  if (v === 'mobile' || v === 'desktop') {
+    res.cookie(VIEW_COOKIE, v, { maxAge: 365 * 24 * 3600 * 1000, path: '/', sameSite: 'Lax' })
+  }
+  next()
+})
 // /tutorial didaftarkan SEBELUM express.static: folder public/tutorial/
 // tidak ada di build baru, tapi route ini tetap menang bila ada file.
 app.get('/tutorial', (req, res) => serveViewPage('tutorial.html', req, res))
@@ -833,7 +842,7 @@ app.use('/INFO_UPDATE', express.static(path.join(ROOT, 'INFO_UPDATE')))
 // Halaman baru per kategori (toolbar ala panel): /status + /tentang.
 // Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
 async function serveViewPage(file, req, res) {
-  const css = pickView(req) === 'mobile' ? '/mobile.css?v=11' : '/desktop.css?v=11'
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=13' : '/desktop.css?v=13'
   try {
     const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
     res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))
@@ -845,12 +854,20 @@ app.get('/status', (req, res) => serveViewPage('status.html', req, res))
 app.get('/tentang', (req, res) => serveViewPage('tentang.html', req, res))
 app.get('/info-update', (req, res) => serveViewPage('info-update.html', req, res))
 // ---------- pilih tampilan: mobile & desktop KEPISAH ----------
-//   ?view=mobile / ?view=desktop memaksa tampilan; tanpa itu, deteksi
-//   dari User-Agent. Mobile -> public/mobile.html + mobile.css,
+//   Urutan: ?view=mobile|desktop (sekali pakai, ikut tersimpan ke cookie)
+//   -> cookie sessionbot-view -> deteksi User-Agent.
+//   Mobile -> public/mobile.html + mobile.css,
 //   desktop -> public/index.html + desktop.css. app.js sama untuk keduanya.
+const VIEW_COOKIE = 'sessionbot-view'
+function viewFromCookie(req) {
+  const m = String(req.headers.cookie || '').match(/(?:^|;\s*)sessionbot-view=(mobile|desktop)/)
+  return m ? m[1] : ''
+}
 function pickView(req) {
   const v = String(req.query.view || '').toLowerCase()
   if (v === 'mobile' || v === 'desktop') return v
+  const c = viewFromCookie(req)
+  if (c) return c
   const ua = String(req.headers['user-agent'] || '')
   return /mobi|android|iphone|ipad|ipod|windows phone/i.test(ua) ? 'mobile' : 'desktop'
 }

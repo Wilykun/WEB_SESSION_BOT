@@ -1394,6 +1394,10 @@ button.btn-primary::after { content: '→'; font-weight: 800; }
 .hero-art { animation: sb-pop .7s cubic-bezier(.22,.61,.36,1) .1s both; }
 .step, .status-card, .info-update-item, .about-card, .dev-card, .tutorial-card { animation: sb-fade-up .6s cubic-bezier(.22,.61,.36,1) .18s both; }
 .page-footer { animation: sb-fade-up .6s cubic-bezier(.22,.61,.36,1) .28s both; }
+/* Navigasi antar halaman: animasi masuk hanya di muatan pertama per tab
+   (sessionStorage sb-anim-done, lihat skrip inline di <head>); pindah
+   halaman berikutnya langsung tampil penuh, tanpa fade ulang. */
+html.sb-no-anim .topbar, html.sb-no-anim .hero > *, html.sb-no-anim .page-head > *, html.sb-no-anim .hero-art, html.sb-no-anim .step, html.sb-no-anim .status-card, html.sb-no-anim .info-update-item, html.sb-no-anim .about-card, html.sb-no-anim .dev-card, html.sb-no-anim .tutorial-card, html.sb-no-anim .page-footer { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; }
 }

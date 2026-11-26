@@ -5,12 +5,13 @@
 (function () {
   'use strict';
 
-  /* URL bersih: address bar selalu menampilkan domain utama.
-     Halaman yang dibuka tetap halaman yang diminta; hanya tampilannya yang dirapikan.
-     Pilihan ?view= (desktop/mobile) dipertahankan supaya tidak hilang saat refresh. */
+  /* URL bersih: buang ?view= dari address bar (pilihannya sudah tersimpan
+     di cookie sessionbot-view oleh server). Path halaman dipertahankan:
+     /tentang tetap /tentang, /info-update tetap /info-update. */
   try {
-    var _view = new URLSearchParams(window.location.search).get('view');
-    history.replaceState(null, '', _view ? ('/?view=' + encodeURIComponent(_view)) : '/');
+    if (window.location.search.indexOf('view=') !== -1) {
+      history.replaceState(null, '', window.location.pathname + window.location.hash);
+    }
   } catch (e) { /* biarkan URL apa adanya */ }
 
   var $ = function (id) { return document.getElementById(id); };
@@ -129,6 +130,23 @@
       var text = $('themeToggleText'); if (text) text.textContent = label[1];
       btn.setAttribute('aria-label', 'Tema: ' + label[1] + ' (klik untuk ganti)');
     }
+  }
+
+  /* Saklar tampilan di footer ("Lihat versi desktop/mobile"): simpan pilihan
+     ke cookie sessionbot-view lalu muat ulang path yang sama TANPA query —
+     URL tetap bersih dan pilihan menetap di semua halaman + refresh. */
+  function initViewToggle() {
+    $$('a[href^="?view="]').forEach(function (a) {
+      a.addEventListener('click', function (ev) {
+        var m = /view=(mobile|desktop)/.exec(a.getAttribute('href') || '');
+        if (!m) return;
+        ev.preventDefault();
+        try {
+          document.cookie = 'sessionbot-view=' + m[1] + '; path=/; max-age=31536000; SameSite=Lax';
+        } catch (e) { /* lanjut tanpa cookie */ }
+        window.location.href = window.location.pathname + window.location.hash;
+      });
+    });
   }
 
   function initTheme() {
@@ -1088,6 +1106,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initTheme();
+    initViewToggle();
     tickClock();
     setInterval(tickClock, 1000);
     initPresence();

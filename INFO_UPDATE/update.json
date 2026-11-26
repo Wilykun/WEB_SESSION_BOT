@@ -3,6 +3,42 @@
     {
       "date": "26 Nov 2026",
       "day": "Kamis",
+      "desc": "Pindah halaman kini jauh lebih cepat seperti panel (readsw.my.id): Worker tidak lagi memaksa no-store untuk semua file — CSS/JS berversi (?v=) disimpan browser 1 tahun (immutable, versinya berubah tiap ada edit), maskot/ikon/operator 1 hari, sedangkan HTML + API + Info Update tetap no-store supaya selalu segar. Terukur di simulasi: navigasi 808ms → 204ms, CSS/JS 0 KB diunduh ulang. Ditambah animasi masuk kini hanya di muatan pertama per tab (sessionStorage) — pindah halaman berikutnya langsung tampil penuh tanpa fade ulang; animasi saat pertama masuk web tetap ada.",
+      "id": "20261126-2030",
+      "tag": "Perbaikan",
+      "time": "20.30",
+      "title": "Navigasi antar halaman jauh lebih cepat"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Pilihan tampilan desktop/mobile kini menetap lewat cookie sessionbot-view (1 tahun): tombol 'Lihat versi desktop/mobile' di footer menyimpan pilihan lalu memuat ulang path yang sama tanpa query — URL tetap bersih (sessionbot.my.id/tentang) dan pilihan tidak hilang saat pindah halaman atau refresh. ?view= tetap didukung dan ikut menyimpan cookie.",
+      "id": "20261126-2022a",
+      "tag": "Perbaikan",
+      "time": "20.22",
+      "title": "Tampilan desktop/mobil kini menetap"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Bagian Tentang SessionBot di halaman Tentang kini berupa tombol spoiler seperti di beranda: tertutup secara default, ketuk untuk membuka. Hemat tempat dan pas di layar HP.",
+      "id": "20261126-2022b",
+      "tag": "Tampilan",
+      "time": "20.22",
+      "title": "Tentang di halaman Tentang jadi spoiler"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Judul dan teks di mode desktop-di-HP kini sama dengan mobile: judul halaman 22px (tadinya 28px), judul Tentang 14px (tadinya 20px), isi Tentang 12px (tadinya 13px). Judul hero 40px dicek tidak meluber di 390px.",
+      "id": "20261126-2022c",
+      "tag": "Tampilan",
+      "time": "20.22",
+      "title": "Font desktop-di-HP disamakan mobile"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
       "desc": "Ikon web baru: waifu anime 2D (rambut mint, headphone telinga kucing, hoodie hitam, memegang HP hijau) di folder baru public/icons/ — tersedia sebagai favicon, apple-touch-icon, dan ikon 192/512. Maskot lama tetap dipakai di halaman.",
       "id": "20261126-1959",
       "tag": "Tampilan",
@@ -137,6 +173,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T20:00:00+07:00",
+  "updated": "2026-11-26T20:30:00+07:00",
   "version": 1
 }
