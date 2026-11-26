@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2300",
+      "title": "Permintaan kode/QR kini berhasil di percobaan pertama",
+      "desc": "Tes live menemukan bug: permintaan pairing code kadang gagal di percobaan pertama dengan pesan 'Socket WhatsApp belum terbuka (belum OPEN)' — socket dingin lewat proxy butuh 10–20 detik untuk OPEN, sementara batas tunggu hanya 15 detik (3 percobaan). Permintaan QR pun sempat gagal dengan batas yang sama. Diperbaiki: batas tunggu pairing jadi 6 percobaan (30 detik) dan QR jadi 30 detik. Tes ulang di socket dingin: kode custom WILY → WILY-0000 (6 detik), kode acak 7JC3-A8VP, dan QR PNG terbit — ketiganya berhasil di percobaan pertama. Kode custom/acakan/QR sudah dicek akurat sesuai Baileys (ReadSwEsm_V1).",
+      "tag": "Bug",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "23.00"
+    },
+    {
       "id": "20261126-2147",
       "title": "Tampilan desktop kini sama dengan mobile",
       "desc": "Sebelumnya tampilan desktop terpisah dari mobile: kartu tutorial dan status tampil dua kolom di desktop, satu kolom di mobile, dan kartu metode berbeda arah. Kini desktop memakai layout yang sama dengan mobile — satu kolom, kartu metode vertikal di tengah — hanya lebih lebar, seperti panel readsw.my.id. Dicek di semua halaman, desktop (1280) dan mobile (390); mobile tidak berubah.",
@@ -272,6 +281,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T21:47:00+07:00",
+  "updated": "2026-11-26T23:00:32+07:00",
   "version": 1
 }

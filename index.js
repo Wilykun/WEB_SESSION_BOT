@@ -11,8 +11,10 @@
  *  4. Pairing / QR HANYA bila !state.creds.registered.
  *  5. GATE pairing (browserSwitch.js V1): tunggu sock.ws?.isOpen (BUKAN
  *     readyState), delay ~5 detik setelah connect. Belum open -> jangan request.
- *  6. Retry requestPairingCode max 3x. Error 'Connection Closed' / 408:
+ *  6. Retry requestPairingCode max 6x (30 detik). Error 'Connection Closed' / 408:
  *     reset flag pairingRequested supaya socket berikutnya bisa coba lagi.
+ *     (Socket dingin lewat proxy butuh 10–20 detik untuk OPEN — 3x/15 detik
+ *     terbukti kadang habis duluan, tes live 22:56.)
  *  7. Kode pairing berlaku 3 MENIT (180 detik). QR berlaku 60 detik.
  *  8. sock.ev.on('creds.update', saveCreds) selalu dipasang.
  *  9. connection.update: open -> connected; close loggedOut/401 ->
@@ -712,9 +714,11 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
     return { ok: true, alreadyConnected: true, status: entry.status, method, botNumber: entry.botNumber, region: entry.region, note: 'Nomor ini sudah tertaut.' }
   }
 
-  // ── Mode QR: tunggu QR pertama terbit (max ~15 detik), lalu balas. ──
+  // ── Mode QR: tunggu QR pertama terbit (max ~30 detik), lalu balas. ──
+  // (Socket dingin lewat proxy butuh 10–20 detik untuk terbit — 15 detik
+  // terbukti kadang habis duluan, tes live 22:56.)
   if (method === 'qr') {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 60; i++) {
       if (entry.status === 'delivered_disconnected') {
         return { ok: true, status: 'delivered_disconnected', method: 'qr', botNumber: entry.botNumber, region: entry.region, delivery: entry.delivery || (await readDeliveryMarker(phone)) }
       }
@@ -741,8 +745,12 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
   // ── Mode Pairing: GATE (browserSwitch.js V1), tunggu WS OPEN dulu ──
   // sock.ws adalah WebSocketClient Baileys, TIDAK punya .readyState —
   // yang dicek adalah sock.ws?.isOpen, setelah delay ~5 detik.
+  // 6 percobaan (30 detik): socket dingin lewat proxy butuh 10–20 detik
+  // untuk OPEN — 3 percobaan (15 detik) terbukti kadang habis duluan
+  // (tes live 22:56: custom WILY + random gagal "belum OPEN", retry baru
+  // berhasil). Retry 408 juga memakai loop yang sama.
   let lastError = null
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 6; attempt++) {
     // Bot sudah terhubung / sedang dikirim / sudah terkirim -> jangan minta kode lagi.
     if (['connected', 'delivering', 'delivered_disconnected', 'delivery_failed'].includes(entry.status)) break
     if (state.creds?.registered) break
@@ -750,7 +758,7 @@ async function createSocketAndPair(phone, method = 'pairing', codeOptions = {}) 
     if (['connected', 'delivering', 'delivered_disconnected', 'delivery_failed'].includes(entry.status)) break
     if (!sock.ws?.isOpen) {
       lastError = new Error('Socket WhatsApp belum terbuka (belum OPEN).')
-      console.warn(`[SessionBot] Percobaan ${attempt}/3: ws belum open, tunggu socket berikutnya`)
+      console.warn(`[SessionBot] Percobaan ${attempt}/6: ws belum open, tunggu socket berikutnya`)
       continue
     }
     if (entry.pairingRequested) break
