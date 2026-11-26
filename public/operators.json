@@ -1,0 +1,107 @@
+[
+  {
+    "slug": "telkomsel",
+    "name": "Telkomsel",
+    "color": "#ED1C24",
+    "country": "ID",
+    "source": "monogram"
+  },
+  {
+    "slug": "indosat",
+    "name": "Indosat",
+    "color": "#FFD100",
+    "country": "ID",
+    "source": "monogram"
+  },
+  {
+    "slug": "xl",
+    "name": "XL",
+    "color": "#005BAA",
+    "country": "ID",
+    "source": "monogram"
+  },
+  {
+    "slug": "axis",
+    "name": "Axis",
+    "color": "#7C3AED",
+    "country": "ID",
+    "source": "monogram"
+  },
+  {
+    "slug": "tri",
+    "name": "Tri",
+    "color": "#E31837",
+    "country": "ID",
+    "source": "numeral-3"
+  },
+  {
+    "slug": "smartfren",
+    "name": "Smartfren",
+    "color": "#EE2E24",
+    "country": "ID",
+    "source": "monogram"
+  },
+  {
+    "slug": "byu",
+    "name": "by.U",
+    "color": "#2563EB",
+    "country": "ID",
+    "source": "monogram"
+  },
+  {
+    "slug": "three",
+    "name": "Three",
+    "color": "#E60000",
+    "country": "GB",
+    "source": "numeral-3"
+  },
+  {
+    "slug": "vodafone",
+    "name": "Vodafone",
+    "color": "#E60000",
+    "country": "GB",
+    "source": "simple-icons"
+  },
+  {
+    "slug": "ee",
+    "name": "EE",
+    "color": "#A6CE39",
+    "country": "GB",
+    "source": "monogram"
+  },
+  {
+    "slug": "o2",
+    "name": "O2",
+    "color": "#0019FF",
+    "country": "GB",
+    "source": "simple-icons"
+  },
+  {
+    "slug": "tmobile",
+    "name": "T-Mobile",
+    "color": "#E20074",
+    "country": "US",
+    "source": "monogram"
+  },
+  {
+    "slug": "verizon",
+    "name": "Verizon",
+    "color": "#CD040B",
+    "country": "US",
+    "source": "simple-icons"
+  },
+  {
+    "slug": "att",
+    "name": "AT&T",
+    "color": "#009FDB",
+    "country": "US",
+    "source": "simple-icons"
+  },
+  {
+    "slug": "orange",
+    "name": "Orange",
+    "color": "#FF7900",
+    "country": "FR",
+    "source": "simple-icons"
+  }
+]
