@@ -3,6 +3,42 @@
     {
       "date": "26 Nov 2026",
       "day": "Kamis",
+      "desc": "Ikon web baru: waifu anime 2D (rambut mint, headphone telinga kucing, hoodie hitam, memegang HP hijau) di folder baru public/icons/ — tersedia sebagai favicon, apple-touch-icon, dan ikon 192/512. Maskot lama tetap dipakai di halaman.",
+      "id": "20261126-1959",
+      "tag": "Tampilan",
+      "time": "19.59",
+      "title": "Ikon web anime 2D baru"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Address bar kini selalu menampilkan domain utama sessionbot.my.id saat pindah halaman (Tutorial, Status, Tentang, Info Update) — rapi seperti yang diminta. Pilihan tampilan desktop/mobile tetap dipertahankan.",
+      "id": "20261126-2000",
+      "tag": "Tampilan",
+      "time": "20.00",
+      "title": "URL selalu domain utama"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Bagian Tentang SessionBot di beranda kini berupa tombol spoiler seperti Tutorial Singkat: tertutup secara default, ketuk untuk membuka. Judul 12px, isi 12px — hemat tempat dan pas di layar HP.",
+      "id": "20261126-1957",
+      "tag": "Tampilan",
+      "time": "19.57",
+      "title": "Tentang jadi spoiler"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
+      "desc": "Mode desktop (?view=desktop) di HP kini menyesuaikan layar: hamburger menggantikan baris navigasi, hero 2 kolom jadi 1 kolom, form langsung di bawah — tidak ada lagi yang terpotong atau bergeser ke samping.",
+      "id": "20261126-1958",
+      "tag": "Perbaikan",
+      "time": "19.58",
+      "title": "Tampilan desktop di HP diperbaiki"
+    },
+    {
+      "date": "26 Nov 2026",
+      "day": "Kamis",
       "desc": "Setiap halaman kini muncul dengan animasi masuk yang halus: toolbar turun, hero dan kartu naik berurutan, maskot mengembang pelan. Hanya transform dan opacity (GPU) supaya tetap ringan di HP, dan otomatis mati kalau HP mengaktifkan pengurangan gerakan.",
       "id": "20261126-1951",
       "tag": "Tampilan",
@@ -101,6 +137,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T19:51:00+07:00",
+  "updated": "2026-11-26T20:00:00+07:00",
   "version": 1
 }

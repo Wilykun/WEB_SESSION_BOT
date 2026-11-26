@@ -1397,3 +1397,6 @@ button.btn-primary::after { content: '→'; font-weight: 800; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; }
 }
+
+/* Tentang di beranda jadi spoiler (tertutup default, hemat tempat di HP). */
+.about-spoiler { margin-top: 0; }

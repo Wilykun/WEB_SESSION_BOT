@@ -9,8 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/desktop.css?v=10">
-  <link rel="icon" href="/mascot.webp">
+  <link rel="stylesheet" href="/desktop.css?v=11">
+  <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <script>
     /* Terapkan tema sedini mungkin agar tidak berkedip. */
     (function () {
@@ -335,7 +338,13 @@
 
   <!-- TENTANG -->
   <section class="about" id="tentang">
-    <h2>Tentang SessionBot</h2>
+    <details class="spoiler about-spoiler">
+      <summary>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Tentang SessionBot
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="spoiler-body">
     <p>SessionBot adalah web pairing untuk bot WhatsApp berbasis <strong>Baileys latest</strong> mengikuti pola resmi <strong>V1</strong> dari ReadSwEsm_V1: browser <strong>Ubuntu + Chrome</strong>, pairing code V1 (<code>requestPairingCode</code>, custom 8 karakter, berlaku 3 menit), dan sesi satu file <strong><code>hisoka.json</code></strong>.</p>
     <ul class="about-list">
       <li><span class="al-icon" aria-hidden="true">
@@ -351,7 +360,9 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
       </span><span><strong>Otomatis ke owner</strong> — setelah file maksimal, sesi dikirim sebagai dokumen ke owner dan sesi web terputus sendiri.</span></li>
     </ul>
-    <p class="about-server">Server: <span id="aboutServer">—</span></p>
+      <p class="about-server">Server: <span id="aboutServer">—</span></p>
+      </div>
+    </details>
   </section>
 
   <!-- FOOTER -->
@@ -401,6 +412,6 @@
     </div>
   </div>
 
-  <script src="/app.js?v=3" defer></script>
+  <script src="/app.js?v=4" defer></script>
 </body>
 </html>

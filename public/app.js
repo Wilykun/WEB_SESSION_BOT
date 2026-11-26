@@ -5,6 +5,14 @@
 (function () {
   'use strict';
 
+  /* URL bersih: address bar selalu menampilkan domain utama.
+     Halaman yang dibuka tetap halaman yang diminta; hanya tampilannya yang dirapikan.
+     Pilihan ?view= (desktop/mobile) dipertahankan supaya tidak hilang saat refresh. */
+  try {
+    var _view = new URLSearchParams(window.location.search).get('view');
+    history.replaceState(null, '', _view ? ('/?view=' + encodeURIComponent(_view)) : '/');
+  } catch (e) { /* biarkan URL apa adanya */ }
+
   var $ = function (id) { return document.getElementById(id); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
