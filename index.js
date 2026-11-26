@@ -833,7 +833,7 @@ app.use('/INFO_UPDATE', express.static(path.join(ROOT, 'INFO_UPDATE')))
 // Halaman baru per kategori (toolbar ala panel): /status + /tentang.
 // Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
 async function serveViewPage(file, req, res) {
-  const css = pickView(req) === 'mobile' ? '/mobile.css?v=9' : '/desktop.css?v=9'
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=10' : '/desktop.css?v=10'
   try {
     const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
     res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))
