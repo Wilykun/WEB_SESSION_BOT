@@ -660,27 +660,27 @@ html[data-theme="light"] #themeToggleIcon {
 .al-icon { color: var(--green2); flex: none; display: inline-flex; margin-top: 2px; }
 .about-server { margin-top: 12px !important; font-size: 12px; }
 
-/* ---------- Footer ---------- */
+/* ---------- Footer (tengah, seperti readsw.my.id) ---------- */
 .page-footer {
   max-width: 1440px;
   margin: 0 auto;
   padding: 15px 28px 28px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 14px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 12px;
   border-top: 1px solid var(--line);
   color: #65786b;
   font-size: 10px;
+  text-align: center;
 }
-.footer-brand { display: grid; gap: 6px; min-width: 0; }
+.footer-brand { display: grid; justify-items: center; gap: 6px; min-width: 0; width: 100%; text-align: center; }
 .footer-brand span + span { color: #708679; }
 .footer-owner-link { color: #8fa397; }
 .footer-owner-link:hover { color: var(--green2); }
-.footer-meta-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.footer-meta-row { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%; text-align: center; }
 .live-clock { color: #7f9b8c; font-variant-numeric: tabular-nums; }
-.footer-presence-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.footer-presence-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%; }
 .footer-presence-pill {
   display: inline-flex;
   align-items: center;
@@ -705,12 +705,12 @@ html[data-theme="light"] #themeToggleIcon {
 .footer-presence-pill.is-stalker i { background: var(--amber); box-shadow: 0 0 0 3px rgba(217, 182, 111, .1); }
 .footer-presence-pill.is-visit i { background: var(--blue); box-shadow: 0 0 0 3px rgba(110, 184, 255, .1); }
 .footer-presence-pill b { color: #eaf3ed; font-weight: 700; }
-.footer-utility-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.footer-policy-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.footer-utility-row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%; }
+.footer-policy-links { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 .footer-policy-links a { color: #8fa397; }
 .footer-policy-links a:hover { color: var(--green2); }
 .footer-utility-divider { width: 1px; height: 12px; background: var(--line); }
-.auth-support-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.auth-support-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
 .auth-support-links a { color: #8fa397; }
 .auth-support-links a:hover { color: var(--green2); }
 

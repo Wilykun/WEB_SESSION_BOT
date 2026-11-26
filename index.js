@@ -826,6 +826,19 @@ app.use(express.json({ limit: '64kb' }))
 // /tutorial didaftarkan SEBELUM express.static: folder public/tutorial/
 // tidak ada di build baru, tapi route ini tetap menang bila ada file.
 app.get('/tutorial', (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'tutorial.html')))
+// Halaman baru per kategori (toolbar ala panel): /status + /tentang.
+// Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
+async function serveViewPage(file, req, res) {
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=5' : '/desktop.css?v=5'
+  try {
+    const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
+    res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))
+  } catch {
+    res.status(404).send('Halaman tidak ditemukan.')
+  }
+}
+app.get('/status', (req, res) => serveViewPage('status.html', req, res))
+app.get('/tentang', (req, res) => serveViewPage('tentang.html', req, res))
 // ---------- pilih tampilan: mobile & desktop KEPISAH ----------
 //   ?view=mobile / ?view=desktop memaksa tampilan; tanpa itu, deteksi
 //   dari User-Agent. Mobile -> public/mobile.html + mobile.css,

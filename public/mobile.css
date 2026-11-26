@@ -61,7 +61,7 @@ body {
     var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   overflow-x: hidden;
 }
@@ -124,7 +124,7 @@ html[data-theme="light"] .topbar {
   gap: 8px;
   text-decoration: none;
   color: var(--text);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: -.6px;
   min-width: 0;
@@ -239,7 +239,7 @@ html[data-theme="light"] .topbar {
   margin: 0 auto 12px;
   max-width: 32rem;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -423,16 +423,20 @@ html[data-theme="light"] .badge { color: var(--muted); }
 /* ---------- Kartu metode ---------- */
 .method-grid {
   display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
 .method-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 11px;
-  text-align: left;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
   width: 100%;
-  padding: 12px;
+  min-width: 0;
+  padding: 12px 8px;
   border-radius: 12px;
   border: 1px solid var(--line-strong);
   background: var(--panel2);
@@ -451,8 +455,8 @@ html[data-theme="light"] .badge { color: var(--muted); }
 }
 
 .method-icon {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   flex: none;
   border-radius: 10px;
   background: var(--grad-green);
@@ -463,14 +467,16 @@ html[data-theme="light"] .badge { color: var(--muted); }
 
 .method-card strong {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.3;
 }
 
 .method-card span span {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--muted);
   margin-top: 2px;
+  line-height: 1.4;
 }
 
 .sub-block {
@@ -893,7 +899,7 @@ html[data-theme="light"] .btn-ghost {
   cursor: pointer;
   padding: 12px 14px;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -916,12 +922,12 @@ html[data-theme="light"] .btn-ghost {
 /* ---------- Tentang ---------- */
 .about { padding: 22px 0 8px; }
 .about h2 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: -.3px;
   margin: 0 0 10px;
 }
-.about p { color: var(--muted); margin: 0 0 12px; font-size: 13px; line-height: 1.55; }
+.about p { color: var(--muted); margin: 0 0 12px; font-size: 12px; line-height: 1.55; }
 .about p strong { color: var(--text); }
 
 .about-list {
@@ -947,10 +953,11 @@ html[data-theme="light"] .btn-ghost {
 .about-list .al-icon { color: var(--green); flex: none; line-height: 1.4; display: inline-flex; }
 .about-list .al-icon svg { display: block; }
 
-/* ---------- Footer ala .page-footer WEB_JADIBOT ---------- */
+/* ---------- Footer ala .page-footer WEB_JADIBOT (tengah, seperti readsw.my.id) ---------- */
 .page-footer {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
   gap: 10px;
   border-top: 1px solid var(--line);
   padding-top: 15px;
@@ -959,6 +966,7 @@ html[data-theme="light"] .btn-ghost {
   color: #65786b;
   font-size: 9px;
   line-height: 1.5;
+  text-align: center;
 }
 
 html[data-theme="light"] .page-footer { color: #6d7d71; }
@@ -966,14 +974,18 @@ html[data-theme="light"] .page-footer { color: #6d7d71; }
 .page-footer a { color: #3ca970; text-decoration: none; font-weight: 600; }
 .page-footer a:hover { text-decoration: underline; }
 
-.footer-brand { display: grid; gap: 4px; }
+.footer-brand { display: grid; justify-content: center; justify-items: center; width: 100%; gap: 4px; text-align: center; }
+.footer-brand span { width: 100%; }
 .footer-brand span + span { color: #708679; }
 
 .footer-meta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 6px 10px;
+  text-align: center;
 }
 
 .footer-clock-wrap {
@@ -1001,6 +1013,8 @@ html[data-theme="light"] .page-footer { color: #6d7d71; }
 .footer-presence-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
   gap: 6px;
 }
 
@@ -1041,12 +1055,15 @@ html[data-theme="light"] .footer-presence-pill {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 8px 12px;
 }
 
 .footer-policy-links {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 4px 12px;
 }
 
@@ -1060,10 +1077,11 @@ html[data-theme="light"] .footer-presence-pill {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 4px 10px;
 }
 
-.footer-view-row { padding-top: 2px; }
+.footer-view-row { padding-top: 2px; width: 100%; text-align: center; }
 .footer-view-row a { font-size: 10px; }
 
 /* ---------- Overlay ---------- */
@@ -1097,7 +1115,7 @@ html[data-theme="light"] .footer-presence-pill {
 }
 
 .overlay-card h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: -.3px;
   margin: 12px 0 6px;
