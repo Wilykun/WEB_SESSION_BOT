@@ -826,6 +826,21 @@ app.use(express.json({ limit: '64kb' }))
 // /tutorial didaftarkan SEBELUM express.static: folder public/tutorial/
 // tidak ada di build baru, tapi route ini tetap menang bila ada file.
 app.get('/tutorial', (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'tutorial.html')))
+// ---------- pilih tampilan: mobile & desktop KEPISAH ----------
+//   ?view=mobile / ?view=desktop memaksa tampilan; tanpa itu, deteksi
+//   dari User-Agent. Mobile -> public/mobile.html + mobile.css,
+//   desktop -> public/index.html + desktop.css. app.js sama untuk keduanya.
+function pickView(req) {
+  const v = String(req.query.view || '').toLowerCase()
+  if (v === 'mobile' || v === 'desktop') return v
+  const ua = String(req.headers['user-agent'] || '')
+  return /mobi|android|iphone|ipad|ipod|windows phone/i.test(ua) ? 'mobile' : 'desktop'
+}
+// Didaftarkan SEBELUM express.static supaya '/' tidak diambil alih index.html statis.
+app.get(['/', '/index.html'], (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, pickView(req) === 'mobile' ? 'mobile.html' : 'index.html'))
+})
+app.get('/mobile.html', (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'mobile.html')))
 app.use(express.static(PUBLIC_DIR))
 
 // ---------- pengunjung footer ----------
@@ -1052,8 +1067,8 @@ app.post('/api/pairing/logout', async (req, res) => {
   return res.json({ ok: true, status: 'idle', note: 'Sesi dihapus. Silakan minta pairing code / QR baru bila ingin menautkan lagi.' })
 })
 
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'index.html'))
+app.get('/', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, pickView(req) === 'mobile' ? 'mobile.html' : 'index.html'))
 })
 
 const server = http.createServer(app)

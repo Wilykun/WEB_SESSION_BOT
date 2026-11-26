@@ -307,6 +307,132 @@
     if (mb) mb.hidden = !show;
   }
 
+  /* ---- Deteksi lokal instan (tanpa jaringan, 0ms) ----
+     Duplikasi src/phone.js (peta prefix) supaya region + operator
+     muncul di tiap ketikan, bukan menunggu fetch server. Server tetap
+     sumber kebenaran dan mengoreksi bila berbeda. */
+  var LOCAL_COUNTRY_PREFIXES = {
+    '62': { country: 'ID', flag: '🇮🇩' }, '60': { country: 'MY', flag: '🇲🇾' },
+    '65': { country: 'SG', flag: '🇸🇬' }, '1': { country: 'US', flag: '🇺🇸' },
+    '91': { country: 'IN', flag: '🇮🇳' }, '44': { country: 'GB', flag: '🇬🇧' },
+    '81': { country: 'JP', flag: '🇯🇵' }, '82': { country: 'KR', flag: '🇰🇷' },
+    '86': { country: 'CN', flag: '🇨🇳' }, '61': { country: 'AU', flag: '🇦🇺' },
+    '33': { country: 'FR', flag: '🇫🇷' }, '49': { country: 'DE', flag: '🇩🇪' },
+    '31': { country: 'NL', flag: '🇳🇱' }, '34': { country: 'ES', flag: '🇪🇸' },
+    '39': { country: 'IT', flag: '🇮🇹' }, '55': { country: 'BR', flag: '🇧🇷' },
+    '52': { country: 'MX', flag: '🇲🇽' }, '63': { country: 'PH', flag: '🇵🇭' },
+    '84': { country: 'VN', flag: '🇻🇳' }, '66': { country: 'TH', flag: '🇹🇭' },
+    '90': { country: 'TR', flag: '🇹🇷' }, '7': { country: 'RU', flag: '🇷🇺' },
+    '20': { country: 'EG', flag: '🇪🇬' }, '27': { country: 'ZA', flag: '🇿🇦' },
+    '234': { country: 'NG', flag: '🇳🇬' }, '92': { country: 'PK', flag: '🇵🇰' },
+    '880': { country: 'BD', flag: '🇧🇩' }
+  };
+  var LOCAL_CARRIER_PREFIXES = {
+    '0811': 'Telkomsel', '0812': 'Telkomsel', '0813': 'Telkomsel',
+    '0821': 'Telkomsel', '0822': 'Telkomsel', '0823': 'Telkomsel',
+    '0851': 'by.U (Telkomsel)', '0852': 'Telkomsel', '0853': 'Telkomsel',
+    '0814': 'Indosat', '0815': 'Indosat', '0816': 'Indosat',
+    '0855': 'Indosat', '0856': 'Indosat', '0857': 'Indosat', '0858': 'Indosat',
+    '0817': 'XL', '0818': 'XL', '0819': 'XL', '0859': 'XL', '0877': 'XL', '0878': 'XL',
+    '0831': 'Axis', '0832': 'Axis', '0833': 'Axis', '0838': 'Axis',
+    '0895': 'Tri', '0896': 'Tri', '0897': 'Tri', '0898': 'Tri', '0899': 'Tri',
+    '0881': 'Smartfren', '0882': 'Smartfren', '0883': 'Smartfren', '0884': 'Smartfren',
+    '0885': 'Smartfren', '0886': 'Smartfren', '0887': 'Smartfren', '0888': 'Smartfren', '0889': 'Smartfren'
+  };
+  var _localDisplayNames = null;
+  try { _localDisplayNames = new Intl.DisplayNames(['id'], { type: 'region' }); } catch (e) { /* abaikan */ }
+  function localCountryNameOf(cc) {
+    if (!cc) return 'Tidak dikenal';
+    try { return (_localDisplayNames && _localDisplayNames.of(cc)) || cc; } catch (e) { return cc; }
+  }
+  function detectCarrierLocal(digits) {
+    if (digits.slice(0, 2) !== '62' || digits.length < 6) return null;
+    return LOCAL_CARRIER_PREFIXES['0' + digits.slice(2, 5)] || 'unknown';
+  }
+  function detectRegionLocal(digits) {
+    var codes = Object.keys(LOCAL_COUNTRY_PREFIXES).sort(function (a, b) { return b.length - a.length; });
+    for (var i = 0; i < codes.length; i++) {
+      if (digits.indexOf(codes[i]) === 0) {
+        var info = LOCAL_COUNTRY_PREFIXES[codes[i]];
+        return {
+          country: info.country, countryName: localCountryNameOf(info.country),
+          flag: info.flag, callingCode: codes[i],
+          valid: digits.length >= 10 && digits.length <= 15, type: 'unknown',
+          carrier: detectCarrierLocal(digits)
+        };
+      }
+    }
+    return {
+      country: null, countryName: 'Tidak dikenal', flag: '🌐', callingCode: null,
+      valid: false, type: 'unknown', carrier: null
+    };
+  }
+  function validatePhoneLocal() {
+    var input = $('phoneInput');
+    if (!input) return;
+    var raw = input.value || '';
+    var digits = normalizePhone(raw);
+    state.phone = digits;
+    if (validateAbort) { try { validateAbort.abort(); } catch (e) { /* abaikan */ } }
+    if (!digits) {
+      state.phoneValid = false; state.region = null;
+      input.classList.remove('is-valid', 'is-invalid');
+      setPhoneError('');
+      renderChips(); showNormalized(); setMethodBlockVisible(false);
+      updateRequestBtn();
+      return;
+    }
+    if (/[a-zA-Z]/.test(raw)) {
+      state.phoneValid = false; state.region = null;
+      input.classList.remove('is-valid'); input.classList.add('is-invalid');
+      setPhoneError('Nomor hanya boleh berisi angka (tanpa huruf).');
+      renderChips(); showNormalized(); setMethodBlockVisible(false);
+      updateRequestBtn();
+      return;
+    }
+    if (digits.length < 6) {
+      state.phoneValid = false; state.region = null;
+      input.classList.remove('is-valid'); input.classList.add('is-invalid');
+      setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+      renderChips(); showNormalized(); setMethodBlockVisible(false);
+      updateRequestBtn();
+      return;
+    }
+    var region = detectRegionLocal(digits);
+    if (!region.country) {
+      // Kode negara di luar tabel lokal: jangan vonis dulu, tunggu server.
+      state.phoneValid = false; state.region = null;
+      input.classList.remove('is-valid', 'is-invalid');
+      setPhoneError('');
+      renderChips(); showNormalized(); setMethodBlockVisible(false);
+      updateRequestBtn();
+      return;
+    }
+    if (digits.length > 15) {
+      state.phoneValid = false; state.region = region;
+      input.classList.remove('is-valid'); input.classList.add('is-invalid');
+      setPhoneError('Nomor terlalu panjang — maksimal 15 digit (termasuk kode negara).');
+      renderChips(); showNormalized(); setMethodBlockVisible(false);
+      updateRequestBtn();
+      return;
+    }
+    state.phoneValid = region.valid; state.region = region;
+    if (region.valid) {
+      input.classList.add('is-valid'); input.classList.remove('is-invalid');
+      setPhoneError('');
+      loadOperators().then(function () { renderChips(); });
+      renderChips();
+      showNormalized();
+      setMethodBlockVisible(true);
+    } else {
+      input.classList.remove('is-valid'); input.classList.add('is-invalid');
+      setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+      renderChips(); showNormalized(); setMethodBlockVisible(false);
+    }
+    updateRequestBtn();
+    saveState();
+  }
+
   function validatePhone() {
     var input = $('phoneInput');
     if (!input) return;
@@ -377,10 +503,12 @@
     var input = $('phoneInput');
     if (!input) return;
     input.addEventListener('input', function () {
+      validatePhoneLocal(); // instan, 0ms — chip region/operator langsung muncul
       if (validateTimer) clearTimeout(validateTimer);
-      validateTimer = setTimeout(validatePhone, 300);
+      validateTimer = setTimeout(validatePhone, 300); // konfirmasi server
     });
     input.addEventListener('paste', function () {
+      validatePhoneLocal();
       if (validateTimer) clearTimeout(validateTimer);
       validateTimer = setTimeout(validatePhone, 300);
     });
