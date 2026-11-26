@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261126-2105",
+      "title": "Tombol hamburger kini ada di desktop",
+      "desc": "Mode desktop sebelumnya tidak punya tombol hamburger (titik 3 garis) seperti mobile — di beranda tombolnya ada di kanan dan disembunyikan CSS, di halaman lain sudah di kiri tapi ikut tersembunyi. Kini tombol hamburger tampil di kiri brand di semua halaman desktop, taskbar tetap ada; dropdown-nya sama seperti mobile (grup Utama dan Info, 5 link, menutup sendiri setelah diklik). Dicek juga halaman Info Update di desktop: pindah halaman 2 dan 7, filter Perbaikan, dan pencarian semuanya jalan, URL tetap sessionbot.my.id/info-update.",
+      "tag": "Tampilan",
+      "day": "Kamis",
+      "date": "26 Nov 2026",
+      "time": "21.05"
+    },
+    {
       "id": "20261126-2050",
       "title": "Scroll halaman lebih halus",
       "desc": "Penyebab scroll berat ketemu di simulasi browser: dua cahaya latar (ambient) pakai filter blur 115px dan bar atas pakai backdrop-filter blur — keduanya memaksa browser menggambar ulang tiap frame saat scroll. Kini cahaya latar diganti radial-gradient (tampilan sama, tanpa filter) dan bar atas jadi warna solid. Terukur: frame patah di halaman tutorial turun dari 2,1% ke 0,5%, beranda 1,5% ke 0%. Tampilan tidak berubah.",
@@ -191,6 +200,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-26T20:50:00+07:00",
+  "updated": "2026-11-26T21:05:00+07:00",
   "version": 1
 }
