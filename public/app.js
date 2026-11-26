@@ -229,7 +229,7 @@
   function initHealth() {
     fetch('/api/health').then(function (r) { return r.json(); }).then(function (d) {
       if (!d || !d.ok) return;
-      var bv = $('botVersion'); if (bv) bv.textContent = d.botVersion || 'latest';
+      $$('[id="botVersion"]').forEach(function (bv) { bv.textContent = d.botVersion || 'latest'; });
       var about = $('aboutServer');
       if (about) about.textContent = 'Baileys ' + (d.botVersion || 'latest') + ' · Browser ' + (d.browser || 'Ubuntu + Chrome') + ' · Metode: ' + (d.methods || ['pairing', 'qr']).join(' / ');
       var fl = $('footerServerLink');
@@ -1011,7 +1011,7 @@
         try { d = JSON.parse(ev.data); } catch (e) { return; }
         if (!d) return;
         if (d.type === 'hello') {
-          if (d.botVersion) { var bv = $('botVersion'); if (bv) bv.textContent = d.botVersion; }
+          if (d.botVersion) { $$('[id="botVersion"]').forEach(function (bv) { bv.textContent = d.botVersion; }); }
           return;
         }
         if (d.type === 'status') {
