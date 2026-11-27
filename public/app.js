@@ -32,6 +32,7 @@
   var state = {
     phone: '',
     phoneValid: false,
+    numberChecked: false, // server sudah konfirmasi nomor valid — baru tampilkan Pilih Metode
     region: null,
     method: null,          // 'pairing' | 'qr'
     codeMode: 'random',    // 'custom' | 'random'
@@ -348,7 +349,7 @@
       var slug = findOperatorSlug(carrier);
       if (slug) {
         var img = document.createElement('img');
-        img.src = '/operators/' + slug + '.svg';
+        img.src = '/operators/' + slug + '.svg?v=2';
         img.alt = 'Logo ' + carrier;
         img.loading = 'lazy';
         opChip.appendChild(img);
@@ -374,7 +375,26 @@
 
   function setMethodBlockVisible(show) {
     var mb = $('methodBlock');
-    if (mb) mb.hidden = !show;
+    // Pilih Metode HANYA muncul setelah server mengonfirmasi nomor valid
+    // (numberChecked). Validasi lokal saja tidak cukup — itu yang bikin
+    // kartu metode muncul terlalu dini saat nomor baru diketik.
+    if (mb) mb.hidden = !(show && state.numberChecked);
+  }
+
+  /* ---- Kartu hasil cek nomor (langkah 1.5) ----
+     checking = sedang dicek server, valid = nomor valid (metode muncul),
+     invalid = nomor tidak valid + alasannya, hide = belum ada nomor. */
+  function setNumberCheck(kind, text) {
+    var card = $('numberCheck');
+    if (!card) return;
+    var t = $('numberCheckText');
+    if (kind === 'hide') { card.hidden = true; card.className = 'number-check'; if (t) t.textContent = ''; return; }
+    card.hidden = false;
+    card.className = 'number-check nc-' + kind;
+    if (t) t.textContent = text || '';
+    // Saat kartu cek menampilkan invalid, phoneError disembunyikan supaya
+    // alasan yang sama tidak tampil dua kali (di kartu + di bawah input).
+    if (kind === 'invalid') setPhoneError('');
   }
 
   /* ---- Deteksi lokal instan (tanpa jaringan, 0ms) ----
@@ -443,11 +463,13 @@
     var raw = input.value || '';
     var digits = normalizePhone(raw);
     state.phone = digits;
+    state.numberChecked = false; // nomor berubah -> harus dicek ulang server
     if (validateAbort) { try { validateAbort.abort(); } catch (e) { /* abaikan */ } }
     if (!digits) {
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid', 'is-invalid');
       setPhoneError('');
+      setNumberCheck('hide');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -456,6 +478,7 @@
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid'); input.classList.add('is-invalid');
       setPhoneError('Nomor hanya boleh berisi angka (tanpa huruf).');
+      setNumberCheck('invalid', 'Nomor hanya boleh berisi angka (tanpa huruf).');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -464,6 +487,7 @@
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid'); input.classList.add('is-invalid');
       setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+      setNumberCheck('invalid', 'Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -477,6 +501,7 @@
         state.phoneValid = false; state.region = null;
         input.classList.remove('is-valid'); input.classList.add('is-invalid');
         setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+        setNumberCheck('invalid', 'Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
         renderChips(); showNormalized(); setMethodBlockVisible(false);
         updateRequestBtn();
         return;
@@ -485,6 +510,7 @@
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid', 'is-invalid');
       setPhoneError('');
+      setNumberCheck('checking', 'Memeriksa nomor…');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -493,6 +519,7 @@
       state.phoneValid = false; state.region = region;
       input.classList.remove('is-valid'); input.classList.add('is-invalid');
       setPhoneError('Nomor terlalu panjang — maksimal 15 digit (termasuk kode negara).');
+      setNumberCheck('invalid', 'Nomor terlalu panjang — maksimal 15 digit (termasuk kode negara).');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -504,10 +531,14 @@
       loadOperators().then(function () { renderChips(); });
       renderChips();
       showNormalized();
-      setMethodBlockVisible(true);
+      // Valid lokal = baru "sedang dicek". Pilih Metode tetap sembunyi
+      // sampai server mengonfirmasi (validatePhone -> numberChecked).
+      setMethodBlockVisible(false);
+      setNumberCheck('checking', 'Memeriksa nomor…');
     } else {
       input.classList.remove('is-valid'); input.classList.add('is-invalid');
       setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+      setNumberCheck('invalid', 'Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
     }
     updateRequestBtn();
@@ -525,6 +556,7 @@
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid', 'is-invalid');
       setPhoneError('');
+      setNumberCheck('hide');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -533,6 +565,7 @@
       state.phoneValid = false; state.region = null;
       input.classList.remove('is-valid'); input.classList.add('is-invalid');
       setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+      setNumberCheck('invalid', 'Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -547,29 +580,34 @@
           // itu BUKAN masalah koneksi. Tampilkan alasan aslinya supaya
           // pintar: valid atau tidak, dan kenapa. Pesan "cek koneksi" hanya
           // untuk fetch yang benar-benar gagal (lihat .catch di bawah).
-          state.phoneValid = false; state.region = null;
+          state.phoneValid = false; state.region = null; state.numberChecked = false;
           input.classList.remove('is-valid'); input.classList.add('is-invalid');
           setPhoneError((d && d.error) ? d.error : 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
+          setNumberCheck('invalid', (d && d.error) ? d.error : 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
           renderChips(); showNormalized(); setMethodBlockVisible(false);
           updateRequestBtn();
           return;
         }
         var region = d.region || {};
         if (region.valid) {
-          state.phoneValid = true; state.region = region;
+          state.phoneValid = true; state.region = region; state.numberChecked = true;
           input.classList.add('is-valid'); input.classList.remove('is-invalid');
           setPhoneError('');
           loadOperators().then(function () { renderChips(); });
           renderChips();
           showNormalized();
+          // Nomor terkonfirmasi server -> kartu cek hijau + Pilih Metode muncul otomatis.
+          var ncDetail = (region.countryName || region.country || '') + (region.carrier && region.carrier !== 'unknown' ? ' · ' + region.carrier : '');
+          setNumberCheck('valid', 'Nomor valid' + (ncDetail ? ' — ' + ncDetail : '') + '. Pilih metode di bawah.');
           setMethodBlockVisible(true);
           // Jika server sudah punya status aktif untuk nomor ini, pulihkan tampilannya.
           if (d.status && d.status !== 'idle') applyStatus(d);
           restoreNumberPrefs(digits);
         } else {
-          state.phoneValid = false; state.region = region;
+          state.phoneValid = false; state.region = region; state.numberChecked = false;
           input.classList.remove('is-valid'); input.classList.add('is-invalid');
           setPhoneError('Nomor tidak valid. Periksa lagi nomor WhatsApp kamu — pastikan kode negara & nomornya benar.');
+          setNumberCheck('invalid', 'Nomor tidak valid. Periksa lagi nomor WhatsApp kamu — pastikan kode negara & nomornya benar.');
           renderChips(); showNormalized(); setMethodBlockVisible(false);
         }
         updateRequestBtn();
@@ -577,9 +615,10 @@
       })
       .catch(function (err) {
         if (err && err.name === 'AbortError') return;
-        state.phoneValid = false;
+        state.phoneValid = false; state.numberChecked = false;
         input.classList.remove('is-valid'); input.classList.add('is-invalid');
         setPhoneError('Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
+        setNumberCheck('invalid', 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
         renderChips(); showNormalized(); setMethodBlockVisible(false);
         updateRequestBtn();
       });
@@ -1241,8 +1280,9 @@
     if (clearPhone) {
       var input = $('phoneInput');
       if (input) { input.value = ''; input.classList.remove('is-valid', 'is-invalid'); input.focus(); }
-      state.phone = ''; state.phoneValid = false; state.region = null;
+      state.phone = ''; state.phoneValid = false; state.region = null; state.numberChecked = false;
       setMethodBlockVisible(false);
+      setNumberCheck('hide');
       renderChips(); showNormalized(); setPhoneError('');
       $$('.method-card').forEach(function (card) { card.classList.remove('selected'); card.setAttribute('aria-pressed', 'false'); });
       state.method = null;

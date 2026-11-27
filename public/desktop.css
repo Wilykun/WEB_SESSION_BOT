@@ -904,6 +904,46 @@ html.sb-no-anim .topbar, html.sb-no-anim .hero > *, html.sb-no-anim .page-head >
 .about-spoiler { margin-top: 0; }
 
 /* ---------- Tampilan desktop di layar sempit (mode desktop di HP, ?view=desktop) ---------- */
+
+/* ---------- Cek nomor (langkah 1.5: dicek dulu, baru pilih metode) ---------- */
+.number-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--soft);
+}
+.number-check[hidden] { display: none; }
+.number-check .nc-icon { display: inline-flex; flex: none; width: 16px; height: 16px; }
+.number-check .nc-ic { display: none; }
+.number-check.nc-checking .nc-spin { display: block; color: var(--green); animation: nc-spin 1s linear infinite; }
+.number-check.nc-valid { color: var(--green); border-color: rgba(49, 213, 139, .4); background: rgba(49, 213, 139, .08); }
+.number-check.nc-valid .nc-ok { display: block; }
+.number-check.nc-invalid { color: #f87171; border-color: rgba(248, 113, 113, .4); background: rgba(248, 113, 113, .08); }
+.number-check.nc-invalid .nc-err { display: block; }
+@keyframes nc-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Badge rekomendasi di kartu Pairing Code ---------- */
+.method-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: #062115;
+  background: linear-gradient(135deg, #3ee69a, #22bd78);
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .topbar { height: 60px; padding: 0 12px; gap: 10px; }
   .topbar-left, .topbar-right { gap: 10px; }
