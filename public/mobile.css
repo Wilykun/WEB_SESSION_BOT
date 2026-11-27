@@ -1611,3 +1611,12 @@ button.btn-send-session::after { content: none; }
 #phoneInput { text-align: center; }
 .chips { justify-content: center; }
 #phoneNormalized, #phoneError { text-align: center; }
+
+/* ---------- Screenshot tutorial (auto-deteksi perangkat) ---------- */
+/* Tampilan HP: sembunyikan SS desktop, tampilkan SS HP. */
+.tut-ss-desktop { display: none !important; }
+.tut-shot { margin: 16px 0 4px; }
+.tut-shot img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+.tut-shot figcaption { margin-top: 10px; font-size: 13px; line-height: 1.6; color: var(--soft); }
+.tut-shot figcaption code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: rgba(49,213,139,.12); border-radius: 6px; padding: 1px 6px; }
+.tut-shot figcaption strong { color: var(--text); }

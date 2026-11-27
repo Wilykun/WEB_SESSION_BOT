@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-2230",
+      "title": "Tutorial kini ada screenshot full tiap langkah (PC + HP otomatis)",
+      "desc": "Halaman Tutorial kini menampilkan screenshot asli tiap langkah: masukkan nomor, pilih metode, kode pairing, QR, sampai pipeline. Screenshot otomatis menyesuaikan perangkat — buka di PC tampil versi PC, buka di HP tampil versi HP. Penjelasan tiap langkah juga diperjelas. Screenshot tersimpan di folder baru tutorial-ss (desktop + mobile).",
+      "tag": "Fitur baru",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "22.30"
+    },
+    {
       "id": "20261127-2155",
       "title": "Placeholder 62xxxxxx + operator muncul realtime saat mengetik",
       "desc": "Contoh nomor di kolom kini 62812 3456 7890 (bukan 0812...). Chip operator kini muncul realtime saat mengetik: begitu prefix lengkap (6 digit) operator langsung tampil — Telkomsel, Axis, Tri, XL, Indosat, Smartfren. Sebelumnya chip operator baru muncul setelah nomor 10-15 digit, jadi saat nomor masih dikit operator tidak kelihatan.",
@@ -497,6 +506,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T21:55:00+07:00",
+  "updated": "2026-11-27T22:30:00+07:00",
   "version": 2
 }

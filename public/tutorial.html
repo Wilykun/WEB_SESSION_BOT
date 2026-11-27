@@ -158,22 +158,48 @@
       <section class="panel status-card">
         <div class="step-head"><span class="step-num">1</span><h2>Masukkan Nomor</h2></div>
         <p class="status-note">Ketik nomor WhatsApp kamu di kolom nomor. Sistem mengecek <strong>valid, negara, dan operator secara realtime</strong> dari server. Format otomatis: <code>08&hellip;</code> &rarr; <code>62&hellip;</code>, <code>+62&hellip;</code> &rarr; <code>62&hellip;</code>. Nomor luar negeri (<code>+1</code>, <code>+44</code>) tetap didukung.</p>
+        <figure class="tut-shot">
+          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/1-nomor.png" alt="Contoh: nomor WhatsApp diketik, chip Indonesia 62 dan Telkomsel muncul realtime" loading="lazy">
+          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/1-nomor.png" alt="Contoh: nomor WhatsApp diketik, chip Indonesia 62 dan Telkomsel muncul realtime" loading="lazy">
+          <figcaption>Contoh di atas: ketik <code>62812...</code> &mdash; chip <strong>Indonesia 62</strong> + <strong>Telkomsel</strong> langsung muncul realtime, bahkan sebelum nomornya lengkap. Kalau chip tidak muncul, berarti kode negaranya ketinggalan atau digitnya kurang &mdash; jangan panik, ketik lagi yang lengkap. 😄</figcaption>
+        </figure>
       </section>
       <section class="panel status-card">
         <div class="step-head"><span class="step-num">2</span><h2>Pilih Metode</h2></div>
         <p class="status-note">Kalau nomor valid, muncul dua kartu: <strong>Pairing Code</strong> &mdash; ketik 8 karakter di WhatsApp, atau <strong>QR Code</strong> &mdash; pindai dengan kamera WhatsApp. Pilih salah satu, lalu tekan <strong>Minta Kode</strong> / <strong>Minta QR</strong>.</p>
+        <figure class="tut-shot">
+          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/2-metode.png" alt="Contoh: dua kartu metode Pairing Code dan QR Code muncul setelah nomor dicek" loading="lazy">
+          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/2-metode.png" alt="Contoh: dua kartu metode Pairing Code dan QR Code muncul setelah nomor dicek" loading="lazy">
+          <figcaption>Nomor valid? Muncul dua kartu ini. <strong>Pairing Code</strong> (kiri, ada bintang &ldquo;Direkomendasikan&rdquo;) buat yang suka ketik kode, <strong>QR Code</strong> (kanan) buat yang malas ngetik dan lebih suka pindai. Pilih satu, lalu tekan tombol hijaunya.</figcaption>
+        </figure>
       </section>
       <section class="panel status-card">
         <div class="step-head"><span class="step-num">3</span><h2>Kode / QR</h2></div>
         <p class="status-note"><strong>Pairing Code:</strong> kode 8 karakter tampil per kotak, berlaku <strong>3 menit</strong>. Buka WhatsApp &rarr; <strong>Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon</strong>, lalu ketik kodenya. <strong>QR:</strong> pindai dengan <strong>Perangkat Tertaut</strong>. QR diterbitkan WhatsApp dan berganti berkala (&plusmn;20&ndash;60 detik).</p>
+        <figure class="tut-shot">
+          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/3-kode.png" alt="Contoh: kode pairing 8 karakter tampil di kotak, berlaku 3 menit" loading="lazy">
+          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/3-kode.png" alt="Contoh: kode pairing 8 karakter tampil di kotak, berlaku 3 menit" loading="lazy">
+          <figcaption><strong>Kalau pilih Pairing Code:</strong> kodenya tampil per kotak seperti di atas &mdash; contohnya <code>DZKR-M2G3</code>. Berlaku <strong>3 menit</strong>, jadi buruan ketik di WhatsApp (Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon). Jangan malah selfie dulu, nanti kodenya kedaluwarsa. 😄</figcaption>
+        </figure>
+        <figure class="tut-shot">
+          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/3-qr.png" alt="Contoh: QR Code WhatsApp tampil untuk dipindai" loading="lazy">
+          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/3-qr.png" alt="Contoh: QR Code WhatsApp tampil untuk dipindai" loading="lazy">
+          <figcaption><strong>Kalau pilih QR Code:</strong> QR-nya muncul seperti di atas, lengkap dengan hitung mundur. Buka WhatsApp &rarr; <strong>Perangkat Tertaut</strong> &rarr; pindai. QR-nya ganti sendiri tiap &plusmn;20&ndash;60 detik, jadi jangan kelamaan mikir &mdash; pindai langsung!</figcaption>
+        </figure>
       </section>
       <section class="panel status-card">
         <div class="step-head"><span class="step-num">4</span><h2>Tersambung</h2></div>
         <p class="status-note">Kalau berhasil, muncul <strong>&ldquo;Kamu Tersambung&rdquo;</strong>. Bot terhubung &mdash; sekarang tunggu file <code>hisoka.json</code> jadi <strong>maksimal</strong>: terdaftar, ada akun, pre-key cukup, dan ukuran stabil.</p>
+        <figure class="tut-shot">
+          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/4-pipeline.png" alt="Contoh: pipeline 5 langkah, langkah Tersambung sedang aktif" loading="lazy">
+          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/4-pipeline.png" alt="Contoh: pipeline 5 langkah, langkah Tersambung sedang aktif" loading="lazy">
+          <figcaption>Pipeline-nya jalan seperti di atas: langkah 1&ndash;3 sudah centang hijau, langkah <strong>4 Tersambung</strong> lagi AKTIF (bot-nya lagi salaman sama WhatsApp). Sabar sebentar &mdash; kalau sudah tersambung, muncul &ldquo;Kamu Tersambung&rdquo;.</figcaption>
+        </figure>
       </section>
       <section class="panel status-card">
         <div class="step-head"><span class="step-num">5</span><h2>Sesi Terkirim</h2></div>
         <p class="status-note">File <code>hisoka.json</code> dikirim otomatis sebagai dokumen ke owner <strong>6289688206739</strong>. Setelah terkirim, sesi web <strong>terputus sendiri</strong> &mdash; file tetap tersimpan aman di server (<code>sessions/&lt;nomor&gt;/hisoka.json</code>).</p>
+        <p class="status-note">Tidak perlu menekan apa-apa lagi di langkah ini &mdash; pengiriman jalan sendiri begitu bot tersambung dan file sesinya sudah maksimal. Kalau pengiriman gagal, tekan tombol <strong>Kirim ke Owner</strong> untuk mengirim ulang. Setelah terkirim, kamu bisa menutup web-nya dengan tenang. 😄</p>
       </section>
     </div>
 
