@@ -152,6 +152,7 @@
       <button type="button" class="iu-chip" data-filter="fitur-baru"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l1.9 5.4 5.6 1.6-5.6 1.9L12 17.5l-1.9-5.6-5.6-1.9 5.6-1.6z"/></svg><span>Fitur baru</span> <b id="iuCountFiturBaru">&ndash;</b></button>
       <button type="button" class="iu-chip" data-filter="tampilan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg><span>Tampilan</span> <b id="iuCountTampilan">&ndash;</b></button>
       <button type="button" class="iu-chip" data-filter="perbaikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Perbaikan</span> <b id="iuCountPerbaikan">&ndash;</b></button>
+      <button type="button" class="iu-chip" data-filter="perubahan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.3"/><path d="M21 3v6h-6"/></svg><span>Perubahan</span> <b id="iuCountPerubahan">&ndash;</b></button>
       <button type="button" class="iu-chip" data-filter="bug"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8.5 4.5 10 7M15.5 4.5 14 7M8 11H3M8 15H3M21 11h-5M21 15h-5M9 19l-2 2M15 19l2 2"/></svg><span>Bug</span> <b id="iuCountBug">&ndash;</b></button>
       <button type="button" class="iu-chip" data-filter="fitur-error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4.5M12 17.5v.5"/></svg><span>Fitur Error</span> <b id="iuCountFiturError">&ndash;</b></button>
       <button type="button" class="iu-chip" data-filter="fitur-dihapus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg><span>Fitur dihapus</span> <b id="iuCountFiturDihapus">&ndash;</b></button>
@@ -180,7 +181,7 @@
     <div class="footer-view-row"><a href="?view=desktop">Lihat versi desktop</a> · <a href="?view=mobile">Lihat versi mobile</a></div>
   </footer>
 
-  <script src="/app.js?v=14" defer></script>
+  <script src="/app.js?v=15" defer></script>
   <script>
   /* Sembunyikan animasi loading setelah halaman siap (tampil min. 900 mdtk). */
   (function () {
@@ -297,7 +298,7 @@
         entries = (d && d.entries) || [];
         var counts = { semua: entries.length };
         entries.forEach(function (e) { var s = slug(e.tag); counts[s] = (counts[s] || 0) + 1; });
-        [['Semua', 'semua'], ['FiturBaru', 'fitur-baru'], ['Tampilan', 'tampilan'], ['Perbaikan', 'perbaikan'], ['Bug', 'bug'], ['FiturError', 'fitur-error'], ['FiturDihapus', 'fitur-dihapus']].forEach(function (p) {
+        [['Semua', 'semua'], ['FiturBaru', 'fitur-baru'], ['Tampilan', 'tampilan'], ['Perbaikan', 'perbaikan'], ['Perubahan', 'perubahan'], ['Bug', 'bug'], ['FiturError', 'fitur-error'], ['FiturDihapus', 'fitur-dihapus']].forEach(function (p) {
           var el = document.getElementById('iuCount' + p[0]); if (el) el.textContent = counts[p[1]] || 0;
         });
         if (loading) loading.hidden = true;

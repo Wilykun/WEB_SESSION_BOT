@@ -1,6 +1,24 @@
 {
   "entries": [
     {
+      "id": "20261127-1023",
+      "title": "Kategori baru: Perubahan di Info Update",
+      "desc": "Filter Info Update kini punya kategori baru 'Perubahan' — tombolnya ada di deretan filter (Semua, Fitur baru, Tampilan, Perbaikan, Perubahan, Bug, Fitur Error, Fitur dihapus) lengkap dengan hitungan jumlah entri dan ikon refresh. Entri bertag Perubahan tampil dengan poster gradien kuning/amber dan label kuning, dan bisa dicari lewat kotak pencarian. Definisi tag, warna poster, dan warna label Perubahan sebenarnya sudah disiapkan sejak awal — yang kurang hanya tombol filternya, kini sudah ditambahkan.",
+      "tag": "Perubahan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "10.23"
+    },
+    {
+      "id": "20261127-1022",
+      "title": "Pratinjau Kode Custom kini 8 slot + hitungan karakter",
+      "desc": "Bagian 'Pratinjau Kode' di pilihan Kode Custom diperbagus: kode kini tampil sebagai 8 kotak slot (4 + strip + 4) — karakter yang sudah diketik tampil hijau terang, slot yang belum diisi tampil '·' redup dengan garis putus-putus, jadi langsung kelihatan berapa karakter sudah diisi dan berapa lagi yang belum. Di bawah slot ada hitungan realtime, misal '1/8 karakter — 7 lagi', '7/8 karakter — 1 lagi', '8/8 karakter — 0 lagi'. Kekurangan karakter tetap diisi '0' di belakang saat kode dikirim (sesuai aturan Baileys). Huruf kecil otomatis jadi huruf besar, angka ikut tampil akurat. Disimulasikan 18/18 lolos (slot kosong/terisi, hitungan 0/8 sampai 8/8, 'wily99' jadi WILY99, hapus kembali kosong, tanpa overflow di HP 390px).",
+      "tag": "Tampilan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "10.22"
+    },
+    {
       "id": "20261127-1007",
       "title": "Deteksi region wajib kode negara + metode muncul setelah cek",
       "desc": "BUG gambar Wily: nomor '896525886555' (awalan 89, tanpa kode negara) dulu otomatis ditebak jadi Indonesia 62 / Tri. Kini TIDAK ditebak lagi — nomor WAJIB diawali kode negara: 62 (Indonesia), 60 (Malaysia), 1 (Amerika), 44 (Inggris), +... atau 00... (akses internasional); nomor Indonesia tetap bisa 08... (0 diganti 62). Kalau tanpa kode negara (89..., 99...), kartu cek merah 'Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.' dan chip region tidak muncul. Deteksi region kini pintar & akurat per kode negara (libphonenumber-js server + peta calling code lokal, prefix terpanjang dulu). Hint di bawah kolom nomor juga diubah: 'Wajib kode negara: 62 (Indonesia), 60 (Malaysia), 1 (AS), 44 (Inggris).' Bug kedua: pilihan Pairing Code / QR Code dipastikan HANYA muncul setelah kartu cek hijau 'Nomor valid' (saat mengetik & saat checking, metode tetap sembunyi) — disimulasikan 26/26 lolos: 89... ditolak, 60 Malaysia, 1 Amerika, 62 Indonesia + Tri, 08... jadi 62..., 0062... jadi 62..., 99 ditolak.",
@@ -398,6 +416,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T10:07:51+07:00",
+  "updated": "2026-11-27T10:23:25+07:00",
   "version": 1
 }

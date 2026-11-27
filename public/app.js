@@ -802,6 +802,32 @@
     btn.textContent = state.method === 'qr' ? 'Minta QR' : 'Minta Kode';
   }
 
+  // Pratinjau kode custom sebagai 8 slot (4 + strip + 4): karakter yang
+  // sudah diketik tampil hijau, slot kosong tampil '·' redup — jadi jelas
+  // berapa karakter sudah diisi dan berapa lagi yang belum (mis. 1/8 -> 7 lagi).
+  // Kekurangan tetap diisi '0' di belakang saat kode dikirim (server padEnd).
+  function renderCustomPreviewSlots(v) {
+    var prev = $('customPreview');
+    if (!prev) return;
+    var code = String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+    prev.innerHTML = '';
+    for (var i = 0; i < 8; i++) {
+      var slot = document.createElement('span');
+      var ch = code.charAt(i);
+      slot.className = 'cp-slot' + (ch ? ' filled' : ' empty');
+      slot.textContent = ch || '·';
+      prev.appendChild(slot);
+      if (i === 3) {
+        var dash = document.createElement('span');
+        dash.className = 'cp-dash';
+        dash.textContent = '–';
+        prev.appendChild(dash);
+      }
+    }
+    var cnt = $('customPreviewCount');
+    if (cnt) cnt.textContent = code.length + '/8 karakter — ' + (8 - code.length) + ' lagi';
+  }
+
   function refreshCustomPreview() {
     var input = $('customCodeInput');
     var prev = $('customPreview');
@@ -809,7 +835,7 @@
     var v = String(input.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
     if (input.value !== v) input.value = v;
     state.customCode = v;
-    prev.textContent = formatCode8(v);
+    renderCustomPreviewSlots(v);
     saveState();
     scheduleSaveNumberPrefs();
   }
@@ -1162,7 +1188,7 @@
     var wrap = $('customCodeWrap'); if (wrap) wrap.hidden = true;
     var ci = $('customCodeInput'); if (ci) ci.value = '';
     state.customCode = '';
-    var prev = $('customPreview'); if (prev) prev.textContent = '';
+    renderCustomPreviewSlots('');
     state.phone = ''; state.method = ''; state.code = ''; state.qrDataUrl = ''; state.expiresAt = 0;
     state.phoneValid = false;
     lastPrefsPhone = '';

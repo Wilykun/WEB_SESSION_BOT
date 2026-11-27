@@ -1326,6 +1326,19 @@ html[data-theme="light"] .footer-presence-pill {
   padding: 0;
 }
 .code-preview-note { font-size: 11px; color: var(--muted); line-height: 1.5; }
+/* ---------- Pratinjau kode custom: 8 slot (4 + strip + 4) ---------- */
+.cp-slots { display: flex; gap: 4px; justify-content: center; align-items: center; }
+.cp-slot {
+  flex: 0 0 auto; width: 30px; height: 38px;
+  display: grid; place-items: center;
+  font-family: var(--font-mono); font-weight: 800; font-size: 18px;
+  background: var(--panel2); border: 1px solid rgba(49, 213, 139, .35);
+  border-radius: 8px; color: var(--text);
+}
+.cp-slot.filled { color: var(--green-2); border-color: rgba(49, 213, 139, .65); background: rgba(49, 213, 139, .08); }
+.cp-slot.empty { color: var(--muted); border-style: dashed; border-color: var(--line-strong); background: transparent; }
+.cp-dash { color: var(--muted); font-weight: 700; font-size: 16px; }
+
 
 /* ---------- Info Update (filter + daftar entri, ala panel) ---------- */
 .filter-search { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 0 11px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel); color: var(--green); }
