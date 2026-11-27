@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261128-0500",
+      "title": "Watchlog SessionBot: server + tunnel otomatis nyala lagi kalau mati",
+      "desc": "SessionBot kini punya watchlog seperti readsw: service systemd mengecek server + OpenTunnel tiap 60 detik dan me-restart kalau mati, plus cron recovery tiap 1 menit yang menghidupkan lagi server, tunnel, dan service watchlog-nya kalau ketiganya mati (mis. setelah VM diganti). Diuji langsung: server dimatikan, watchlog mendeteksi dan menyalakan lagi dalam ~45 detik, domain kembali 200.",
+      "tag": "Fitur baru",
+      "day": "Sabtu",
+      "date": "28 Nov 2026",
+      "time": "05.00"
+    },
+    {
       "id": "20261127-2230",
       "title": "Tutorial kini ada screenshot full tiap langkah (PC + HP otomatis)",
       "desc": "Halaman Tutorial kini menampilkan screenshot asli tiap langkah: masukkan nomor, pilih metode, kode pairing, QR, sampai pipeline. Screenshot otomatis menyesuaikan perangkat — buka di PC tampil versi PC, buka di HP tampil versi HP. Penjelasan tiap langkah juga diperjelas. Screenshot tersimpan di folder baru tutorial-ss (desktop + mobile).",
@@ -506,6 +515,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T22:30:00+07:00",
+  "updated": "2026-11-28T05:00:00+07:00",
   "version": 2
 }
