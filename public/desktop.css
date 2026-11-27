@@ -1131,3 +1131,26 @@ button.btn-send-session::after { content: none; }
 .tut-shot figcaption code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: rgba(49,213,139,.12); border-radius: 6px; padding: 1px 6px; }
 .tut-shot figcaption strong { color: var(--text); }
 
+/* ---------- Tutorial: pilih metode + wizard langkah ---------- */
+.tut-picker-title { font-size: 20px; font-weight: 800; text-align: center; margin: 4px 0 6px; }
+.tut-picker-sub { text-align: center; color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+.tut-picker-row { display: flex; gap: 12px; }
+.tut-pick { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 10px 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); cursor: pointer; text-align: center; transition: border-color .15s ease, transform .15s ease; }
+.tut-pick:hover { border-color: rgba(62,230,154,.5); transform: translateY(-1px); }
+.tut-pick.is-active { border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 8px 24px rgba(49,213,139,.15); }
+.tut-pick-icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(135deg,#3ee69a,#22bd78); color: #062115; }
+.tut-pick strong { font-size: 16px; font-weight: 800; }
+.tut-pick-desc { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.tut-pick-tag { font-size: 11px; font-weight: 700; color: #3ee69a; background: rgba(62,230,154,.12); border-radius: 999px; padding: 3px 10px; }
+.tut-wiz-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.tut-wiz-back { background: none; border: none; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; padding: 4px 0; }
+.tut-wiz-back:hover { color: var(--text); }
+.tut-wiz-count { font-size: 12px; font-weight: 700; letter-spacing: .06em; color: var(--muted); }
+.tut-wiz-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+.tut-dot { width: 10px; height: 10px; border-radius: 50%; border: none; background: rgba(191,230,208,.25); cursor: pointer; padding: 0; transition: transform .15s ease, background .15s ease; }
+.tut-dot.is-active { background: var(--green); transform: scale(1.25); }
+.tut-wiz-body .step-head { margin-bottom: 10px; }
+.tut-wiz-nav { display: flex; gap: 10px; margin-top: 18px; }
+.tut-wiz-prev, .tut-wiz-next { flex: 1; }
+.tut-wiz-prev:disabled { opacity: .4; cursor: not-allowed; }
+

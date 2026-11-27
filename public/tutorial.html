@@ -154,54 +154,39 @@
       <p>Lima langkah saja: nomor &rarr; metode &rarr; kode/QR &rarr; tersambung &rarr; sesi terkirim ke owner.</p>
     </section>
 
-    <div class="status-grid">
-      <section class="panel status-card">
-        <div class="step-head"><span class="step-num">1</span><h2>Masukkan Nomor</h2></div>
-        <p class="status-note">Ketik nomor WhatsApp kamu di kolom nomor. Sistem mengecek <strong>valid, negara, dan operator secara realtime</strong> dari server. Format otomatis: <code>08&hellip;</code> &rarr; <code>62&hellip;</code>, <code>+62&hellip;</code> &rarr; <code>62&hellip;</code>. Nomor luar negeri (<code>+1</code>, <code>+44</code>) tetap didukung.</p>
-        <figure class="tut-shot">
-          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/1-nomor.png" alt="Contoh: nomor WhatsApp diketik, chip Indonesia 62 dan Telkomsel muncul realtime" loading="lazy">
-          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/1-nomor.png" alt="Contoh: nomor WhatsApp diketik, chip Indonesia 62 dan Telkomsel muncul realtime" loading="lazy">
-          <figcaption>Contoh di atas: ketik <code>62812...</code> &mdash; chip <strong>Indonesia 62</strong> + <strong>Telkomsel</strong> langsung muncul realtime, bahkan sebelum nomornya lengkap. Kalau chip tidak muncul, berarti kode negaranya ketinggalan atau digitnya kurang &mdash; jangan panik, ketik lagi yang lengkap. 😄</figcaption>
-        </figure>
-      </section>
-      <section class="panel status-card">
-        <div class="step-head"><span class="step-num">2</span><h2>Pilih Metode</h2></div>
-        <p class="status-note">Kalau nomor valid, muncul dua kartu: <strong>Pairing Code</strong> &mdash; ketik 8 karakter di WhatsApp, atau <strong>QR Code</strong> &mdash; pindai dengan kamera WhatsApp. Pilih salah satu, lalu tekan <strong>Minta Kode</strong> / <strong>Minta QR</strong>.</p>
-        <figure class="tut-shot">
-          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/2-metode.png" alt="Contoh: dua kartu metode Pairing Code dan QR Code muncul setelah nomor dicek" loading="lazy">
-          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/2-metode.png" alt="Contoh: dua kartu metode Pairing Code dan QR Code muncul setelah nomor dicek" loading="lazy">
-          <figcaption>Nomor valid? Muncul dua kartu ini. <strong>Pairing Code</strong> (kiri, ada bintang &ldquo;Direkomendasikan&rdquo;) buat yang suka ketik kode, <strong>QR Code</strong> (kanan) buat yang malas ngetik dan lebih suka pindai. Pilih satu, lalu tekan tombol hijaunya.</figcaption>
-        </figure>
-      </section>
-      <section class="panel status-card">
-        <div class="step-head"><span class="step-num">3</span><h2>Kode / QR</h2></div>
-        <p class="status-note"><strong>Pairing Code:</strong> kode 8 karakter tampil per kotak, berlaku <strong>3 menit</strong>. Buka WhatsApp &rarr; <strong>Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon</strong>, lalu ketik kodenya. <strong>QR:</strong> pindai dengan <strong>Perangkat Tertaut</strong>. QR diterbitkan WhatsApp dan berganti berkala (&plusmn;20&ndash;60 detik).</p>
-        <figure class="tut-shot">
-          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/3-kode.png" alt="Contoh: kode pairing 8 karakter tampil di kotak, berlaku 3 menit" loading="lazy">
-          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/3-kode.png" alt="Contoh: kode pairing 8 karakter tampil di kotak, berlaku 3 menit" loading="lazy">
-          <figcaption><strong>Kalau pilih Pairing Code:</strong> kodenya tampil per kotak seperti di atas &mdash; contohnya <code>DZKR-M2G3</code>. Berlaku <strong>3 menit</strong>, jadi buruan ketik di WhatsApp (Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon). Jangan malah selfie dulu, nanti kodenya kedaluwarsa. 😄</figcaption>
-        </figure>
-        <figure class="tut-shot">
-          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/3-qr.png" alt="Contoh: QR Code WhatsApp tampil untuk dipindai" loading="lazy">
-          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/3-qr.png" alt="Contoh: QR Code WhatsApp tampil untuk dipindai" loading="lazy">
-          <figcaption><strong>Kalau pilih QR Code:</strong> QR-nya muncul seperti di atas, lengkap dengan hitung mundur. Buka WhatsApp &rarr; <strong>Perangkat Tertaut</strong> &rarr; pindai. QR-nya ganti sendiri tiap &plusmn;20&ndash;60 detik, jadi jangan kelamaan mikir &mdash; pindai langsung!</figcaption>
-        </figure>
-      </section>
-      <section class="panel status-card">
-        <div class="step-head"><span class="step-num">4</span><h2>Tersambung</h2></div>
-        <p class="status-note">Kalau berhasil, muncul <strong>&ldquo;Kamu Tersambung&rdquo;</strong>. Bot terhubung &mdash; sekarang tunggu file <code>hisoka.json</code> jadi <strong>maksimal</strong>: terdaftar, ada akun, pre-key cukup, dan ukuran stabil.</p>
-        <figure class="tut-shot">
-          <img class="tut-ss-desktop" src="/tutorial-ss/desktop/4-pipeline.png" alt="Contoh: pipeline 5 langkah, langkah Tersambung sedang aktif" loading="lazy">
-          <img class="tut-ss-mobile" src="/tutorial-ss/mobile/4-pipeline.png" alt="Contoh: pipeline 5 langkah, langkah Tersambung sedang aktif" loading="lazy">
-          <figcaption>Pipeline-nya jalan seperti di atas: langkah 1&ndash;3 sudah centang hijau, langkah <strong>4 Tersambung</strong> lagi AKTIF (bot-nya lagi salaman sama WhatsApp). Sabar sebentar &mdash; kalau sudah tersambung, muncul &ldquo;Kamu Tersambung&rdquo;.</figcaption>
-        </figure>
-      </section>
-      <section class="panel status-card">
-        <div class="step-head"><span class="step-num">5</span><h2>Sesi Terkirim</h2></div>
-        <p class="status-note">File <code>hisoka.json</code> dikirim otomatis sebagai dokumen ke owner <strong>6289688206739</strong>. Setelah terkirim, sesi web <strong>terputus sendiri</strong> &mdash; file tetap tersimpan aman di server (<code>sessions/&lt;nomor&gt;/hisoka.json</code>).</p>
-        <p class="status-note">Tidak perlu menekan apa-apa lagi di langkah ini &mdash; pengiriman jalan sendiri begitu bot tersambung dan file sesinya sudah maksimal. Kalau pengiriman gagal, tekan tombol <strong>Kirim ke Owner</strong> untuk mengirim ulang. Setelah terkirim, kamu bisa menutup web-nya dengan tenang. 😄</p>
-      </section>
-    </div>
+    <!-- PILIH METODE DULU (horizontal) -->
+    <section class="panel tut-picker" id="tutPicker" aria-label="Pilih tutorial">
+      <h2 class="tut-picker-title">Mau tutorial yang mana dulu?</h2>
+      <p class="tut-picker-sub">Pilih salah satu &mdash; langkah-langkahnya beda, tapi sama-sama gampang. 😄</p>
+      <div class="tut-picker-row">
+        <button type="button" class="tut-pick" data-method="pairing" aria-pressed="false">
+          <span class="tut-pick-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+          <strong>Pairing Code</strong>
+          <span class="tut-pick-desc">Ketik 8 karakter di WhatsApp</span>
+          <span class="tut-pick-tag">&#9733; Direkomendasikan</span>
+        </button>
+        <button type="button" class="tut-pick" data-method="qr" aria-pressed="false">
+          <span class="tut-pick-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v7h-7"/></svg></span>
+          <strong>QR Code</strong>
+          <span class="tut-pick-desc">Pindai dengan kamera WhatsApp</span>
+          <span class="tut-pick-tag">Cepat &amp; praktis</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- WIZARD LANGKAH (muncul setelah pilih metode) -->
+    <section class="panel tut-wizard" id="tutWizard" aria-label="Langkah tutorial" hidden>
+      <div class="tut-wiz-top">
+        <button type="button" class="tut-wiz-back" id="tutChangeMethod">&larr; Ganti Metode</button>
+        <span class="tut-wiz-count" id="tutStepCount">Langkah 1 dari 5</span>
+      </div>
+      <div class="tut-wiz-dots" id="tutStepDots" role="tablist" aria-label="Pindah langkah"></div>
+      <div class="tut-wiz-body" id="tutStepBody"></div>
+      <div class="tut-wiz-nav">
+        <button type="button" class="btn-ghost tut-wiz-prev" id="tutPrevBtn">&larr; Sebelumnya</button>
+        <button type="button" class="btn-primary tut-wiz-next" id="tutNextBtn">Berikutnya &rarr;</button>
+      </div>
+    </section>
 
     <div class="status-grid tut-sections">
       <section class="panel status-card">
@@ -248,6 +233,132 @@
     </div>
     <div class="footer-view-row"><a href="?view=desktop">Lihat versi desktop</a> · <a href="?view=mobile">Lihat versi mobile</a></div>
   </footer>
+
+  <script>
+  /* Wizard tutorial: pilih metode dulu (Pairing Code / QR Code), lalu
+     jalan langkah demi langkah dengan tombol Sebelumnya / Berikutnya. */
+  (function () {
+    var STEPS = {
+      pairing: [
+        { num: 1, title: 'Masukkan Nomor',
+          html: 'Ketik nomor WhatsApp kamu di kolom nomor. Sistem mengecek <strong>valid, negara, dan operator secara realtime</strong> dari server. Format otomatis: <code>08&hellip;</code> &rarr; <code>62&hellip;</code>, <code>+62&hellip;</code> &rarr; <code>62&hellip;</code>. Nomor luar negeri (<code>+1</code>, <code>+44</code>) tetap didukung.',
+          img: '1-nomor.png',
+          cap: 'Contoh di atas: ketik <code>62812...</code> &mdash; chip <strong>Indonesia 62</strong> + <strong>Telkomsel</strong> langsung muncul realtime, bahkan sebelum nomornya lengkap. Kalau chip tidak muncul, berarti kode negaranya ketinggalan atau digitnya kurang &mdash; jangan panik, ketik lagi yang lengkap. 😄' },
+        { num: 2, title: 'Pilih Pairing Code',
+          html: 'Setelah nomor valid, muncul dua kartu metode. Pilih <strong>Pairing Code</strong> &mdash; yang ada bintang <strong>&#9733; Direkomendasikan</strong> di atasnya. Di bawahnya ada pilihan <strong>Kode Custom</strong> (bikin kodemu sendiri, 1&ndash;8 karakter A&ndash;Z 0&ndash;9, kekurangan diisi &lsquo;0&rsquo;) atau <strong>Kode Acak</strong> (biar WhatsApp yang menentukan).',
+          img: '2-metode.png',
+          cap: 'Kartu kiri yang dipilih: <strong>Pairing Code</strong> (8 karakter &mdash; ketik di WhatsApp). Setelah pilih, tekan tombol hijau <strong>Minta Kode</strong>.' },
+        { num: 3, title: 'Minta Kode &amp; Ketik di WhatsApp',
+          html: 'Tekan <strong>Minta Kode</strong>. Kode 8 karakter tampil per kotak, berlaku <strong>3 menit</strong>. Buka WhatsApp &rarr; <strong>Perangkat Tertaut &rarr; Tautkan dengan Nomor Telepon</strong>, lalu ketik kodenya. Kalau kodenya kedaluwarsa, minta kode baru &mdash; kode lama tidak bisa dipakai lagi.',
+          img: '3-kode.png',
+          cap: 'Kodenya tampil per kotak seperti di atas &mdash; contohnya <code>DZKR-M2G3</code>. Berlaku <strong>3 menit</strong>, jadi buruan ketik di WhatsApp. Jangan malah selfie dulu, nanti kodenya kedaluwarsa. 😄' },
+        { num: 4, title: 'Tersambung',
+          html: 'Kalau berhasil, muncul <strong>&ldquo;Kamu Tersambung&rdquo;</strong>. Bot terhubung &mdash; sekarang tunggu file <code>hisoka.json</code> jadi <strong>maksimal</strong>: terdaftar, ada akun, pre-key cukup, dan ukuran stabil.',
+          img: '4-pipeline.png',
+          cap: 'Pipeline-nya jalan seperti di atas: langkah 1&ndash;3 sudah centang hijau, langkah <strong>4 Tersambung</strong> lagi AKTIF (bot-nya lagi salaman sama WhatsApp). Sabar sebentar &mdash; kalau sudah tersambung, muncul &ldquo;Kamu Tersambung&rdquo;.' },
+        { num: 5, title: 'Sesi Terkirim',
+          html: 'File <code>hisoka.json</code> dikirim otomatis sebagai dokumen ke owner <strong>6289688206739</strong>. Setelah terkirim, sesi web <strong>terputus sendiri</strong> &mdash; file tetap tersimpan aman di server (<code>sessions/&lt;nomor&gt;/hisoka.json</code>). Tidak perlu menekan apa-apa lagi di langkah ini &mdash; pengiriman jalan sendiri begitu bot tersambung dan file sesinya sudah maksimal. Kalau pengiriman gagal, tekan tombol <strong>Kirim ke Owner</strong> untuk mengirim ulang. Setelah terkirim, kamu bisa menutup web-nya dengan tenang. 😄',
+          img: null, cap: null }
+      ],
+      qr: [
+        { num: 1, title: 'Masukkan Nomor',
+          html: 'Ketik nomor WhatsApp kamu di kolom nomor. Sistem mengecek <strong>valid, negara, dan operator secara realtime</strong> dari server. Format otomatis: <code>08&hellip;</code> &rarr; <code>62&hellip;</code>, <code>+62&hellip;</code> &rarr; <code>62&hellip;</code>. Nomor luar negeri (<code>+1</code>, <code>+44</code>) tetap didukung.',
+          img: '1-nomor.png',
+          cap: 'Contoh di atas: ketik <code>62812...</code> &mdash; chip <strong>Indonesia 62</strong> + <strong>Telkomsel</strong> langsung muncul realtime, bahkan sebelum nomornya lengkap. Kalau chip tidak muncul, berarti kode negaranya ketinggalan atau digitnya kurang &mdash; jangan panik, ketik lagi yang lengkap. 😄' },
+        { num: 2, title: 'Pilih QR Code',
+          html: 'Setelah nomor valid, muncul dua kartu metode. Pilih <strong>QR Code</strong> &mdash; yang di kanan, gambarnya kode QR. Di bawahnya ada pilihan <strong>Kode Custom</strong> atau <strong>Kode Acak</strong> (itu hanya untuk Pairing Code, jadi diabaikan saja kalau pilih QR).',
+          img: '2-metode.png',
+          cap: 'Kartu kanan yang dipilih: <strong>QR Code</strong> (pindai dengan kamera WhatsApp). Setelah pilih, tekan tombol hijau <strong>Minta QR</strong>.' },
+        { num: 3, title: 'Minta QR &amp; Pindai',
+          html: 'Tekan <strong>Minta QR</strong>. QR tampil lengkap dengan hitung mundur. Buka WhatsApp &rarr; <strong>Perangkat Tertaut</strong> &rarr; pindai QR-nya. QR diterbitkan WhatsApp dan berganti berkala (&plusmn;20&ndash;60 detik), jadi jangan kelamaan mikir &mdash; pindai langsung!',
+          img: '3-qr.png',
+          cap: 'QR-nya muncul seperti di atas, lengkap dengan hitung mundur. Buka WhatsApp &rarr; <strong>Perangkat Tertaut</strong> &rarr; pindai. QR-nya ganti sendiri tiap &plusmn;20&ndash;60 detik.' },
+        { num: 4, title: 'Tersambung',
+          html: 'Kalau berhasil, muncul <strong>&ldquo;Kamu Tersambung&rdquo;</strong>. Bot terhubung &mdash; sekarang tunggu file <code>hisoka.json</code> jadi <strong>maksimal</strong>: terdaftar, ada akun, pre-key cukup, dan ukuran stabil.',
+          img: '4-pipeline.png',
+          cap: 'Pipeline-nya jalan seperti di atas: langkah 1&ndash;3 sudah centang hijau, langkah <strong>4 Tersambung</strong> lagi AKTIF (bot-nya lagi salaman sama WhatsApp). Sabar sebentar &mdash; kalau sudah tersambung, muncul &ldquo;Kamu Tersambung&rdquo;.' },
+        { num: 5, title: 'Sesi Terkirim',
+          html: 'File <code>hisoka.json</code> dikirim otomatis sebagai dokumen ke owner <strong>6289688206739</strong>. Setelah terkirim, sesi web <strong>terputus sendiri</strong> &mdash; file tetap tersimpan aman di server (<code>sessions/&lt;nomor&gt;/hisoka.json</code>). Tidak perlu menekan apa-apa lagi di langkah ini &mdash; pengiriman jalan sendiri begitu bot tersambung dan file sesinya sudah maksimal. Kalau pengiriman gagal, tekan tombol <strong>Kirim ke Owner</strong> untuk mengirim ulang. Setelah terkirim, kamu bisa menutup web-nya dengan tenang. 😄',
+          img: null, cap: null }
+      ]
+    };
+    var state = { method: null, idx: 0 };
+    var picker = document.getElementById('tutPicker');
+    var wizard = document.getElementById('tutWizard');
+    var body = document.getElementById('tutStepBody');
+    var count = document.getElementById('tutStepCount');
+    var dots = document.getElementById('tutStepDots');
+    var prevBtn = document.getElementById('tutPrevBtn');
+    var nextBtn = document.getElementById('tutNextBtn');
+    if (!picker || !wizard || !body) return;
+
+    function renderStep(scroll) {
+      var steps = STEPS[state.method];
+      if (!steps) return;
+      var s = steps[state.idx];
+      var html = '<div class="step-head"><span class="step-num">' + s.num + '</span><h2>' + s.title + '</h2></div>'
+        + '<p class="status-note">' + s.html + '</p>';
+      if (s.img) {
+        html += '<figure class="tut-shot">'
+          + '<img class="tut-ss-desktop" src="/tutorial-ss/desktop/' + s.img + '" alt="Contoh langkah ' + s.num + ': ' + s.title + '" loading="lazy">'
+          + '<img class="tut-ss-mobile" src="/tutorial-ss/mobile/' + s.img + '" alt="Contoh langkah ' + s.num + ': ' + s.title + '" loading="lazy">'
+          + (s.cap ? '<figcaption>' + s.cap + '</figcaption>' : '')
+          + '</figure>';
+      }
+      body.innerHTML = html;
+      count.textContent = 'Langkah ' + (state.idx + 1) + ' dari ' + steps.length;
+      dots.innerHTML = '';
+      steps.forEach(function (_, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'tut-dot' + (i === state.idx ? ' is-active' : '');
+        b.setAttribute('aria-label', 'Langkah ' + (i + 1));
+        b.setAttribute('aria-current', i === state.idx ? 'true' : 'false');
+        b.addEventListener('click', function () { state.idx = i; renderStep(true); });
+        dots.appendChild(b);
+      });
+      prevBtn.disabled = state.idx === 0;
+      if (state.idx === steps.length - 1) {
+        nextBtn.textContent = 'Mulai Pairing \u2192';
+      } else {
+        nextBtn.textContent = 'Berikutnya \u2192';
+      }
+      if (scroll && wizard.scrollIntoView) {
+        try { wizard.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* abaikan */ }
+      }
+    }
+
+    function pickMethod(m) {
+      state.method = m;
+      state.idx = 0;
+      document.querySelectorAll('.tut-pick').forEach(function (b) {
+        var on = b.dataset.method === m;
+        b.setAttribute('aria-pressed', String(on));
+        b.classList.toggle('is-active', on);
+      });
+      picker.hidden = true;
+      wizard.hidden = false;
+      renderStep(true);
+    }
+    document.querySelectorAll('.tut-pick').forEach(function (b) {
+      b.addEventListener('click', function () { pickMethod(b.dataset.method); });
+    });
+    document.getElementById('tutChangeMethod').addEventListener('click', function () {
+      wizard.hidden = true;
+      picker.hidden = false;
+      try { picker.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* abaikan */ }
+    });
+    prevBtn.addEventListener('click', function () {
+      if (state.idx > 0) { state.idx--; renderStep(true); }
+    });
+    nextBtn.addEventListener('click', function () {
+      var steps = STEPS[state.method];
+      if (!steps) return;
+      if (state.idx < steps.length - 1) { state.idx++; renderStep(true); }
+      else { window.location.href = '/'; }
+    });
+  })();
+</script>
 
   <script src="/app.js?v=24" defer></script>
   <script>
