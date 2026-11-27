@@ -769,6 +769,9 @@ html[data-theme="light"] .btn-ghost {
 .pipe-body span { font-size: 11px; color: var(--muted); }
 .pipeline li.done .pipe-body span { color: var(--green); }
 .pipeline li.active .pipe-body span { color: var(--green); }
+.pipe-title { display: flex; align-items: center; gap: 8px; }
+.pipe-badge { font-size: 9px; font-weight: 800; letter-spacing: .8px; padding: 2px 7px; border-radius: 999px; background: var(--green); color: #062115; }
+.pipe-badge[hidden] { display: none; }
 
 /* ---------- Terminal ---------- */
 .terminal {
@@ -853,7 +856,7 @@ html[data-theme="light"] .btn-ghost {
   overflow-wrap: anywhere;
 }
 
-.pill-ok, .pill-bad {
+.pill-ok, .pill-bad, .pill-warn {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 800;
@@ -862,6 +865,7 @@ html[data-theme="light"] .btn-ghost {
 }
 
 .pill-ok { background: rgba(49, 213, 139, .16); color: var(--green); }
+.pill-warn { background: rgba(251, 191, 36, .16); color: #fbbf24; }
 .pill-bad { background: rgba(255, 107, 107, .14); color: var(--danger); }
 
 /* ---------- Pengiriman ---------- */
@@ -1509,6 +1513,11 @@ html.sb-no-anim .topbar, html.sb-no-anim .hero > *, html.sb-no-anim .page-head >
 @keyframes term-blink { 50% { opacity: 0; } }
 
 /* ---------- Info statis kode/QR ---------- */
+.ci-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; margin: 16px 0 0; padding: 10px 12px; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; color: var(--text); font-size: 13px; font-weight: 800; cursor: pointer; }
+.ci-toggle[hidden] { display: none; }
+.ci-toggle-chev { width: 18px; height: 18px; flex: none; color: var(--muted); transition: transform .2s ease; }
+.ci-toggle.collapsed .ci-toggle-chev { transform: rotate(-90deg); }
+.ci-toggle + .code-info { margin-top: 8px; }
 .code-info {
   margin: 16px 0 0;
   padding: 4px 12px;

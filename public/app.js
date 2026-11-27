@@ -53,6 +53,7 @@
   var validateTimer = null;
   var validateAbort = null;
   var countdownTimer = null;
+  var infoCollapsed = false; // spoiler Detail Sesi: false = terbuka
   var ws = null;
   var wsRetryMs = 3000;
   var lastStatusLogged = '';
@@ -895,6 +896,11 @@
     var rf = $('ringFg'); if (rf) rf.style.strokeDashoffset = String(RING_C * (1 - frac));
     var rtq = $('ringTimeQr'); if (rtq) rtq.textContent = text;
     var rfq = $('ringFgQr'); if (rfq) rfq.style.strokeDashoffset = String(RING_C * (1 - frac));
+    // Baris "Berlaku" di Detail Sesi ikut hitung mundur tiap tick.
+    var expEl = $('ciExpires');
+    if (expEl && state.expiresAt > 0 && (state.status === 'awaiting_code' || state.status === 'awaiting_qr')) {
+      expEl.textContent = text + (state.method === 'qr' ? ' (QR)' : ' (kode)');
+    }
 
     if (state.expiresAt > 0 && remaining <= 0 &&
         (state.status === 'awaiting_code' || state.status === 'awaiting_qr')) {
@@ -939,7 +945,16 @@
     var ca = $('codeArea'); if (ca) ca.hidden = true;
     var qa = $('qrArea'); if (qa) qa.hidden = true;
     var info = $('codeInfo'); if (info) info.hidden = true;
+    var tg = $('ciToggle'); if (tg) tg.hidden = true;
     resetCodeSpoiler();
+  }
+
+  /* ---------------- Spoiler Detail Sesi (info statis) ---------------- */
+  function toggleInfoSpoiler() {
+    infoCollapsed = !infoCollapsed;
+    var info = $('codeInfo'); if (info) info.hidden = infoCollapsed;
+    var tg = $('ciToggle');
+    if (tg) { tg.classList.toggle('collapsed', infoCollapsed); tg.setAttribute('aria-expanded', infoCollapsed ? 'false' : 'true'); }
   }
 
   function renderCodeBoxes() {
@@ -973,6 +988,21 @@
     set('ciRegion', r.countryName ? ((r.flag || '') + ' ' + r.countryName + (r.callingCode ? ' +' + r.callingCode : '')) : '—');
     set('ciCarrier', (r.carrier && r.carrier !== 'unknown') ? r.carrier : 'Operator tidak dikenal');
     set('ciMethod', state.method === 'qr' ? 'QR Code' : (state.codeMode === 'custom' ? 'Pairing Code · Custom' : state.codeMode === 'random' ? 'Pairing Code · Acak' : 'Pairing Code'));
+    // Status live (pill) + Berlaku (countdown kode/QR).
+    var live = $('ciLiveStatus');
+    if (live) {
+      var stMap = { idle: ['—', ''], connecting: ['Meminta kode…', 'pill-warn'], awaiting_code: ['Kode aktif', 'pill-warn'], awaiting_qr: ['QR aktif', 'pill-warn'], linking: ['Menghubungkan…', 'pill-warn'], connected: ['Terhubung', 'pill-ok'], delivering: ['Mengirim…', 'pill-warn'], delivered_disconnected: ['Terkirim', 'pill-ok'], delivery_failed: ['Gagal terkirim', 'pill-bad'], invalid: ['Tidak valid', 'pill-bad'], expired: ['Kedaluwarsa', 'pill-bad'] };
+      var st = stMap[state.status] || ['—', ''];
+      live.innerHTML = st[1] ? '<span class="' + st[1] + '">' + st[0] + '</span>' : st[0];
+    }
+    var liveRow = document.querySelector('.ci-live');
+    var exp = $('ciExpires');
+    var expActive = state.expiresAt > 0 && (state.status === 'awaiting_code' || state.status === 'awaiting_qr');
+    if (liveRow) liveRow.hidden = !expActive;
+    if (exp) {
+      var rem = expActive ? Math.max(0, Math.ceil((state.expiresAt - Date.now()) / 1000)) : 0;
+      exp.textContent = expActive ? (Math.floor(rem / 60) + ':' + String(rem % 60).padStart(2, '0') + (state.method === 'qr' ? ' (QR)' : ' (kode)')) : '—';
+    }
     // Baris lengkap saat terhubung (sesi ada): nomor bot, status, ukuran, kunci.
     var ssn = state.session;
     var showConn = !!(ssn && ssn.exists);
@@ -989,7 +1019,9 @@
       var reg = $('ciRegistered');
       if (reg) reg.innerHTML = ssn.registered ? '<span class="pill-ok">Ya</span>' : '<span class="pill-bad">Belum</span>';
     }
-    info.hidden = false;
+    var tg = $('ciToggle');
+    if (tg) { tg.hidden = false; tg.classList.toggle('collapsed', infoCollapsed); tg.setAttribute('aria-expanded', infoCollapsed ? 'false' : 'true'); }
+    info.hidden = infoCollapsed;
   }
 
   function showCodeArea() {
@@ -1021,7 +1053,7 @@
   var PIPE_LABELS = {
     1: { idle: 'Menunggu nomor…', done: 'Nomor valid' },
     2: { idle: 'Pairing Code / QR Code', done: 'Metode dipilih' },
-    3: { idle: 'Menunggu kode…', active: 'Kode / QR aktif — segera masukkan', done: 'Kode / QR diterima' },
+    3: { idle: 'Menunggu kode…', active: 'Kode / QR aktif — segera masukkan', done: 'Kode / QR diterima' }, // active/done di-override method-spesifik di renderPipeline
     4: { idle: 'Menunggu bot terhubung…', active: 'Menghubungkan…', done: 'Bot terhubung ✓' },
     5: { idle: 'File hisoka.json ke owner', active: 'Mengirim sesi ke owner…', done: 'Sesi terkirim ke owner ✓', failed: 'Pengiriman gagal — coba kirim ulang' }
   };
@@ -1031,9 +1063,12 @@
     if (!li) return;
     li.classList.remove('done', 'active');
     if (cls) li.classList.add(cls);
+    // Badge AKTIF tampil hanya di langkah yang sedang aktif.
+    var badge = li.querySelector('.pipe-badge');
+    if (badge) badge.hidden = (cls !== 'active');
     var dot = li.querySelector('.pipe-dot');
     if (dot) dot.textContent = cls === 'done' ? '✓' : String(step);
-    var span = li.querySelector('.pipe-body span');
+    var span = li.querySelector('.pipe-body .pipe-sub');
     if (span && label) span.textContent = label;
   }
 
@@ -1062,8 +1097,12 @@
 
     setPipe(1, state.phoneValid ? 'done' : '', state.phoneValid ? PIPE_LABELS[1].done : PIPE_LABELS[1].idle);
     setPipe(2, state.method && s !== 'idle' ? 'done' : '', state.method ? (modeLabel || PIPE_LABELS[2].done) : PIPE_LABELS[2].idle);
-    setPipe(3, connectedish ? 'done' : (awaiting || requesting ? 'active' : ''),
-      connectedish ? PIPE_LABELS[3].done : (awaiting ? PIPE_LABELS[3].active : (requesting ? 'Meminta kode…' : PIPE_LABELS[3].idle)));
+    // Langkah 3: tandai AKTIF + sebut metodenya (Pairing Code / QR Code).
+    var isQr = state.method === 'qr';
+    var label3 = connectedish ? (isQr ? 'QR Code diterima ✓' : 'Pairing Code diterima ✓')
+      : awaiting ? (isQr ? 'QR Code AKTIF — segera pindai' : 'Pairing Code AKTIF — segera masukkan kode')
+      : requesting ? 'Meminta kode…' : PIPE_LABELS[3].idle;
+    setPipe(3, connectedish ? 'done' : (awaiting || requesting ? 'active' : ''), label3);
     setPipe(4, connectedish ? 'done' : (requesting || awaiting ? 'active' : ''),
       connectedish ? PIPE_LABELS[4].done : (requesting ? PIPE_LABELS[4].active : PIPE_LABELS[4].idle));
     if (s === 'delivered_disconnected') setPipe(5, 'done', PIPE_LABELS[5].done);
@@ -1300,6 +1339,7 @@
     renderSessionTable();
     renderDelivery();
     if (state.status === 'connected' || state.status === 'delivering') renderCodeInfo();
+    var _tg = $('ciToggle'); if (_tg && !_tg.hidden) renderCodeInfo(); // Status live tetap akurat
     renderTutorial();
     updateRequestBtn();
     updateCountdown();
@@ -1445,6 +1485,7 @@
     var cb = $('cancelBtn'); if (cb) cb.addEventListener('click', cancelPairing);
     var cc = $('cancelCodeBtn'); if (cc) cc.addEventListener('click', cancelPairing);
     var sp = $('codeSpoilerBtn'); if (sp) sp.addEventListener('click', toggleCodeSpoiler);
+    var ct = $('ciToggle'); if (ct) ct.addEventListener('click', toggleInfoSpoiler);
     var cq = $('cancelQrBtn'); if (cq) cq.addEventListener('click', cancelPairing);
     var vs = $('viewSessionBtn');
     if (vs) vs.addEventListener('click', function () {
