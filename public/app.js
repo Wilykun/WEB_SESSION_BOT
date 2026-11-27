@@ -397,6 +397,36 @@
     if (kind === 'invalid') setPhoneError('');
   }
 
+  /* ---- Tombol hapus nomor (×) di dalam input ----
+     Nomor tersimpan di localStorage (restoreSaved) — tanpa tombol ini nomor
+     yang sudah dihapus manual tetap muncul lagi saat refresh, karena
+     cabang kosong validatePhoneLocal tidak memanggil saveState(). */
+  function updatePhoneClearBtn() {
+    var btn = $('phoneClearBtn');
+    var input = $('phoneInput');
+    if (!btn || !input) return;
+    btn.hidden = !(input.value || '').trim();
+  }
+  function clearPhoneNumber() {
+    var input = $('phoneInput');
+    if (input) { input.value = ''; input.classList.remove('is-valid', 'is-invalid'); input.focus(); }
+    state.phone = ''; state.phoneValid = false; state.region = null; state.numberChecked = false;
+    state.method = null;
+    // Hapus nomor tersimpan supaya tidak muncul lagi saat refresh.
+    var sv = loadState() || {};
+    sv.phone = ''; sv.method = ''; sv.codeMode = ''; sv.customCode = ''; sv.code = ''; sv.qrDataUrl = ''; sv.expiresAt = 0;
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(sv)); } catch (e) { /* abaikan */ }
+    lastPrefsPhone = '';
+    setNumberCheck('hide');
+    setPhoneError('');
+    renderChips(); showNormalized(); setMethodBlockVisible(false);
+    $$('.method-card').forEach(function (card) { card.classList.remove('selected'); card.setAttribute('aria-pressed', 'false'); });
+    var po = $('pairingOptions'); if (po) po.hidden = true;
+    var qo = $('qrOptions'); if (qo) qo.hidden = true;
+    updatePhoneClearBtn();
+    updateRequestBtn();
+  }
+
   /* ---- Deteksi lokal instan (tanpa jaringan, 0ms) ----
      Duplikasi src/phone.js (peta prefix) supaya region + operator
      muncul di tiap ketikan, bukan menunggu fetch server. Server tetap
@@ -471,7 +501,9 @@
       setPhoneError('');
       setNumberCheck('hide');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
+      updatePhoneClearBtn();
       updateRequestBtn();
+      saveState(); // nomor dihapus -> simpan kosong supaya tidak balik saat refresh
       return;
     }
     if (/[a-zA-Z]/.test(raw)) {
@@ -542,6 +574,7 @@
       renderChips(); showNormalized(); setMethodBlockVisible(false);
     }
     updateRequestBtn();
+    updatePhoneClearBtn();
     saveState();
   }
 
@@ -629,14 +662,23 @@
     if (!input) return;
     input.addEventListener('input', function () {
       validatePhoneLocal(); // instan, 0ms — chip region/operator langsung muncul
+      updatePhoneClearBtn();
       if (validateTimer) clearTimeout(validateTimer);
       validateTimer = setTimeout(validatePhone, 300); // konfirmasi server
     });
     input.addEventListener('paste', function () {
       validatePhoneLocal();
+      updatePhoneClearBtn();
       if (validateTimer) clearTimeout(validateTimer);
       validateTimer = setTimeout(validatePhone, 300);
     });
+    var clearBtn = $('phoneClearBtn');
+    if (clearBtn) clearBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      clearPhoneNumber();
+      if (validateTimer) clearTimeout(validateTimer);
+    });
+    updatePhoneClearBtn();
   }
 
   /* ---------------- Preferensi nomor (DATA_NOMER) ---------------- */
@@ -1055,6 +1097,7 @@
   // (pengiriman + terminal + catatan) tetap tampil sebagai bukti.
   function resetPairingForm() {
     var pi = $('phoneInput'); if (pi) { pi.value = ''; pi.classList.remove('is-valid', 'is-invalid'); }
+    updatePhoneClearBtn();
     var pc = $('phoneChips'); if (pc) { pc.innerHTML = ''; pc.hidden = true; }
     var pe = $('phoneError'); if (pe) { pe.hidden = true; pe.textContent = ''; }
     var pn = $('phoneNormalized'); if (pn) { pn.hidden = true; pn.textContent = ''; }
@@ -1369,6 +1412,7 @@
     var input = $('phoneInput');
     if (input && s.phone) {
       input.value = s.phone;
+      updatePhoneClearBtn();
       validatePhone();
     }
     if (state.method) selectMethod(state.method);

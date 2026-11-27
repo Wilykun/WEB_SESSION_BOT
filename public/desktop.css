@@ -944,6 +944,32 @@ html.sb-no-anim .topbar, html.sb-no-anim .hero > *, html.sb-no-anim .page-head >
   white-space: nowrap;
 }
 
+
+/* ---------- Input nomor + tombol hapus (×) ---------- */
+.field-wrap { position: relative; }
+.field-wrap .field-input { padding-right: 38px; }
+.field-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--chip-bg);
+  color: var(--muted);
+  cursor: pointer;
+  flex: none;
+  padding: 0;
+}
+.field-clear[hidden] { display: none; }
+.field-clear:hover { color: var(--text); background: var(--line-strong); }
+.field-clear:active { transform: translateY(-50%) scale(.94); }
+
 @media (max-width: 900px) {
   .topbar { height: 60px; padding: 0 12px; gap: 10px; }
   .topbar-left, .topbar-right { gap: 10px; }

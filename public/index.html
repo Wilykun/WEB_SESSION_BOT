@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/desktop.css?v=25">
+  <link rel="stylesheet" href="/desktop.css?v=27">
   <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -145,8 +145,13 @@
       <div class="step-block" id="phoneBlock">
         <div class="step-head"><span class="step-num">1</span><h2>Masukkan Nomor WhatsApp</h2></div>
         <label class="field-label" for="phoneInput">Nomor WhatsApp</label>
-        <input id="phoneInput" class="field-input" type="tel" inputmode="tel" autocomplete="tel"
-               placeholder="0812 3456 7890" maxlength="20" aria-describedby="phoneHint phoneError">
+        <div class="field-wrap">
+          <input id="phoneInput" class="field-input" type="tel" inputmode="tel" autocomplete="tel"
+                 placeholder="0812 3456 7890" maxlength="20" aria-describedby="phoneHint phoneError">
+          <button id="phoneClearBtn" class="field-clear" type="button" aria-label="Hapus nomor" title="Hapus nomor" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
         <p class="field-hint" id="phoneHint">Format otomatis: <code>08…</code> &rarr; <code>62…</code>, <code>+62…</code> &rarr; <code>62…</code>. Nomor luar negeri (<code>+1</code>, <code>+44</code>, …) tetap didukung.</p>
         <div id="phoneChips" class="chips" hidden></div>
         <p id="phoneError" class="field-error" role="alert" hidden></p>
@@ -432,7 +437,7 @@
     </div>
   </div>
 
-  <script src="/app.js?v=12" defer></script>
+  <script src="/app.js?v=13" defer></script>
   <script>
   /* Sembunyikan animasi loading setelah halaman siap (tampil min. 900 mdtk). */
   (function () {

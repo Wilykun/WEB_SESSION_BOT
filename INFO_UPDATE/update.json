@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-0958",
+      "title": "Ikon cek nomor kini satu-satu + tombol hapus nomor (×)",
+      "desc": "Perbaikan kartu cek nomor: sebelumnya tiga ikon (spinner, centang, silang) tampil sekaligus karena halaman utama masih memuat CSS v25 (link hardcode) — kini semua halaman pakai CSS v27, jadi hanya satu ikon yang tampil: spinner berputar saat 'Memeriksa nomor…', centang hijau saat nomor valid, silang merah saat tidak valid. Ditambah tombol hapus (×) di dalam kolom nomor — muncul saat ada nomor, sekali ketuk nomor langsung terhapus beserta simpanan-nya, jadi tidak muncul lagi saat refresh. Hapus manual (backspace) juga kini tersimpan, nomor tidak balik lagi. app.js v13, CSS v27.",
+      "tag": "Perbaikan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "09.58"
+    },
+    {
       "id": "20261127-0928",
       "title": "Nomor dicek dulu sebelum Pilih Metode + rekomendasi Pairing Code",
       "desc": "Alur pairing dirapikan: saat mengetik nomor, kartu Pilih Metode tidak langsung muncul. Bot mengecek nomor dulu secara realtime (format, negara, operator) lewat kartu cek baru — spinner 'Memeriksa nomor…', lalu 'Nomor valid — Indonesia · Tri' kalau lolos atau alasan merah kalau tidak. Kalau valid, pilihan Pairing Code / QR Code muncul otomatis, dengan badge '★ Direkomendasikan' di Pairing Code (paling simple). Ikon operator juga diperbaiki jadi tile brand yang konsisten dan akurat (Tri kini tile merah + angka 3 putih). app.js v12, CSS v26.",
@@ -380,6 +389,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T02:28:57.075215Z",
+  "updated": "2026-11-27T02:54:27.601256Z",
   "version": 1
 }
