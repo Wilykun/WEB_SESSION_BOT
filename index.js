@@ -381,13 +381,54 @@ async function waitUntilSessionComplete(phone, timeoutMs = DELIVERY_MAX_WAIT_MS)
   return { ok: false, complete: false, info, reason: `${SESSION_FILE_NAME} belum maksimal setelah 40 detik (belum registered / pre-key kurang) — tidak dikirim.` }
 }
 
+// ---------- Teks kocak random (RANDOM_TEKS_KOCAK) ----------
+// Caption pengiriman memakai satu teks lucu acak dari
+// RANDOM_TEKS_KOCAK/teks-kocak.json. File dibaca fresh tiap pengiriman,
+// jadi Wily bisa tambah/edit teks tanpa restart server.
+const TEKS_KOCAK_FILE = path.join(__dirname, 'RANDOM_TEKS_KOCAK', 'teks-kocak.json')
+const TEKS_KOCAK_DEFAULT = '*Sesi baru mendarat!* 🤖\n\nBot nomor ```{phone}``` sudah terhubung pada {time}. _File {size} ini dijaga baik-baik ya!_'
+function loadTeksKocak() {
+  try {
+    if (!existsSync(TEKS_KOCAK_FILE)) return null
+    const d = JSON.parse(readFileSync(TEKS_KOCAK_FILE, 'utf8'))
+    const list = Array.isArray(d) ? d : (Array.isArray(d.texts) ? d.texts : null)
+    if (!list) return null
+    const ok = list.filter(t => typeof t === 'string' && t.trim().length > 0)
+    return ok.length ? ok : null
+  } catch { return null }
+}
+function pickTeksKocak() {
+  const list = loadTeksKocak()
+  if (!list) return TEKS_KOCAK_DEFAULT
+  return list[Math.floor(Math.random() * list.length)]
+}
+
 function buildDeliveryCaption(phone, sizeBytes) {
   const { tgl, jam } = formatWib()
-  const kb = (sizeBytes / 1024).toFixed(1)
-  return `╔══════════════════════╗\n║  🤖  *S E S S I O N*  ║\n╚══════════════════════╝\n\n`
-    + `📂 *File* : ${SESSION_FILE_NAME}\n📱 *Bot*  : +${phone}\n📅 *Tgl*  : ${tgl}\n⏰ *Jam*  : ${jam}\n📦 *Ukuran*: ${kb} KB\n\n━━━━━━━━━━━━━━━━━━━━━\n\n`
-    + `✅ *Session bot berhasil terhubung!*\n\nFile ${SESSION_FILE_NAME} ini berisi SEMUA data sesi\n(creds + keys + contacts + groups + settings).\nSimpan baik-baik — file ini dipakai bot utama\ntanpa perlu pairing ulang.\n\n`
-    + `━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ *RAHASIA!*\n_Jangan bagikan file ini_\n_kepada siapapun!_`
+  const size = sizeBytes >= 1024 * 1024
+    ? (sizeBytes / (1024 * 1024)).toFixed(2) + ' MB'
+    : (sizeBytes / 1024).toFixed(1) + ' KB'
+  const timeWib = tgl + ' ' + jam
+  // Teks kocak random — placeholder diisi nomor/ukuran/waktu.
+  const funny = pickTeksKocak()
+    .replaceAll('{phone}', '+' + phone)
+    .replaceAll('{size}', size)
+    .replaceAll('{time}', timeWib)
+  // Detail sesi: daftar bernomor + kode monospace untuk file & nomor.
+  const detail = '📋 *Detail Sesi:*\n'
+    + '1. 📂 *File:* ```' + SESSION_FILE_NAME + '```\n'
+    + '2. 📱 *Bot:* ```+' + phone + '```\n'
+    + '3. 📅 *Tanggal:* ' + tgl + '\n'
+    + '4. ⏰ *Jam:* ' + jam + '\n'
+    + '5. 📦 *Ukuran:* ' + size
+  // Isi file: daftar berpoint.
+  const isi = '• _Isi file: creds, keys, contacts, groups, settings_\n'
+    + '• _Dipakai bot utama tanpa pairing ulang_'
+  // Peringatan rahasia: kutip.
+  const warning = '> ⚠️ *RAHASIA!*\n'
+    + '> _Jangan bagikan file ini kepada siapapun!_\n'
+    + '> _Yang pegang file ini = yang pegang botnya._'
+  return funny + '\n\n' + detail + '\n\n' + isi + '\n\n' + warning
 }
 
 // Kirim hisoka.json nomor itu ke owner. Dipanggil OTOMATIS setelah

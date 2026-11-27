@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-0625",
+      "title": "Caption pengiriman sesi kini random + lucu",
+      "desc": "Saat bot mengirim hisoka.json ke owner, captionnya kini diambil acak dari folder baru RANDOM_TEKS_KOCAK/teks-kocak.json (25 teks lucu) — tiap pengiriman beda-beda. Caption memakai format WhatsApp lengkap sesuai konteks: *tebal*, _miring_, ~coret~, ```kode```, daftar bernomor untuk detail sesi, daftar berpoint untuk isi file, dan kutip untuk peringatan RAHASIA; emoji hanya di bagian tertentu. File teks dibaca fresh tiap pengiriman, jadi teks baru langsung kepakai tanpa restart server.",
+      "tag": "Fitur baru",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "06.25"
+    },
+    {
       "title": "Kode custom tersimpan per nomor + mode tampil saat proses",
       "desc": "Kode custom pairing kini disimpan per nomor di DATA_NOMER (data/nomor/<nomor>.json) — satu file per nomor jadi tidak bentrok. Saat nomor yang sama dimasukkan lagi, kode customnya dipulihkan otomatis ke kolomnya. Mode yang dipakai juga tampil akurat selama proses di info statis: Pairing Code · Custom, Pairing Code · Acak, atau QR Code.",
       "tag": "Fitur baru",
@@ -353,6 +362,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T06:18:51+07:00",
+  "updated": "2026-11-27T06:25:00+07:00",
   "version": 1
 }

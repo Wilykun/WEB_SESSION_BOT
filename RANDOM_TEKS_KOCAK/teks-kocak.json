@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "note": "Teks kocak random untuk caption saat bot mengirim hisoka.json ke owner. Satu teks dipilih acak tiap pengiriman. Placeholder: {phone} = nomor bot (+62...), {size} = ukuran file (mis. 1.69 MB), {time} = waktu WIB (mis. Jumat, 27 Nov 2026 06:05 WIB). Format WhatsApp: *tebal* _miring_ ~coret~ ```kode```. Daftar bernomor pakai 1. 2. 3., daftar berpoint pakai •, kutip pakai >. Emoji secukupnya saja.",
+  "texts": [
+    "*TING!* 🔔\n\nSesi baru aja mendarat dengan selamat! Botnya udah nyambung, _nggak pakai drama_. ~Nggak pakai lama~ — eh, pakai lama dikit sih... tapi yang penting *sampai*! 😂",
+    "*HALO BOS!* 🤖\n\nIni dia file saktinya. _Jangan sampai hilang_, soalnya kalau hilang ya pairing ulang lagi. ~Capek tau~. 😆",
+    "*BREAKING NEWS!* 📰\n\nBot nomor ```{phone}``` resmi terhubung! _Wartawan kami melaporkan_ dari lokasi: botnya sehat, sesinya lengkap, dan *tidak ada korban jiwa*. 😂",
+    "*PAKET DATANG!* 📦\n\nSesi untuk nomor ```{phone}``` sudah sampai di tangan owner. _Dibungkus rapi_, ~nggak ada yang kurang~, dan *bebas ongkir*! 😆",
+    "*MISSION ACCOMPLISHED!* 🎉\n\nBotnya udah nyambung, sesinya udah di tangan. _Tinggal dipakai_, ~tinggal tidur~, eh maksudnya tinggal jalanin botnya! 😂",
+    "*WADUH!* 😱\n\nAda file nyasar ke chat owner... _Eh, bukan nyasar ding_, emang sengaja dikirim. Ini sesi botnya, *dijaga baik-baik ya*! 😆",
+    "*ALHAMDULILLAH!* 🙏\n\nSetelah sekian lama menunggu, akhirnya sesi ```{phone}``` berhasil terhubung! _Rasanya kayak menang lotre_, ~padahal cuma pairing doang~. 😂",
+    "*BEEP BOOP!* 🤖\n\nRobot melaporkan: sesi berhasil dikirim. _Sistem normal_, ~tidak ada alien yang menyerang~, dan owner bisa bernapas lega. 😆",
+    "*SELAMAT!* 🎊\n\nNomor ```{phone}``` sekarang punya bot yang setia. _Dia nggak akan selingkuh_, ~nggak akan ngambek~, dan *nggak minta jajan*. 😂",
+    "*BARU SAJA!* ⏰\n\nPada {time}, sebuah sesi lahir ke dunia. _Beratnya {size}_, ~tangisnya tidak terdengar~, tapi botnya langsung bisa jalan! 😆",
+    "*PERHATIAN!* ⚠️\n\nFile ini lebih berharga dari _pulsa_... eh, maksudnya lebih berharga dari *pacar*. Jangan sampai jatuh ke tangan yang salah! 😂",
+    "*HORE!* 🥳\n\nPairing berhasil! Botnya udah connect, sesinya udah aman. _Sekarang tinggal duduk manis_ sambil botnya kerja. ~Enak banget jadi owner~. 😆",
+    "*INFO PENTING!* 📢\n\nSesi bot ```{phone}``` sudah aktif. _Bukan hoaks_, ~bukan clickbait~, ini beneran! Silakan dicek sendiri. 😂",
+    "*DING DONG!* 🔔\n\nAda yang ketuk pintu... ternyata sesi bot datang! _Disambut dengan hangat_, ~dikasih teh manis~, lalu disimpan baik-baik. 😆",
+    "*GOKIL!* 🤣\n\nBotnya connect dalam sekali coba! _Biasanya kan harus coba 3x_, ~kayak password WiFi tetangga~. Kali ini langsung bisa! 😂",
+    "*YUHUU!* 🎈\n\nSesi baru, semangat baru! Bot nomor ```{phone}``` siap tempur. _Jangan lupa kasih makan_... eh, maksudnya jangan lupa jaga filenya! 😆",
+    "*SELESAI!* ✅\n\nTugas pairing selesai. _Bot terhubung_, ~owner bahagia~, dan semua orang pulang dengan senyum. Kecuali yang belum pairing... 😂",
+    "*WOW!* 😮\n\nFile sebesar {size} ini isinya *rahasia besar*. _Bukan resep rendang_, ~bukan juga password WiFi~, tapi kunci botnya! 😆",
+    "*HEHEHE!* 😁\n\nAkhirnya! Sesi ```{phone}``` mendarat mulus. _Mulus kayak jalan tol_, ~nggak ada lubang~, dan langsung bisa dipakai! 😂",
+    "*TARAA!* ✨\n\nIni dia yang ditunggu-tunggu! Sesi bot sudah di tangan owner. _Simpan di tempat aman_, ~jangan di bawah bantal~, nanti ketindihan! 😆",
+    "*CEPAT SEKALI!* ⚡\n\nBaru juga minta kode, eh sesinya udah nyampe! _Kecepatan kilat_, ~nggak pakai loading lama~, langsung *sat-set*! 😂",
+    "*BINGO!* 🎯\n\nTepat sasaran! Sesi untuk ```{phone}``` berhasil dikirim. _Nggak meleset_, ~nggak nyasar ke tetangga~, pas banget ke owner! 😆",
+    "*ALHAMDULILLAH, BERHASIL!* 🤲\n\nSesi bot sudah terhubung pada {time}. _Rasanya plong banget_, ~kayak habis ujian~, dan sekarang tinggal pakai! 😂",
+    "*HALO-HALO!* 📞\n\nBotnya manggil-manggil dari kejauhan: _\"Aku udah connect nih!\"_ ~Suaranya merdu~, *saking merdunya* sampai file ini yang datang. 😆",
+    "*FINALLY!* 🏁\n\nGaris finish terlewati! Sesi ```{phone}``` resmi jadi milik owner. _Perjalanan panjang_, ~drama dikit~, tapi *happy ending*! 😂"
+  ]
+}
