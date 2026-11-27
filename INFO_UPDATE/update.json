@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-1039",
+      "title": "Pratinjau Kode Custom dirapikan: slot di tengah, catatan 2 baris",
+      "desc": "Wily lapor dari screenshot HP: pratinjau 8 slot sebelumnya tidak rapih — deretan slot selebar isi kotak (hampir menempel ke tepi kiri-kanan) dan catatan '8/8 karakter — 0 lagi · kekurangan diisi 0 di belakang' terpotong canggung di tengah kata. Diperbaiki: slot diperkecil (30px jadi 26px, tinggi 38px jadi 34px) supaya deretan slot pas di HP dengan margin lega 15px di kiri-kanan dan tepat di tengah; catatan dipecah jadi 2 baris rapih — baris 1 hitungan tebal ('8/8 karakter — 0 lagi'), baris 2 info kekurangan diisi '0'. Diukur computed di HP 390px (margin kiri = kanan 15px) dan disimulasikan 9/9 lolos (slot terisi/kosong + hitungan akurat, desktop juga rapih, tanpa overflow).",
+      "tag": "Perbaikan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "10.39"
+    },
+    {
       "id": "20261127-1023",
       "title": "Kategori baru: Perubahan di Info Update",
       "desc": "Filter Info Update kini punya kategori baru 'Perubahan' — tombolnya ada di deretan filter (Semua, Fitur baru, Tampilan, Perbaikan, Perubahan, Bug, Fitur Error, Fitur dihapus) lengkap dengan hitungan jumlah entri dan ikon refresh. Entri bertag Perubahan tampil dengan poster gradien kuning/amber dan label kuning, dan bisa dicari lewat kotak pencarian. Definisi tag, warna poster, dan warna label Perubahan sebenarnya sudah disiapkan sejak awal — yang kurang hanya tombol filternya, kini sudah ditambahkan.",
@@ -416,6 +425,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T10:23:25+07:00",
+  "updated": "2026-11-27T10:39:43+07:00",
   "version": 1
 }
