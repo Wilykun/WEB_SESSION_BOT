@@ -375,7 +375,12 @@
     var wrap = $('phoneChips');
     if (!wrap) return;
     var r = state.region;
-    if (!state.phoneValid || !r) { wrap.hidden = true; wrap.innerHTML = ''; return; }
+    // Chip muncul realtime saat mengetik, BUKAN hanya saat nomor sudah
+    // 10-15 digit: region diketahui begitu kode negara dikenali, dan
+    // operator diketahui begitu prefix-nya lengkap (6 digit, mis. 628123).
+    // Dulu gerbangnya state.phoneValid (butuh 10-15 digit) sehingga chip
+    // operator tidak muncul saat nomor masih dikit — itu bug-nya.
+    if (!state.phone || !r) { wrap.hidden = true; wrap.innerHTML = ''; return; }
     wrap.innerHTML = '';
     var regionChip = document.createElement('span');
     regionChip.className = 'chip';
@@ -386,24 +391,29 @@
     regionChip.appendChild(document.createTextNode((r.countryName || r.country || '—') + ' ' + (r.callingCode || '')));
     wrap.appendChild(regionChip);
 
-    var carrier = r.carrier || 'unknown';
-    var opChip = document.createElement('span');
-    opChip.className = 'chip';
-    if (carrier === 'unknown') {
-      opChip.classList.add('muted');
-      opChip.textContent = 'Operator tidak dikenal';
-    } else {
-      var slug = findOperatorSlug(carrier);
-      if (slug) {
-        var img = document.createElement('img');
-        img.src = '/operators/' + slug + '.svg?v=2';
-        img.alt = 'Logo ' + carrier;
-        img.loading = 'lazy';
-        opChip.appendChild(img);
+    // Operator hanya ditampilkan kalau sudah bisa dikenali. carrier null
+    // = prefix belum lengkap (< 6 digit): chip operator disembunyikan,
+    // bukan menampilkan "tidak dikenal" saat user baru mulai mengetik.
+    var carrier = r.carrier;
+    if (carrier) {
+      var opChip = document.createElement('span');
+      opChip.className = 'chip';
+      if (carrier === 'unknown') {
+        opChip.classList.add('muted');
+        opChip.textContent = 'Operator tidak dikenal';
+      } else {
+        var slug = findOperatorSlug(carrier);
+        if (slug) {
+          var img = document.createElement('img');
+          img.src = '/operators/' + slug + '.svg?v=2';
+          img.alt = 'Logo ' + carrier;
+          img.loading = 'lazy';
+          opChip.appendChild(img);
+        }
+        opChip.appendChild(document.createTextNode(carrier));
       }
-      opChip.appendChild(document.createTextNode(carrier));
+      wrap.appendChild(opChip);
     }
-    wrap.appendChild(opChip);
     wrap.hidden = false;
   }
 
