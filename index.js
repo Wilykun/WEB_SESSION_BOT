@@ -293,7 +293,7 @@ async function getSessionInfo(phone) {
     hasGoodBackup: existsSync(sessionFile + '.good'),
     hasBakBackup: existsSync(sessionFile + '.bak'),
     registered: false, me: null, sizeBytes: 0,
-    keyCounts: {}, contactsCount: 0, groupsCount: 0
+    keyCounts: {}, contactsCount: 0, groupsCount: 0, credsCount: 0
   }
   if (!info.exists) return info
   try {
@@ -313,12 +313,14 @@ async function getSessionInfo(phone) {
     for (const [k, v] of Object.entries(data?.keys || {})) info.keyCounts[k] = Object.keys(v || {}).length
     info.contactsCount = Object.keys(data?.contacts || {}).length
     info.groupsCount = Object.keys(data?.groups || {}).length
+    info.credsCount = Object.keys(data?.creds || {}).length
   } catch {}
   return info
 }
 
 // Metadata AMAN dari hisoka.json nomor itu — hanya jumlah/ukuran/flag,
 // TIDAK PERNAH isi kunci. Dipakai checklist pengiriman di web (data asli).
+// keyCounts = rincian isi file per tipe kunci (nama + jumlah saja).
 function sessionChecklist(info) {
   const kc = info.keyCounts || {}
   return {
@@ -328,7 +330,11 @@ function sessionChecklist(info) {
     preKeys: kc['pre-key'] || 0,
     sessions: kc['session'] || 0,
     identityKeys: kc['identity-key'] || 0,
-    sizeBytes: info.sizeBytes || 0
+    sizeBytes: info.sizeBytes || 0,
+    keyCounts: kc,
+    creds: info.credsCount || 0,
+    contacts: info.contactsCount || 0,
+    groups: info.groupsCount || 0
   }
 }
 
@@ -954,7 +960,7 @@ app.use('/INFO_UPDATE', express.static(path.join(ROOT, 'INFO_UPDATE')))
 // Halaman baru per kategori (toolbar ala panel): /status + /tentang.
 // Satu file HTML, stylesheet disuntik server sesuai tampilan (mobile/desktop).
 async function serveViewPage(file, req, res) {
-  const css = pickView(req) === 'mobile' ? '/mobile.css?v=31' : '/desktop.css?v=31'
+  const css = pickView(req) === 'mobile' ? '/mobile.css?v=34' : '/desktop.css?v=34'
   try {
     const html = await readFile(path.join(PUBLIC_DIR, file), 'utf8')
     res.type('html').send(html.replaceAll('{{VIEW_CSS}}', css))

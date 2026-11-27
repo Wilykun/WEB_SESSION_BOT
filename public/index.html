@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/desktop.css?v=31">
+  <link rel="stylesheet" href="/desktop.css?v=34">
   <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -177,6 +177,11 @@
           </span>
           <span class="nc-text" id="numberCheckText"></span>
         </div>
+        <div id="miniLog" class="mini-log" hidden>
+          <div class="mini-log-head"><span class="mini-log-dot"></span><span>PEMERIKSAAN NOMOR</span></div>
+          <div class="mini-log-lines" id="miniLogLines"></div>
+          <button id="checkOkBtn" class="btn-primary btn-check-ok" type="button" hidden>OK</button>
+        </div>
       </div>
 
       <!-- Langkah 2: metode -->
@@ -296,6 +301,14 @@
           <div class="ci-row ci-connected" hidden><dt>Session</dt><dd id="ciSessions">—</dd></div>
           <div class="ci-row ci-connected" hidden><dt>Identity-Key</dt><dd id="ciIdentityKeys">—</dd></div>
           <div class="ci-row ci-connected" hidden><dt>Terdaftar</dt><dd id="ciRegistered">—</dd></div>
+          <div class="ci-row ci-connected ci-keys-head" hidden>
+            <button id="ciKeysToggle" class="ci-keys-toggle" type="button" aria-expanded="false">
+              <span class="ci-keys-title">Isi File Sesi</span>
+              <span class="ci-keys-count" id="ciKeysCount">—</span>
+              <svg class="ci-keys-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="ci-keys-body ci-connected" id="ciKeysBody" hidden></div>
         </dl>
 
         <!-- Pipeline 5 langkah -->
@@ -350,6 +363,7 @@
         </div>
 
         <p id="finalNote" class="final-note" hidden></p>
+        <button id="retryBtn" class="btn-primary btn-retry" type="button" hidden>Coba Lagi</button>
 
         <div class="result-actions">
           <button id="sendOwnerBtn" class="btn-primary btn-send-session" type="button" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Kirim Session ke Owner</button>
@@ -436,7 +450,7 @@
     </div>
   </div>
 
-  <script src="/app.js?v=19" defer></script>
+  <script src="/app.js?v=23" defer></script>
   <script>
   /* Sembunyikan animasi loading setelah halaman siap (tampil min. 900 mdtk). */
   (function () {

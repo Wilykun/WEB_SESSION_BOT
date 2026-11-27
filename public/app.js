@@ -32,7 +32,8 @@
   var state = {
     phone: '',
     phoneValid: false,
-    numberChecked: false, // server sudah konfirmasi nomor valid — baru tampilkan Pilih Metode
+    numberChecked: false, // server sudah konfirmasi nomor valid
+    checkConfirmed: false, // OK mini-log sudah diketuk — baru metode boleh muncul
     region: null,
     method: null,          // 'pairing' | 'qr'
     codeMode: 'random',    // 'custom' | 'random'
@@ -54,6 +55,7 @@
   var validateAbort = null;
   var countdownTimer = null;
   var infoCollapsed = false; // spoiler Detail Sesi: false = terbuka
+  var keysCollapsed = true; // spoiler Isi File Sesi: true = tertutup (default)
   var ws = null;
   var wsRetryMs = 3000;
   var lastStatusLogged = '';
@@ -96,6 +98,23 @@
   }
 
   /* ---------------- Util ---------------- */
+  // Label ramah untuk tipe kunci hisoka.json (nama asli dipertahankan bila tak dikenal).
+  var KEY_LABELS = {
+    'pre-key': 'Pre-Key', 'session': 'Session', 'identity-key': 'Identity Key',
+    'lid-mapping': 'LID Mapping', 'device-list': 'Daftar Perangkat', 'tctoken': 'TC Token',
+    'app-state-sync-key': 'App State Key', 'app-state-sync-version': 'App State Version',
+    'sender-key': 'Sender Key', 'sender-key-memory': 'Sender Key Memory'
+  };
+  function fmtNum(n) {
+    if (n == null || isNaN(n)) return '—';
+    try { return Number(n).toLocaleString('id-ID'); } catch (e) { return String(n); }
+  }
+  function escHtml(t) {
+    return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
   function fmtBytes(n) {
     if (n == null || isNaN(n)) return '—';
     if (n < 1024) return n + ' B';
@@ -404,13 +423,58 @@
   function setMethodBlockVisible(show) {
     var mb = $('methodBlock');
     // Pilih Metode HANYA muncul setelah server mengonfirmasi nomor valid
-    // (numberChecked). Validasi lokal saja tidak cukup — itu yang bikin
-    // kartu metode muncul terlalu dini saat nomor baru diketik.
-    if (mb) mb.hidden = !(show && state.numberChecked);
+    // (numberChecked) DAN user mengetuk OK di mini-log (checkConfirmed).
+    // Validasi lokal saja tidak cukup — itu yang bikin kartu metode muncul
+    // terlalu dini saat nomor baru diketik.
+    if (mb) mb.hidden = !(show && state.numberChecked && state.checkConfirmed);
     // Tutorial ikut langkah metode: sembunyi saat blok metode sembunyi
     // atau belum ada metode terpilih (mis. nomor baru / nomor dihapus).
     var ts = $('tutorialSpoiler');
     if (ts) ts.hidden = !!(mb && mb.hidden) || !state.method;
+  }
+
+  /* ---- Mini-log pengecekan nomor (langkah 1.5) ----
+     Baris muncul satu per satu dengan delay (efek loading/terminal),
+     lalu tombol OK — ketuk OK, baru Pilih Metode muncul. */
+  function miniLogShow() {
+    var ml = $('miniLog'); if (!ml) return;
+    ml.hidden = false;
+    var lines = $('miniLogLines'); if (lines) lines.innerHTML = '';
+    var ok = $('checkOkBtn'); if (ok) ok.hidden = true;
+  }
+  function miniLogHide() {
+    var ml = $('miniLog'); if (ml) ml.hidden = true;
+  }
+  function miniLogLine(text, cls, delay) {
+    var lines = $('miniLogLines'); if (!lines) return;
+    setTimeout(function () {
+      var div = document.createElement('div');
+      div.className = 'mini-log-line' + (cls ? ' ' + cls : '');
+      div.textContent = text;
+      lines.appendChild(div);
+    }, delay || 0);
+  }
+  function runMiniLogCheck(region) {
+    miniLogShow();
+    var phone = state.phone || '';
+    miniLogLine('> Memeriksa nomor ' + phone + '...', 'dim', 0);
+    miniLogLine('✓ Format: ' + phone.length + ' digit — OK', '', 260);
+    miniLogLine('✓ Negara: ' + (region.countryName || region.country || '—') + (region.callingCode ? ' +' + region.callingCode : ''), '', 520);
+    var carrier = (region.carrier && region.carrier !== 'unknown') ? region.carrier : 'Operator tidak dikenal';
+    miniLogLine('✓ Operator: ' + carrier, '', 780);
+    miniLogLine('✓ Nomor valid — ketuk OK untuk lanjut.', '', 1040);
+    setTimeout(function () { var ok = $('checkOkBtn'); if (ok) ok.hidden = false; }, 1150);
+  }
+  function runMiniLogError(msg) {
+    miniLogShow();
+    miniLogLine('> Memeriksa nomor...', 'dim', 0);
+    miniLogLine('✗ ' + msg, 'err', 260);
+  }
+  function confirmCheck() {
+    state.checkConfirmed = true;
+    miniLogHide();
+    setMethodBlockVisible(true);
+    var mb = $('methodBlock'); if (mb) mb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   /* ---- Kartu hasil cek nomor (langkah 1.5) ----
@@ -440,6 +504,7 @@
     btn.hidden = !(input.value || '').trim();
   }
   function clearPhoneNumber() {
+    state.checkConfirmed = false; miniLogHide();
     var input = $('phoneInput');
     if (input) { input.value = ''; input.classList.remove('is-valid', 'is-invalid'); input.focus(); }
     state.phone = ''; state.phoneValid = false; state.region = null; state.numberChecked = false;
@@ -525,6 +590,7 @@
      metode. Pemeriksaan baru jalan saat tombol Lanjut ditekan (validatePhone).
      Chip region/operator tetap tampil instan dari deteksi lokal. */
   function onPhoneTyped() {
+    state.checkConfirmed = false;
     var input = $('phoneInput');
     if (!input) return;
     var raw = input.value || '';
@@ -656,7 +722,7 @@
     saveState();
   }
 
-  function validatePhone() {
+  function validatePhone(autoConfirm) {
     var input = $('phoneInput');
     if (!input) return;
     var digits = normalizePhone(input.value);
@@ -672,6 +738,7 @@
         input.classList.remove('is-valid'); input.classList.add('is-invalid');
         setPhoneError('Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.');
         setNumberCheck('invalid', 'Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.');
+        runMiniLogError('Masukkan kode negara di depan nomor — contoh 62, 60, 1.');
         renderChips(); showNormalized(); setMethodBlockVisible(false);
         updateRequestBtn();
         return;
@@ -684,10 +751,11 @@
       return;
     }
     if (digits.length < 6) {
-      state.phoneValid = false; state.region = null;
+      state.phoneValid = false; state.region = null; state.checkConfirmed = false;
       input.classList.remove('is-valid'); input.classList.add('is-invalid');
       setPhoneError('Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
       setNumberCheck('invalid', 'Nomor terlalu pendek. Masukkan nomor WhatsApp yang lengkap.');
+      runMiniLogError('Nomor terlalu pendek. Masukkan nomor yang lengkap.');
       renderChips(); showNormalized(); setMethodBlockVisible(false);
       updateRequestBtn();
       return;
@@ -702,10 +770,11 @@
           // itu BUKAN masalah koneksi. Tampilkan alasan aslinya supaya
           // pintar: valid atau tidak, dan kenapa. Pesan "cek koneksi" hanya
           // untuk fetch yang benar-benar gagal (lihat .catch di bawah).
-          state.phoneValid = false; state.region = null; state.numberChecked = false;
+          state.phoneValid = false; state.region = null; state.numberChecked = false; state.checkConfirmed = false;
           input.classList.remove('is-valid'); input.classList.add('is-invalid');
           setPhoneError((d && d.error) ? d.error : 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
           setNumberCheck('invalid', (d && d.error) ? d.error : 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
+          runMiniLogError((d && d.error) ? d.error : 'Tidak bisa mengecek nomor.');
           renderChips(); showNormalized(); setMethodBlockVisible(false);
           updateRequestBtn();
           return;
@@ -718,18 +787,28 @@
           loadOperators().then(function () { renderChips(); });
           renderChips();
           showNormalized();
-          // Nomor terkonfirmasi server -> kartu cek hijau + Pilih Metode muncul otomatis.
+          // Nomor terkonfirmasi server -> kartu cek hijau. Metode TIDAK langsung
+          // muncul: mini-log animasi dulu, lalu tombol OK; ketuk OK baru metode muncul.
+          // (autoConfirm = restore halaman: lewati mini-log + OK, langsung tampil.)
           var ncDetail = (region.countryName || region.country || '') + (region.carrier && region.carrier !== 'unknown' ? ' · ' + region.carrier : '');
           setNumberCheck('valid', 'Nomor valid' + (ncDetail ? ' — ' + ncDetail : '') + '. Pilih metode di bawah.');
-          setMethodBlockVisible(true);
+          if (autoConfirm) {
+            state.checkConfirmed = true;
+            setMethodBlockVisible(true);
+          } else {
+            state.checkConfirmed = false;
+            setMethodBlockVisible(false);
+            runMiniLogCheck(region);
+          }
           // Jika server sudah punya status aktif untuk nomor ini, pulihkan tampilannya.
           if (d.status && d.status !== 'idle') applyStatus(d);
           restoreNumberPrefs(digits);
         } else {
-          state.phoneValid = false; state.region = region; state.numberChecked = false;
+          state.phoneValid = false; state.region = region; state.numberChecked = false; state.checkConfirmed = false;
           input.classList.remove('is-valid'); input.classList.add('is-invalid');
           setPhoneError('Nomor tidak valid. Periksa lagi nomor WhatsApp kamu — pastikan kode negara & nomornya benar.');
           setNumberCheck('invalid', 'Nomor tidak valid. Periksa lagi nomor WhatsApp kamu — pastikan kode negara & nomornya benar.');
+          runMiniLogError('Nomor tidak valid. Periksa lagi kode negara & nomornya.');
           renderChips(); showNormalized(); setMethodBlockVisible(false);
         }
         updateRequestBtn();
@@ -737,9 +816,10 @@
       })
       .catch(function (err) {
         if (err && err.name === 'AbortError') return;
-        state.phoneValid = false; state.numberChecked = false;
+        state.phoneValid = false; state.numberChecked = false; state.checkConfirmed = false;
         input.classList.remove('is-valid'); input.classList.add('is-invalid');
         setPhoneError('Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
+        runMiniLogError('Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
         setNumberCheck('invalid', 'Tidak bisa mengecek nomor. Periksa koneksimu lalu coba lagi.');
         renderChips(); showNormalized(); setMethodBlockVisible(false);
         updateRequestBtn();
@@ -896,6 +976,8 @@
     if (ci) ci.addEventListener('input', refreshCustomPreview);
     var btn = $('requestBtn');
     if (btn) btn.addEventListener('click', requestPairing);
+    var okb = $('checkOkBtn'); if (okb) okb.addEventListener('click', confirmCheck);
+    var rb = $('retryBtn'); if (rb) rb.addEventListener('click', requestPairing);
   }
 
   /* ---------------- Overlay ---------------- */
@@ -1017,6 +1099,32 @@
 
   // Info statis yang selalu tampil bersama kode/QR: nomor, negara, operator,
   // metode, browser — diambil dari hasil validasi (state.region) supaya akurat.
+  // Rincian isi hisoka.json: nama tipe kunci + jumlahnya (realtime, dari
+  // state.session.keyCounts). TIDAK PERNAH menampilkan isi kunci — hanya nama + jumlah.
+  function renderSessionKeys() {
+    var body = $('ciKeysBody'); if (!body) return;
+    var ssn = state.session || {};
+    var kc = ssn.keyCounts || {};
+    var types = Object.keys(kc).sort(function (a, b) { return (kc[b] || 0) - (kc[a] || 0); });
+    var cnt = $('ciKeysCount');
+    if (cnt) cnt.textContent = types.length + ' tipe';
+    var html = '';
+    types.forEach(function (k) {
+      html += '<div class="ci-key-row"><span>' + escHtml(KEY_LABELS[k] || k) + '</span><b>' + fmtNum(kc[k]) + '</b></div>';
+    });
+    html += '<div class="ci-key-row ci-key-sep"><span>Kredensial</span><b>' + fmtNum(ssn.creds) + '</b></div>';
+    html += '<div class="ci-key-row"><span>Kontak</span><b>' + fmtNum(ssn.contacts) + '</b></div>';
+    html += '<div class="ci-key-row"><span>Grup</span><b>' + fmtNum(ssn.groups) + '</b></div>';
+    body.innerHTML = html;
+    body.hidden = !(ssn && ssn.exists) || keysCollapsed;
+  }
+  function toggleKeysSpoiler() {
+    keysCollapsed = !keysCollapsed;
+    var tg = $('ciKeysToggle');
+    if (tg) tg.setAttribute('aria-expanded', keysCollapsed ? 'false' : 'true');
+    renderSessionKeys();
+  }
+
   function renderCodeInfo() {
     var info = $('codeInfo'); if (!info) return;
     var r = state.region || {};
@@ -1055,6 +1163,9 @@
       set('ciIdentityKeys', ssn.identityKeys != null ? String(ssn.identityKeys) : '—');
       var reg = $('ciRegistered');
       if (reg) reg.innerHTML = ssn.registered ? '<span class="pill-ok">Ya</span>' : '<span class="pill-bad">Belum</span>';
+      renderSessionKeys();
+    } else {
+      var kb = $('ciKeysBody'); if (kb) kb.hidden = true;
     }
     var tg = $('ciToggle');
     if (tg) { tg.hidden = false; tg.classList.toggle('collapsed', infoCollapsed); tg.setAttribute('aria-expanded', infoCollapsed ? 'false' : 'true'); }
@@ -1282,6 +1393,10 @@
     el.textContent = msg;
     el.classList.toggle('error', !!isError);
     el.hidden = false;
+    // Saat pairing gagal, tampilkan tombol Coba Lagi supaya user bisa
+    // mengulang tanpa mengulang langkah dari awal.
+    var rb = $('retryBtn');
+    if (rb) rb.hidden = !isError;
   }
 
   /* ---------------- Terapkan status dari server / WS ---------------- */
@@ -1392,6 +1507,7 @@
     state.delivery = null; state.deliveryError = '';
     showFinalNote('');
     showOverlay('connecting');
+    var rb0 = $('retryBtn'); if (rb0) rb0.hidden = true;
     var ct = $('overlayConnectingText');
     if (ct) ct.textContent = state.method === 'qr' ? 'Meminta QR ke WhatsApp, tunggu sebentar.' : 'Meminta kode pairing ke WhatsApp, tunggu sebentar.';
     logLine('Meminta ' + (state.method === 'qr' ? 'QR Code' : 'Pairing Code') + ' untuk ' + state.phone + '…');
@@ -1535,6 +1651,7 @@
       onScrollTop();
     }
     var ct = $('ciToggle'); if (ct) ct.addEventListener('click', toggleInfoSpoiler);
+    var kt = $('ciKeysToggle'); if (kt) kt.addEventListener('click', toggleKeysSpoiler);
     var cq = $('cancelQrBtn'); if (cq) cq.addEventListener('click', cancelPairing);
     var vs = $('viewSessionBtn');
     if (vs) vs.addEventListener('click', function () {
@@ -1581,7 +1698,7 @@
       input.value = s.phone;
       updatePhoneClearBtn();
       updateNextStepBtn();
-      validatePhone();
+      validatePhone(true); // restore: lewati mini-log + OK
     }
     // Metode basi tanpa nomor JANGAN dipulihkan — tanpa nomor, user masih di
     // langkah 1, jadi tutorial tidak boleh muncul.
