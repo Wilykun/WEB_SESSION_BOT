@@ -181,7 +181,7 @@
     <div class="footer-view-row"><a href="?view=desktop">Lihat versi desktop</a> · <a href="?view=mobile">Lihat versi mobile</a></div>
   </footer>
 
-  <script src="/app.js?v=16" defer></script>
+  <script src="/app.js?v=18" defer></script>
   <script>
   /* Sembunyikan animasi loading setelah halaman siap (tampil min. 900 mdtk). */
   (function () {
@@ -221,7 +221,7 @@
       var entries = [];
       var currentFilter = 'semua';
       var currentQuery = '';
-      var IU_PAGE_SIZE = 3;
+      var IU_PAGE_SIZE = 5;
       var IU_PAGE_WINDOW = 5;
       var iuPage = 1;
       function render(filter, query, resetPage) {
@@ -306,5 +306,8 @@
       }).catch(function () { if (loading) loading.textContent = 'Info Update gagal dimuat.'; });
     })();
   </script>
+  <button id="toTopBtn" class="to-top" type="button" aria-label="Kembali ke atas" title="Kembali ke atas" hidden>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
 </body>
 </html>

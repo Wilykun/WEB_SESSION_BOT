@@ -451,7 +451,9 @@
     $$('.method-card').forEach(function (card) { card.classList.remove('selected'); card.setAttribute('aria-pressed', 'false'); });
     var po = $('pairingOptions'); if (po) po.hidden = true;
     var qo = $('qrOptions'); if (qo) qo.hidden = true;
+    var ts = $('tutorialSpoiler'); if (ts) ts.hidden = true;
     updatePhoneClearBtn();
+    updateNextStepBtn();
     updateRequestBtn();
   }
 
@@ -515,6 +517,37 @@
       valid: false, type: 'unknown', carrier: null
     };
   }
+  /* ---- Ketikan nomor (RINGAN): tanpa cek server, tanpa kartu cek, tanpa
+     metode. Pemeriksaan baru jalan saat tombol Lanjut ditekan (validatePhone).
+     Chip region/operator tetap tampil instan dari deteksi lokal. */
+  function onPhoneTyped() {
+    var input = $('phoneInput');
+    if (!input) return;
+    var raw = input.value || '';
+    var digits = normalizePhone(raw);
+    state.phone = digits;
+    state.numberChecked = false; // nomor berubah -> harus dicek ulang via Lanjut
+    // phoneValid di sini HANYA validitas lokal (untuk chip + normalisasi).
+    // Metode tetap terkunci numberChecked (konfirmasi server via Lanjut).
+    var _reg = digits ? detectRegionLocal(digits) : null;
+    state.phoneValid = _reg ? _reg.valid : false;
+    state.region = _reg;
+    if (validateAbort) { try { validateAbort.abort(); } catch (e) { /* abaikan */ } }
+    input.classList.remove('is-valid', 'is-invalid');
+    setPhoneError('');
+    setNumberCheck('hide');
+    renderChips(); showNormalized(); setMethodBlockVisible(false);
+    updateNextStepBtn();
+    updateRequestBtn();
+    saveState();
+  }
+
+  function updateNextStepBtn() {
+    var btn = $('nextStepBtn'); var input = $('phoneInput');
+    if (!btn || !input) return;
+    btn.disabled = !String(input.value || '').replace(/\D/g, '');
+  }
+
   function validatePhoneLocal() {
     var input = $('phoneInput');
     if (!input) return;
@@ -712,17 +745,15 @@
   function initPhoneInput() {
     var input = $('phoneInput');
     if (!input) return;
+    // Mengetik HANYA memperbarui tampilan lokal — cek server + kartu cek +
+    // metode baru muncul setelah tombol Lanjut ditekan.
     input.addEventListener('input', function () {
-      validatePhoneLocal(); // instan, 0ms — chip region/operator langsung muncul
+      onPhoneTyped();
       updatePhoneClearBtn();
-      if (validateTimer) clearTimeout(validateTimer);
-      validateTimer = setTimeout(validatePhone, 300); // konfirmasi server
     });
     input.addEventListener('paste', function () {
-      validatePhoneLocal();
+      onPhoneTyped();
       updatePhoneClearBtn();
-      if (validateTimer) clearTimeout(validateTimer);
-      validateTimer = setTimeout(validatePhone, 300);
     });
     var clearBtn = $('phoneClearBtn');
     if (clearBtn) clearBtn.addEventListener('click', function (e) {
@@ -781,6 +812,8 @@
     });
     var po = $('pairingOptions'); if (po) po.hidden = method !== 'pairing';
     var qo = $('qrOptions'); if (qo) qo.hidden = method !== 'qr';
+    // Tutorial baru muncul di sini — saat proses memilih metode, bukan di beranda.
+    var ts = $('tutorialSpoiler'); if (ts) ts.hidden = false;
     renderTutorial();
     renderPipeline();
     updateRequestBtn();
@@ -1448,6 +1481,8 @@
       state.method = null;
       var po = $('pairingOptions'); if (po) po.hidden = true;
       var qo = $('qrOptions'); if (qo) qo.hidden = true;
+      var ts = $('tutorialSpoiler'); if (ts) ts.hidden = true;
+      updateNextStepBtn();
     }
     renderPipeline(); renderTutorial(); updateRequestBtn(); saveState();
   }
@@ -1485,6 +1520,16 @@
     var cb = $('cancelBtn'); if (cb) cb.addEventListener('click', cancelPairing);
     var cc = $('cancelCodeBtn'); if (cc) cc.addEventListener('click', cancelPairing);
     var sp = $('codeSpoilerBtn'); if (sp) sp.addEventListener('click', toggleCodeSpoiler);
+    // Tombol Lanjut (langkah 1): baru di sini nomor dicek ke server.
+    var nb = $('nextStepBtn'); if (nb) nb.addEventListener('click', function () { validatePhone(); });
+    // Tombol panah ke atas (pojok kanan bawah): muncul setelah scroll 300px.
+    var tt = $('toTopBtn');
+    if (tt) {
+      tt.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      var onScrollTop = function () { tt.hidden = window.scrollY < 300; };
+      window.addEventListener('scroll', onScrollTop, { passive: true });
+      onScrollTop();
+    }
     var ct = $('ciToggle'); if (ct) ct.addEventListener('click', toggleInfoSpoiler);
     var cq = $('cancelQrBtn'); if (cq) cq.addEventListener('click', cancelPairing);
     var vs = $('viewSessionBtn');
@@ -1531,6 +1576,7 @@
     if (input && s.phone) {
       input.value = s.phone;
       updatePhoneClearBtn();
+      updateNextStepBtn();
       validatePhone();
     }
     if (state.method) selectMethod(state.method);

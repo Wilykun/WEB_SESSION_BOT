@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-1107",
+      "title": "Alur nomor pakai tombol Lanjut + beranda dirapikan + Info Update 5 per halaman",
+      "desc": "Wily minta 5 hal dari screenshot HP: (1) Teks hint 'Wajib kode negara: 62...' di bawah kolom nomor DIHAPUS (panduan kode negara tetap muncul di pesan error saat nomor ditolak). (2) Tutorial Pairing Code JANGAN tampil di beranda — kini spoiler tutorial sembunyi dulu dan baru muncul saat proses memilih metode (Pairing Code tampilkan langkah pairing, QR Code tampilkan langkah QR). (3) Spoiler 'Tentang SessionBot' dihapus dari beranda — Tentang sudah punya halaman sendiri di taskbar (/tentang); link footer Server kini ke /tentang. (4) Tombol panah ke atas di pojok kanan bawah (44px, muncul setelah scroll 300px, klik = scroll halus ke atas) di semua 6 halaman. (5) ALUR NOMOR BERUBAH: mengetik nomor TIDAK lagi memicu cek otomatis — chip region/operator + normalisasi tetap tampil instan, tapi kartu cek + metode sembunyi sampai tombol 'Lanjut' ditekan; baru saat Lanjut nomor dicek ke server (valid -> kartu hijau + metode muncul; invalid -> kartu merah + alasan, mis. 89... ditolak 'Masukkan kode negara...'). Edit nomor setelah lolos = cek ulang via Lanjut lagi. (6) Info Update kini tampil 5 entri per halaman (sebelumnya 3), pagination di bawah tetap jalan. Disimulasikan 20/20 lolos (alur Lanjut, tutorial per metode, hapus nomor, nomor invalid, tombol ke atas, Info Update 5 entri, tanpa overflow).",
+      "tag": "Perubahan",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "11.07"
+    },
+    {
       "id": "20261127-1047",
       "title": "Pipeline langkah 3 tandai AKTIF + Detail Sesi pakai spoiler",
       "desc": "Wily lapor dari screenshot HP: langkah 3 pipeline ('Kode / QR aktif — segera masukkan') kurang jelas — harusnya ditandai AKTIF dan sebut metodenya (Pairing Code atau QR Code); dan info statis (Nomor, Negara, Operator, Metode, Browser) minta ditambah info lain yang bagus + ada tombol spoiler. Diperbaiki: (1) Langkah 3 kini punya pill hijau 'AKTIF' di samping judul + subtitle sebut metode: 'Pairing Code AKTIF — segera masukkan kode' atau 'QR Code AKTIF — segera pindai' (badge tampil di langkah mana pun yang sedang aktif; saat diterima jadi 'Pairing/QR Code diterima ✓'). (2) Info statis kini pakai tombol spoiler 'Detail Sesi' (chevron, bisa dilipat/buka, tetap tertutup saat refresh sesuai pilihan) + 2 baris baru: Status live (pill kuning 'Kode aktif'/'QR aktif', hijau saat Terhubung/Terkirim, merah saat gagal) dan Berlaku (hitung mundur realtime '3:00 (kode)' / '1:00 (QR)'). Disimulasikan 12/12 lolos (pairing + QR, spoiler buka-tutup, desktop juga rapih, tanpa overflow).",
@@ -434,6 +443,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T10:47:40+07:00",
+  "updated": "2026-11-27T11:07:01+07:00",
   "version": 1
 }
