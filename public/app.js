@@ -106,15 +106,42 @@
     return new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false });
   }
 
+  // Kode negara terpanjang yang cocok di awal digit (mis. 62, 60, 1, 44).
+  // LOCAL_COUNTRY_PREFIXES didefinisikan di bawah; fungsi ini baru dipanggil
+  // setelah skrip selesai dimuat, jadi aman.
+  function findCallingCodeLocal(digits) {
+    var codes = Object.keys(LOCAL_COUNTRY_PREFIXES).sort(function (a, b) { return b.length - a.length; });
+    for (var i = 0; i < codes.length; i++) {
+      if (digits.indexOf(codes[i]) === 0) return codes[i];
+    }
+    return null;
+  }
+
+  // WAJIB ada kode negara (27 Nov 2026): nomor tanpa 0 / + / 00 / kode
+  // negara (mis. 89...) TIDAK boleh ditebak jadi 62 — kembalikan '' supaya
+  // validatePhoneLocal/validatePhone menampilkan pesan "masukkan kode negara".
   function normalizePhone(raw) {
     var s = String(raw || '').replace(/[\s\-().]/g, '');
     if (!s) return '';
     if (s.charAt(0) === '+') return s.slice(1).replace(/\D/g, '');
     s = s.replace(/\D/g, '');
     if (!s) return '';
-    if (s.charAt(0) === '0') return '62' + s.slice(1);
-    if (s.charAt(0) === '8') return '62' + s;
-    return s;
+    // "00" di depan = kode akses internasional, buang "00"-nya.
+    if (s.indexOf('00') === 0) {
+      s = s.slice(2);
+      if (!s) return '';
+      return findCallingCodeLocal(s) ? s : '';
+    }
+    // "0" di depan = nomor lokal Indonesia, 0 diganti 62.
+    if (s.charAt(0) === '0') {
+      while (s.charAt(0) === '0') s = s.slice(1);
+      if (!s) return '';
+      return '62' + s;
+    }
+    // Sudah ada kode negara? Harus cocok dengan peta calling code.
+    if (findCallingCodeLocal(s)) return s;
+    // Tanpa 0 / + / 00 / kode negara -> region tidak diketahui, jangan ditebak.
+    return '';
   }
 
   function formatCode8(code8) {
@@ -497,6 +524,19 @@
     if (validateAbort) { try { validateAbort.abort(); } catch (e) { /* abaikan */ } }
     if (!digits) {
       state.phoneValid = false; state.region = null;
+      // Ada digit tapi tanpa kode negara (mis. 89...) -> minta kode negara.
+      var rawDigits = String(raw || '').replace(/\D/g, '');
+      if (rawDigits) {
+        input.classList.remove('is-valid'); input.classList.add('is-invalid');
+        setPhoneError('Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.');
+        setNumberCheck('invalid', 'Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.');
+        renderChips(); showNormalized(); setMethodBlockVisible(false);
+        updatePhoneClearBtn();
+        updateRequestBtn();
+        saveState();
+        return;
+      }
+      // Benar-benar kosong.
       input.classList.remove('is-valid', 'is-invalid');
       setPhoneError('');
       setNumberCheck('hide');
@@ -587,6 +627,17 @@
     if (validateAbort) { try { validateAbort.abort(); } catch (e) { /* abaikan */ } }
     if (!digits) {
       state.phoneValid = false; state.region = null;
+      // Ada digit tapi tanpa kode negara (mis. 89...) -> minta kode negara.
+      // Tanpa ini, cabang ini menimpa pesan validatePhoneLocal setelah 300ms.
+      var rawDigits2 = String(input.value || '').replace(/\D/g, '');
+      if (rawDigits2) {
+        input.classList.remove('is-valid'); input.classList.add('is-invalid');
+        setPhoneError('Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.');
+        setNumberCheck('invalid', 'Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.');
+        renderChips(); showNormalized(); setMethodBlockVisible(false);
+        updateRequestBtn();
+        return;
+      }
       input.classList.remove('is-valid', 'is-invalid');
       setPhoneError('');
       setNumberCheck('hide');

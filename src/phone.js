@@ -4,12 +4,15 @@
  * Dipakai SERVER (server.js) dan logikanya diduplikasi di public/app.js
  * (client) — server TIDAK PERNAH percaya client, selalu validasi ulang.
  *
- * Aturan (sama di client & server):
+ * Aturan (sama di client & server) — WAJIB ada kode negara (27 Nov 2026):
  *  - Hanya digit setelah dibersihkan; huruf / kosong / terlalu pendek ditolak.
  *  - Hapus spasi, strip (-), tanda +.
- *  - Awalan 0 -> kode negara (default 62, Indonesia).
- *    Contoh: 0812xxxxxxx -> 62812xxxxxxx
- *  - Nomor tanpa kode negara (mis. 812xxxxxxx) -> diberi 62.
+ *  - Awalan + -> kode negara eksplisit, dihormati (mis. +62, +60, +1, +44).
+ *  - Awalan 00 -> kode akses internasional, buang "00"-nya (mis. 0062 -> 62).
+ *  - Awalan 0 -> nomor lokal Indonesia, 0 diganti 62 (mis. 0812 -> 62812).
+ *  - Sudah ada kode negara (62/60/65/1/44/81/...) -> dipakai apa adanya.
+ *  - TANPA 0 / + / 00 / kode negara (mis. 89..., 99...) -> DITOLAK, jangan
+ *    ditebak jadi 62. Region wajib diisi pengguna (contoh: 62 Indonesia).
  *  - Panjang akhir 10-15 digit (termasuk kode negara).
  *
  * Deteksi region:
@@ -74,18 +77,28 @@ export function cleanPhone(input) {
   return String(input ?? '').replace(/[^0-9]/g, '')
 }
 
+/** Kode negara terpanjang yang cocok di awal digit (mis. 62, 60, 1, 44). */
+export function findCallingCode(digits) {
+  const codes = Object.keys(COUNTRY_PREFIXES).sort((a, b) => b.length - a.length)
+  for (const code of codes) {
+    if (digits.startsWith(code)) return code
+  }
+  return null
+}
+
 /**
  * Format otomatis -> nomor internasional tanpa +.
  *  - '0812...'        -> '62812...'  (0 di depan -> 62)
  *  - '+62 812...'     -> '62812...'  (+ eksplisit dihormati)
  *  - '+1 212...' (US) -> '1212...'  (+ eksplisit dihormati)
- *  - '62 812...'      -> '62812...'
- *  - '812...'         -> '62812...'  (tanpa + / tanpa 0 = default 62)
+ *  - '62 812...'      -> '62812...'  (kode negara sudah ada)
+ *  - '60 12...' (MY)  -> '6012...'  (kode negara sudah ada)
+ *  - '0062 812...'    -> '62812...'  (00 = akses internasional)
+ *  - '89...' / '99...' -> '' (TANPA kode negara -> DITOLAK, jangan ditebak)
  *
- * Catatan: tanpa tanda + di depan, nomor dianggap nomor Indonesia
- * (web ini berbahasa Indonesia, kolom input menampilkan +62).
- * Ini disengaja: '812...' tanpa + TIDAK boleh ditebak jadi Jepang (+81),
- * karena 0812/0813 adalah awalan HP Indonesia yang umum.
+ * Jangan pernah menebak region: nomor tanpa 0 / + / 00 / kode negara
+ * (mis. 89...) TIDAK boleh otomatis jadi 62 — pengguna wajib menulis
+ * kode negaranya (62 Indonesia, 60 Malaysia, 1 Amerika, 44 Inggris, ...).
  */
 export function normalizePhone(input) {
   const raw = String(input ?? '')
@@ -93,11 +106,22 @@ export function normalizePhone(input) {
   let digits = cleanPhone(raw)
   if (!digits) return ''
   if (hasPlus) return digits // kode negara eksplisit dari pengguna, hormati
-  // Buang semua 0 di depan.
-  while (digits.startsWith('0')) digits = digits.slice(1)
-  if (!digits) return ''
-  if (digits.startsWith(DEFAULT_CALLING_CODE)) return digits
-  return DEFAULT_CALLING_CODE + digits
+  // "00" di depan = kode akses internasional, buang "00"-nya.
+  if (digits.startsWith('00')) {
+    digits = digits.slice(2)
+    if (!digits) return ''
+    return findCallingCode(digits) ? digits : ''
+  }
+  // "0" di depan = nomor lokal Indonesia, 0 diganti 62.
+  if (digits.startsWith('0')) {
+    while (digits.startsWith('0')) digits = digits.slice(1)
+    if (!digits) return ''
+    return DEFAULT_CALLING_CODE + digits
+  }
+  // Sudah ada kode negara? Harus cocok dengan peta calling code.
+  if (findCallingCode(digits)) return digits
+  // Tanpa 0 / + / 00 / kode negara -> region tidak diketahui, jangan ditebak.
+  return ''
 }
 
 /** Operator Indonesia dari 4 digit pertama (prefix standar). */
@@ -198,7 +222,13 @@ export function validatePhone(input) {
     return { ok: false, phone: '', error: 'Nomor hanya boleh berisi angka (tanpa huruf).' }
   }
   const phone = normalizePhone(raw)
-  if (!phone) return { ok: false, phone: '', error: 'Nomor WhatsApp wajib diisi.' }
+  if (!phone) {
+    // Ada digit tapi tidak ada kode negara (mis. 89..., 99...) -> minta kode negara.
+    if (cleanPhone(raw)) {
+      return { ok: false, phone: '', error: 'Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.' }
+    }
+    return { ok: false, phone: '', error: 'Nomor WhatsApp wajib diisi.' }
+  }
   if (phone.length < 10) {
     return { ok: false, phone, error: 'Nomor terlalu pendek — panjang harus 10-15 digit (termasuk kode negara).' }
   }

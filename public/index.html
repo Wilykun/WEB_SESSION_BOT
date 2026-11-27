@@ -152,7 +152,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
-        <p class="field-hint" id="phoneHint">Format otomatis: <code>08…</code> &rarr; <code>62…</code>, <code>+62…</code> &rarr; <code>62…</code>. Nomor luar negeri (<code>+1</code>, <code>+44</code>, …) tetap didukung.</p>
+        <p class="field-hint" id="phoneHint">Wajib kode negara: <code>62</code> (Indonesia), <code>60</code> (Malaysia), <code>1</code> (AS), <code>44</code> (Inggris). Nomor Indonesia: <code>08…</code> &rarr; <code>62…</code> atau <code>+62…</code>.</p>
         <div id="phoneChips" class="chips" hidden></div>
         <p id="phoneError" class="field-error" role="alert" hidden></p>
         <p id="phoneNormalized" class="field-ok" hidden></p>
@@ -437,7 +437,7 @@
     </div>
   </div>
 
-  <script src="/app.js?v=13" defer></script>
+  <script src="/app.js?v=14" defer></script>
   <script>
   /* Sembunyikan animasi loading setelah halaman siap (tampil min. 900 mdtk). */
   (function () {

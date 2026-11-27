@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-1007",
+      "title": "Deteksi region wajib kode negara + metode muncul setelah cek",
+      "desc": "BUG gambar Wily: nomor '896525886555' (awalan 89, tanpa kode negara) dulu otomatis ditebak jadi Indonesia 62 / Tri. Kini TIDAK ditebak lagi — nomor WAJIB diawali kode negara: 62 (Indonesia), 60 (Malaysia), 1 (Amerika), 44 (Inggris), +... atau 00... (akses internasional); nomor Indonesia tetap bisa 08... (0 diganti 62). Kalau tanpa kode negara (89..., 99...), kartu cek merah 'Masukkan kode negara di depan nomor — contoh 62 (Indonesia), 60 (Malaysia), 1 (Amerika). Nomor Indonesia diawali 0 atau 62.' dan chip region tidak muncul. Deteksi region kini pintar & akurat per kode negara (libphonenumber-js server + peta calling code lokal, prefix terpanjang dulu). Hint di bawah kolom nomor juga diubah: 'Wajib kode negara: 62 (Indonesia), 60 (Malaysia), 1 (AS), 44 (Inggris).' Bug kedua: pilihan Pairing Code / QR Code dipastikan HANYA muncul setelah kartu cek hijau 'Nomor valid' (saat mengetik & saat checking, metode tetap sembunyi) — disimulasikan 26/26 lolos: 89... ditolak, 60 Malaysia, 1 Amerika, 62 Indonesia + Tri, 08... jadi 62..., 0062... jadi 62..., 99 ditolak.",
+      "tag": "Bug",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "10.07"
+    },
+    {
       "id": "20261127-0958",
       "title": "Ikon cek nomor kini satu-satu + tombol hapus nomor (×)",
       "desc": "Perbaikan kartu cek nomor: sebelumnya tiga ikon (spinner, centang, silang) tampil sekaligus karena halaman utama masih memuat CSS v25 (link hardcode) — kini semua halaman pakai CSS v27, jadi hanya satu ikon yang tampil: spinner berputar saat 'Memeriksa nomor…', centang hijau saat nomor valid, silang merah saat tidak valid. Ditambah tombol hapus (×) di dalam kolom nomor — muncul saat ada nomor, sekali ketuk nomor langsung terhapus beserta simpanan-nya, jadi tidak muncul lagi saat refresh. Hapus manual (backspace) juga kini tersimpan, nomor tidak balik lagi. app.js v13, CSS v27.",
@@ -389,6 +398,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T02:54:27.601256Z",
+  "updated": "2026-11-27T10:07:51+07:00",
   "version": 1
 }
