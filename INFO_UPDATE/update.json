@@ -1,6 +1,15 @@
 {
   "entries": [
     {
+      "id": "20261127-0738",
+      "title": "Pipeline & blok pengiriman tidak nyangkut lagi setelah sesi terkirim",
+      "desc": "Setelah sesi terkirim + form reset, lalu halaman di-refresh, pipeline nyangkut setengah selesai (langkah 1-2 menunggu tapi 3-5 centang) dan blok Pengiriman nyangkut di 'Menunggu hisoka.json maksimal' dengan 'Belum terkirim' — padahal sesi sudah terkirim. Akar masalahnya: catatan delivery & sesi tidak tersimpan di browser, jadi setelah refresh datanya hilang. Sekarang delivery & sesi tersimpan, pipeline kembali fresh (siap nomor berikutnya) setelah terkirim, blok Pengiriman tampil selesai lengkap dengan waktu & ukuran, dan catatan akhir tetap tampil. Label langkah 2 kini tampilkan mode yang dipakai: Pairing Code · Custom / Pairing Code · Acak / QR Code.",
+      "tag": "Bug",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "07.38"
+    },
+    {
       "id": "20261127-0625",
       "title": "Caption pengiriman sesi kini random + lucu",
       "desc": "Saat bot mengirim hisoka.json ke owner, captionnya kini diambil acak dari folder baru RANDOM_TEKS_KOCAK/teks-kocak.json (25 teks lucu) — tiap pengiriman beda-beda. Caption memakai format WhatsApp lengkap sesuai konteks: *tebal*, _miring_, ~coret~, ```kode```, daftar bernomor untuk detail sesi, daftar berpoint untuk isi file, dan kutip untuk peringatan RAHASIA; emoji hanya di bagian tertentu. File teks dibaca fresh tiap pengiriman, jadi teks baru langsung kepakai tanpa restart server.",
@@ -362,6 +371,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T06:25:00+07:00",
+  "updated": "2026-11-27T07:38:06+07:00",
   "version": 1
 }

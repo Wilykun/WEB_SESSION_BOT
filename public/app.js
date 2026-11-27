@@ -71,7 +71,11 @@
         expiresAt: state.expiresAt,
         totalSeconds: state.totalSeconds,
         status: state.status,
-        botNumber: state.botNumber
+        botNumber: state.botNumber,
+        delivery: state.delivery,
+        session: state.session,
+        sessionFile: state.sessionFile,
+        deliveryError: state.deliveryError
       }));
     } catch (e) { /* abaikan */ }
   }
@@ -645,6 +649,7 @@
     var po = $('pairingOptions'); if (po) po.hidden = method !== 'pairing';
     var qo = $('qrOptions'); if (qo) qo.hidden = method !== 'qr';
     renderTutorial();
+    renderPipeline();
     updateRequestBtn();
     saveState();
   }
@@ -686,6 +691,7 @@
         state.codeMode = radio.value;
         var wrap = $('customCodeWrap');
         if (wrap) wrap.hidden = radio.value !== 'custom';
+        renderPipeline();
         saveState();
         scheduleSaveNumberPrefs();
       });
@@ -875,12 +881,29 @@
 
   function renderPipeline() {
     var s = state.status;
+    // Setelah sesi terkirim + form di-reset, pipeline kembali fresh (siap
+    // nomor berikutnya). Bukti pengiriman ada di blok Pengiriman + catatan
+    // akhir — pipeline melacak sesi SAAT INI, jadi tidak boleh nyangkut
+    // setengah selesai (langkah 1-2 menunggu tapi 3-5 centang).
+    if (s === 'delivered_disconnected' && !state.phone) {
+      setPipe(1, '', PIPE_LABELS[1].idle);
+      setPipe(2, '', PIPE_LABELS[2].idle);
+      setPipe(3, '', PIPE_LABELS[3].idle);
+      setPipe(4, '', PIPE_LABELS[4].idle);
+      setPipe(5, '', PIPE_LABELS[5].idle);
+      return;
+    }
     var connectedish = ['connected', 'delivering', 'delivered_disconnected', 'delivery_failed'].indexOf(s) !== -1;
     var awaiting = ['awaiting_code', 'awaiting_qr'].indexOf(s) !== -1;
     var requesting = s === 'connecting';
 
+    // Label langkah 2 tampilkan mode yang dipakai (Custom/Acak/QR).
+    var modeLabel = '';
+    if (state.method === 'qr') modeLabel = 'QR Code';
+    else if (state.method === 'pairing') modeLabel = state.codeMode === 'custom' ? 'Pairing Code · Custom' : 'Pairing Code · Acak';
+
     setPipe(1, state.phoneValid ? 'done' : '', state.phoneValid ? PIPE_LABELS[1].done : PIPE_LABELS[1].idle);
-    setPipe(2, state.method && s !== 'idle' ? 'done' : '', state.method ? PIPE_LABELS[2].done : PIPE_LABELS[2].idle);
+    setPipe(2, state.method && s !== 'idle' ? 'done' : '', state.method ? (modeLabel || PIPE_LABELS[2].done) : PIPE_LABELS[2].idle);
     setPipe(3, connectedish ? 'done' : (awaiting || requesting ? 'active' : ''),
       connectedish ? PIPE_LABELS[3].done : (awaiting ? PIPE_LABELS[3].active : (requesting ? 'Meminta kode…' : PIPE_LABELS[3].idle)));
     setPipe(4, connectedish ? 'done' : (requesting || awaiting ? 'active' : ''),
@@ -953,6 +976,10 @@
     var maximal = !!(sess.exists && sess.registered && (sess.sizeBytes || 0) > 0);
     if (state.delivery) {
       mark('wait', 'done'); mark('check', 'done'); mark('sent', 'done');
+    } else if (s === 'delivered_disconnected') {
+      // Status bilang terkirim tapi catatan delivery belum tersimpan
+      // (state lama) — jangan nyangkut di langkah 1, tandai semua selesai.
+      mark('wait', 'done'); mark('check', 'done'); mark('sent', 'done');
     } else if (s === 'delivering') {
       mark('wait', 'done'); mark('check', 'done'); mark('sent', 'active');
     } else if (s === 'delivery_failed') {
@@ -967,6 +994,8 @@
         sentText.textContent = 'Terkirim ' + (state.delivery.sentAtWib || '') + ' · ' + fmtBytes(state.delivery.sizeBytes) + ' · ke ' + (state.delivery.owner || 'owner');
       } else if (s === 'delivering') {
         sentText.textContent = 'Sedang mengirim file hisoka.json ke owner…';
+      } else if (s === 'delivered_disconnected') {
+        sentText.textContent = 'Sesi terkirim ke owner.';
       } else {
         sentText.textContent = 'Belum terkirim.';
       }
@@ -1002,9 +1031,11 @@
     state.customCode = '';
     var prev = $('customPreview'); if (prev) prev.textContent = '';
     state.phone = ''; state.method = ''; state.code = ''; state.qrDataUrl = ''; state.expiresAt = 0;
+    state.phoneValid = false;
     lastPrefsPhone = '';
     var sv = loadState() || {};
     sv.phone = ''; sv.method = ''; sv.codeMode = ''; sv.customCode = ''; sv.code = ''; sv.qrDataUrl = ''; sv.expiresAt = 0; sv.status = 'delivered_disconnected';
+    sv.delivery = state.delivery; sv.session = state.session; sv.sessionFile = state.sessionFile; sv.deliveryError = state.deliveryError;
     try { localStorage.setItem(STATE_KEY, JSON.stringify(sv)); } catch (e) { /* abaikan */ }
     updateRequestBtn(); renderTutorial();
   }
@@ -1320,7 +1351,16 @@
     } else if (s.status === 'connected' || s.status === 'delivering' || s.status === 'delivered_disconnected') {
       state.status = s.status;
       state.botNumber = s.botNumber || '';
+      state.delivery = s.delivery || null;
+      state.session = s.session || null;
+      state.sessionFile = s.sessionFile || '';
+      state.deliveryError = s.deliveryError || '';
       var rb = $('resultBlock'); if (rb) rb.hidden = false;
+      if (s.status === 'delivered_disconnected') {
+        showFinalNote(state.sessionFile
+          ? 'Sesi terkirim ke owner, sesi web terputus otomatis — file hisoka.json tetap tersimpan di ' + state.sessionFile + '.'
+          : 'Sesi terkirim ke owner, sesi web terputus otomatis.', false);
+      }
       renderPipeline(); renderDelivery();
     }
     updateRequestBtn();
