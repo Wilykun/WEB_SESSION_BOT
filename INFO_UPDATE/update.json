@@ -1,6 +1,24 @@
 {
   "entries": [
     {
+      "id": "20261127-1124",
+      "title": "Bug: Tutorial Pairing Code masih muncul di beranda — diperbaiki",
+      "desc": "Wily lapor dari screenshot HP: spoiler 'Tutorial Pairing Code' masih tampil di beranda padahal sudah dipindah. Akar masalah: simpanan lama di browser Wily berisi metode terpilih tapi nomornya kosong — saat halaman dimuat, restoreSaved memulihkan metode basi itu dan selectMethod menampilkan tutorial, padahal user masih di langkah 1. Perbaikan: (1) restoreSaved kini HANYA memulihkan metode kalau ada nomor tersimpan; metode tanpa nomor dibuang. (2) setMethodBlockVisible kini ikut mengatur tutorial — tutorial sembunyi saat blok metode sembunyi atau belum ada metode terpilih. Disimulasikan 8/8 lolos dengan cek VISIBILITAS NYATA (bukan cuma atribut hidden): skenario persis HP Wily (metode tanpa nomor) kini tutorial tidak terlihat, alur normal tetap benar (muncul setelah pilih metode), dan restore sah (nomor+metode valid) tetap menampilkan tutorial. Catatan: Wily perlu buka di tab baru supaya app.js v19 termuat.",
+      "tag": "Bug",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "11.24"
+    },
+    {
+      "id": "20261127-1121",
+      "title": "Link SessionBot kini punya thumbnail saat dibagikan ke WhatsApp",
+      "desc": "Wily minta link sessionbot.my.id tampil bagus saat dibagikan ke chat WA: kini ada gambar thumbnail (Open Graph). Gambar baru public/og-image.png (1200x630) — maskot SessionBot + judul + tagline + badge Baileys/Browser V1 di latar hijau gelap. Meta Open Graph + Twitter Card ditambahkan ke semua 6 halaman (og:title, og:description, og:image 1200x630, og:url per halaman, twitter:card summary_large_image). Gambar terverifikasi hidup di domain (200, 421 KB) dan tag OG terbaca di HTML. Catatan: WhatsApp menyimpan cache pratinjau link — kalau link sudah pernah dibagikan sebelum ini, thumbnail baru bisa muncul setelah cache-nya diperbarui.",
+      "tag": "Fitur baru",
+      "day": "Jumat",
+      "date": "27 Nov 2026",
+      "time": "11.21"
+    },
+    {
       "id": "20261127-1107",
       "title": "Alur nomor pakai tombol Lanjut + beranda dirapikan + Info Update 5 per halaman",
       "desc": "Wily minta 5 hal dari screenshot HP: (1) Teks hint 'Wajib kode negara: 62...' di bawah kolom nomor DIHAPUS (panduan kode negara tetap muncul di pesan error saat nomor ditolak). (2) Tutorial Pairing Code JANGAN tampil di beranda — kini spoiler tutorial sembunyi dulu dan baru muncul saat proses memilih metode (Pairing Code tampilkan langkah pairing, QR Code tampilkan langkah QR). (3) Spoiler 'Tentang SessionBot' dihapus dari beranda — Tentang sudah punya halaman sendiri di taskbar (/tentang); link footer Server kini ke /tentang. (4) Tombol panah ke atas di pojok kanan bawah (44px, muncul setelah scroll 300px, klik = scroll halus ke atas) di semua 6 halaman. (5) ALUR NOMOR BERUBAH: mengetik nomor TIDAK lagi memicu cek otomatis — chip region/operator + normalisasi tetap tampil instan, tapi kartu cek + metode sembunyi sampai tombol 'Lanjut' ditekan; baru saat Lanjut nomor dicek ke server (valid -> kartu hijau + metode muncul; invalid -> kartu merah + alasan, mis. 89... ditolak 'Masukkan kode negara...'). Edit nomor setelah lolos = cek ulang via Lanjut lagi. (6) Info Update kini tampil 5 entri per halaman (sebelumnya 3), pagination di bawah tetap jalan. Disimulasikan 20/20 lolos (alur Lanjut, tutorial per metode, hapus nomor, nomor invalid, tombol ke atas, Info Update 5 entri, tanpa overflow).",
@@ -443,6 +461,6 @@
     }
   ],
   "note": "Semua perubahan SessionBot (build baru dari 0, 26 Nov 2026). Entri terbaru di atas. Kategori: Fitur baru, Tampilan, Perbaikan, Bug, Fitur Error, Fitur dihapus.",
-  "updated": "2026-11-27T11:07:01+07:00",
+  "updated": "2026-11-27T11:24:13+07:00",
   "version": 1
 }

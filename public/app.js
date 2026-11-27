@@ -407,6 +407,10 @@
     // (numberChecked). Validasi lokal saja tidak cukup — itu yang bikin
     // kartu metode muncul terlalu dini saat nomor baru diketik.
     if (mb) mb.hidden = !(show && state.numberChecked);
+    // Tutorial ikut langkah metode: sembunyi saat blok metode sembunyi
+    // atau belum ada metode terpilih (mis. nomor baru / nomor dihapus).
+    var ts = $('tutorialSpoiler');
+    if (ts) ts.hidden = !!(mb && mb.hidden) || !state.method;
   }
 
   /* ---- Kartu hasil cek nomor (langkah 1.5) ----
@@ -1579,7 +1583,10 @@
       updateNextStepBtn();
       validatePhone();
     }
-    if (state.method) selectMethod(state.method);
+    // Metode basi tanpa nomor JANGAN dipulihkan — tanpa nomor, user masih di
+    // langkah 1, jadi tutorial tidak boleh muncul.
+    if (state.method && !s.phone) state.method = null;
+    if (state.method && s.phone) selectMethod(state.method);
     var radios = $$('input[name="codeMode"]');
     radios.forEach(function (r) { r.checked = r.value === state.codeMode; });
     var wrap = $('customCodeWrap');
